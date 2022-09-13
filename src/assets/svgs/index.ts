@@ -1,2 +1,5 @@
 export { ReactComponent as PlusIcon } from './plus.svg'
 export { ReactComponent as XIcon } from './x.svg'
+export { ReactComponent as ErrorIcon } from './error.svg'
+export { ReactComponent as NoticeIcon } from './notice.svg'
+export { ReactComponent as WarningIcon } from './warning.svg'
