@@ -6,6 +6,7 @@ import { onAuthStateChanged } from 'firebase/auth'
 import { firebaseAuthService } from 'utils/firebaseSetting'
 import { userIdAtom } from 'store/atom'
 import Main from './Main'
+import Auth from './Auth'
 
 const App = () => {
   const [isLoggin, setIsLoggin] = useState(false)
