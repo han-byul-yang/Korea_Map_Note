@@ -1,7 +1,9 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import kakaoMap from 'utils/kakaoMap'
-import useMessages from 'hooks/useMessages'
+import modalMessage from 'utils/modalMessage'
+import { IMessage } from 'types/messageType'
+import { IGeolocationError, IGeolocationPosition } from 'types/geolocationType'
 import Modal from 'components/Modal'
 import ModalPortal from 'components/Modal/ModalPortal'
 
@@ -9,23 +11,24 @@ import styles from './main.module.scss'
 
 const Main = () => {
   const [openModal, setOpenModal] = useState(false)
-  const { messages, message } = useMessages()
+  const [message, setMessage] = useState<IMessage>({ kind: '', message: '' })
 
-  const retrieveSuccess = (position: any) => {
+  const retrieveSuccess = (position: IGeolocationPosition) => {
     kakaoMap(position.coords.latitude, position.coords.longitude)
   }
 
-  const retrieveError = useCallback(() => {
+  const retrieveError = (error: IGeolocationError) => {
     setOpenModal(true)
-    messages.error.geolocation.retrieveError()
-  }, [messages.error.geolocation])
+    if (error.code === 1) setMessage(modalMessage().error.geolocation.PERMISSION_DENIED)
+    if (error.code === 2) setMessage(modalMessage().error.geolocation.POSITION_UNAVAILABLE)
+  }
 
   useEffect(() => {
     if (!navigator.geolocation) {
       setOpenModal(true)
-      messages.error.geolocation.notSuppertedError()
+      setMessage(modalMessage().error.geolocation.NOT_SUPPOERTED)
     } else navigator.geolocation.watchPosition(retrieveSuccess, retrieveError)
-  }, [messages.error.geolocation, retrieveError])
+  }, [])
 
   return (
     <>
