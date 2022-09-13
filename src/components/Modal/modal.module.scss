@@ -1,5 +1,6 @@
 @use '../../styles/constants/colors';
 @use '../../styles/constants/levels';
+@use '../../styles/base/fonts';
 
 .background {
   position: fixed;
@@ -23,6 +24,7 @@
   width: 300px;
   height: 200px;
   padding: 10px 20px;
+  font-family: 'Gowun Dodum', sans-serif;
   font-size: 13px;
   background: colors.$WHITE;
   border-radius: 8px;
@@ -49,6 +51,8 @@
 
   button {
     padding: 10px 20px;
+    font-family: 'Gowun Dodum', sans-serif;
+    border: 1px solid colors.$FONT;
     border-radius: 8px;
     transition: 0.1s linear;
 
