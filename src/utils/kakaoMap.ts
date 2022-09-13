@@ -5,8 +5,8 @@ declare global {
 }
 
 interface IKakaoMap {
-  latitude: any
-  longitude: any
+  latitude: number | null
+  longitude: number | null
 }
 
 const { kakao } = window
