@@ -24,8 +24,12 @@ const Auth = () => {
 
   const handleAuthSumbit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (newAccount) await createUserWithEmailAndPassword(firebaseAuthService, authData.email, authData.password)
-    else await signInWithEmailAndPassword(firebaseAuthService, authData.email, authData.password)
+    try {
+      if (newAccount) await createUserWithEmailAndPassword(firebaseAuthService, authData.email, authData.password)
+      else await signInWithEmailAndPassword(firebaseAuthService, authData.email, authData.password)
+    } catch (error) {
+      if (error instanceof Error) console.log(error.message)
+    }
   }
 
   const handleChangeAuthFormClick = () => {
@@ -34,10 +38,12 @@ const Auth = () => {
 
   return (
     <main className={styles.authContainer}>
-      <img alt='' src={worldMap} />
+      <img alt='auth_page_image' src={worldMap} />
       <div className={styles.authBox}>
-        <b>{newAccount ? '환영합니다~~' : '다시 오셨군요!!'}</b>
-        <p>내가 방문한 여행지, 식당, 카페, 공원 등의 추억을 내 지도에 기록하세요</p>
+        <div className={styles.helloMessage}>
+          {newAccount ? '환영합니다:)' : '다시 오셨군요!!'}
+          <p>내가 방문한 여행지, 식당, 카페, 공원 등의 추억을 내 지도에 기록하세요</p>
+        </div>
         <form onSubmit={handleAuthSumbit}>
           <input
             type='email'
@@ -55,7 +61,7 @@ const Auth = () => {
           />
           <input type='submit' value={newAccount ? '회원가입' : '로그인'} />
         </form>
-        <div>
+        <div className={styles.changeForm}>
           {newAccount ? '이미 계정이 있으신가요?' : '처음 오셨나요?'}
           <button type='button' onClick={handleChangeAuthFormClick}>
             {newAccount ? '로그인 하기' : '회원가입하기'}
@@ -69,3 +75,4 @@ const Auth = () => {
 export default Auth
 
 // 사진 img 태그 안에 넣기
+// b태그 적용안됨
