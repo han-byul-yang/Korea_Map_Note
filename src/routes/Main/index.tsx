@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import kakaoMap from 'utils/kakaoMap'
+import kakaoMap, { kakaoMapMark } from 'utils/kakaoMap'
 import modalMessage from 'utils/modalMessage'
 import { IMessage } from 'types/messageType'
 import { IGeolocationError, IGeolocationPosition } from 'types/geolocationType'
@@ -14,7 +14,8 @@ const Main = () => {
   const [message, setMessage] = useState<IMessage>({ kind: '', message: '' })
 
   const retrieveSuccess = (position: IGeolocationPosition) => {
-    kakaoMap(position.coords.latitude, position.coords.longitude)
+    const map = kakaoMap(position.coords.latitude, position.coords.longitude)
+    kakaoMapMark(map)
   }
 
   const retrieveError = (error: IGeolocationError) => {
@@ -47,3 +48,4 @@ export default Main
 // id를 ref로 바꿀 수 있음
 // declare 정확히 알기
 // env 파일에 key 집어넣기
+// 지도 렌더링 시간 너무 오래걸림
