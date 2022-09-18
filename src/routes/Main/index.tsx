@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Map, MapMarker } from 'react-kakao-maps-sdk'
+import { CustomOverlayMap, Map, MapMarker } from 'react-kakao-maps-sdk'
 
 import modalMessage from 'utils/modalMessage'
 import { IMessage } from 'types/messageType'
@@ -47,8 +47,8 @@ const Main = () => {
           lng: geolocation.longitude,
         }}
         style={{
-          width: '100vw',
-          height: '100vh',
+          width: '100%',
+          height: '100%',
         }}
         level={12}
         onClick={(_t, mouseEvent) =>
@@ -61,7 +61,7 @@ const Main = () => {
         <MapMarker
           position={{ lat: markPosition.latitude, lng: markPosition.longitude }}
           clickable
-          onClick={() => setOpenInfoWindow(true)}
+          onClick={() => setOpenInfoWindow((prev) => !prev)}
           image={{
             src: markImg,
             size: {
@@ -76,7 +76,7 @@ const Main = () => {
             },
           }}
         >
-          {openInfoWindow && <InfoWindow />}
+          {openInfoWindow && <InfoWindow setOpenInfoWindow={setOpenInfoWindow} />}
         </MapMarker>
       </Map>
       {openModal && (
