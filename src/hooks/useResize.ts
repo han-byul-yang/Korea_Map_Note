@@ -17,7 +17,7 @@ const useResize = () => {
       },
     },
     MOBILE: {
-      RESIZE: () => setIsSize(window.innerWidth < 375),
+      RESIZE: () => setIsSize(window.innerWidth < 425),
       SIZEEVENT: () => {
         resizeEvent(size.MOBILE.RESIZE)
       },
