@@ -3,11 +3,11 @@ import { Dispatch } from 'react'
 import { IMessage } from 'types/messageType'
 
 import { ErrorIcon, NoticeIcon, WarningIcon, XIcon } from 'assets/svgs'
-import styles from './modal.module.scss'
+import styles from './messageModal.module.scss'
 
 interface IModalProps {
   message: IMessage
-  setOpenModal: Dispatch<React.SetStateAction<boolean>>
+  setOpenMessageModal: Dispatch<React.SetStateAction<boolean>>
 }
 
 const modalIcon = {
@@ -16,9 +16,9 @@ const modalIcon = {
   WARNING: <WarningIcon className={styles.typeIcon} />,
 }
 
-const Modal = ({ message, setOpenModal }: IModalProps) => {
+const MessageModal = ({ message, setOpenMessageModal }: IModalProps) => {
   const handleModalButtonClick = () => {
-    setOpenModal(false)
+    setOpenMessageModal(false)
   }
 
   return (
@@ -39,4 +39,4 @@ const Modal = ({ message, setOpenModal }: IModalProps) => {
   )
 }
 
-export default Modal
+export default MessageModal
