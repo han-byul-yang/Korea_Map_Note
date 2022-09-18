@@ -4,12 +4,12 @@ import { CustomOverlayMap, Map, MapMarker } from 'react-kakao-maps-sdk'
 import modalMessage from 'utils/modalMessage'
 import { IMessage } from 'types/messageType'
 import { IGeolocationError, IGeolocationPosition } from 'types/geolocationType'
-import Modal from 'components/Modal'
+import MessageModal from 'components/Modal/MessageModal'
+import AddNoteModal from 'components/Modal/AddNoteModal'
 import InfoWindow from './InfoWindow'
 import ModalPortal from 'components/Modal/ModalPortal'
 
 import markImg from 'assets/img/mark.png'
-import styles from './main.module.scss'
 
 const Main = () => {
   const [geolocation, setGeolocation] = useState({
@@ -18,7 +18,8 @@ const Main = () => {
   })
   const [markPosition, setMarkPosition] = useState({ latitude: 0, longitude: 0 })
   const [openInfoWindow, setOpenInfoWindow] = useState(false)
-  const [openModal, setOpenModal] = useState(false)
+  const [openMessageModal, setOpenMessageModal] = useState(false)
+  const [openAddNoteModal, setOpenAddNoteModal] = useState(false)
   const [message, setMessage] = useState<IMessage>({ kind: '', message: '' })
 
   const retrieveSuccess = (position: IGeolocationPosition) => {
@@ -27,14 +28,14 @@ const Main = () => {
   }
 
   const retrieveError = (error: IGeolocationError) => {
-    setOpenModal(true)
+    setOpenMessageModal(true)
     if (error.code === 1) setMessage(modalMessage().error.geolocation.PERMISSION_DENIED)
     if (error.code === 2) setMessage(modalMessage().error.geolocation.POSITION_UNAVAILABLE)
   }
 
   useEffect(() => {
     if (!navigator.geolocation) {
-      setOpenModal(true)
+      setOpenMessageModal(true)
       setMessage(modalMessage().error.geolocation.NOT_SUPPOERTED)
     } else navigator.geolocation.watchPosition(retrieveSuccess, retrieveError)
   }, [])
@@ -76,12 +77,19 @@ const Main = () => {
             },
           }}
         >
-          {openInfoWindow && <InfoWindow setOpenInfoWindow={setOpenInfoWindow} />}
+          {openInfoWindow && (
+            <InfoWindow setOpenInfoWindow={setOpenInfoWindow} setOpenAddNoteModal={setOpenAddNoteModal} />
+          )}
         </MapMarker>
       </Map>
-      {openModal && (
+      {openMessageModal && (
         <ModalPortal>
-          <Modal message={message} setOpenModal={setOpenModal} />
+          <MessageModal message={message} setOpenMessageModal={setOpenMessageModal} />
+        </ModalPortal>
+      )}
+      {openAddNoteModal && (
+        <ModalPortal>
+          <AddNoteModal setOpenAddNoteModal={setOpenAddNoteModal} />
         </ModalPortal>
       )}
     </>
