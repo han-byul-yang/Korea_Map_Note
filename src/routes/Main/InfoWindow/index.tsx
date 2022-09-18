@@ -8,10 +8,10 @@ import styles from './infoWindow.module.scss'
 
 interface IInfoWindowProps {
   setOpenInfoWindow: Dispatch<React.SetStateAction<boolean>>
-  setOpenAddNoteModal: Dispatch<React.SetStateAction<boolean>>
+  setOpenAddNoteForm: Dispatch<React.SetStateAction<boolean>>
 }
 
-const InfoWindow = ({ setOpenInfoWindow, setOpenAddNoteModal }: IInfoWindowProps) => {
+const InfoWindow = ({ setOpenInfoWindow, setOpenAddNoteForm }: IInfoWindowProps) => {
   const containerRef = useRef(null)
   const { outsideClickEvent } = useClickOutside(containerRef, setOpenInfoWindow)
   const { size, isSize: isMobile } = useResize()
@@ -23,7 +23,7 @@ const InfoWindow = ({ setOpenInfoWindow, setOpenAddNoteModal }: IInfoWindowProps
   }, [outsideClickEvent, size.MOBILE])
 
   const handleAddNoteClick = () => {
-    if (isMobile) setOpenAddNoteModal(true)
+    setOpenAddNoteForm(true)
   }
 
   const handleReadNoteClick = () => {}

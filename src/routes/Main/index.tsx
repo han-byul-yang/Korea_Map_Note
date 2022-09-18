@@ -5,7 +5,7 @@ import modalMessage from 'utils/modalMessage'
 import { IMessage } from 'types/messageType'
 import { IGeolocationError, IGeolocationPosition } from 'types/geolocationType'
 import MessageModal from 'components/Modal/MessageModal'
-import AddNoteModal from 'components/Modal/AddNoteModal'
+import AddNoteForm from 'routes/Main/AddNoteForm'
 import InfoWindow from './InfoWindow'
 import ModalPortal from 'components/Modal/ModalPortal'
 
@@ -19,7 +19,7 @@ const Main = () => {
   const [markPosition, setMarkPosition] = useState({ latitude: 0, longitude: 0 })
   const [openInfoWindow, setOpenInfoWindow] = useState(false)
   const [openMessageModal, setOpenMessageModal] = useState(false)
-  const [openAddNoteModal, setOpenAddNoteModal] = useState(false)
+  const [openAddNoteForm, setOpenAddNoteForm] = useState(false)
   const [message, setMessage] = useState<IMessage>({ kind: '', message: '' })
 
   const retrieveSuccess = (position: IGeolocationPosition) => {
@@ -42,6 +42,7 @@ const Main = () => {
 
   return (
     <>
+      {openAddNoteForm && <AddNoteForm setOpenAddNoteForm={setOpenAddNoteForm} />}
       <Map
         center={{
           lat: geolocation.latitude,
@@ -78,18 +79,13 @@ const Main = () => {
           }}
         >
           {openInfoWindow && (
-            <InfoWindow setOpenInfoWindow={setOpenInfoWindow} setOpenAddNoteModal={setOpenAddNoteModal} />
+            <InfoWindow setOpenInfoWindow={setOpenInfoWindow} setOpenAddNoteForm={setOpenAddNoteForm} />
           )}
         </MapMarker>
       </Map>
       {openMessageModal && (
         <ModalPortal>
           <MessageModal message={message} setOpenMessageModal={setOpenMessageModal} />
-        </ModalPortal>
-      )}
-      {openAddNoteModal && (
-        <ModalPortal>
-          <AddNoteModal setOpenAddNoteModal={setOpenAddNoteModal} />
         </ModalPortal>
       )}
     </>
