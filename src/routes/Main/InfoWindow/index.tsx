@@ -1,7 +1,6 @@
 import { Dispatch, useEffect, useRef } from 'react'
 
 import useClickOutside from 'hooks/useClickOutside'
-import useResize from 'hooks/useResize'
 
 import { NotebookIcon, WriteIcon } from 'assets/svgs'
 import styles from './infoWindow.module.scss'
@@ -14,13 +13,10 @@ interface IInfoWindowProps {
 const InfoWindow = ({ setOpenInfoWindow, setOpenAddNoteForm }: IInfoWindowProps) => {
   const containerRef = useRef(null)
   const { outsideClickEvent } = useClickOutside(containerRef, setOpenInfoWindow)
-  const { size, isSize: isMobile } = useResize()
 
   useEffect(() => {
     outsideClickEvent()
-    size.MOBILE.RESIZE()
-    size.MOBILE.SIZEEVENT()
-  }, [outsideClickEvent, size.MOBILE])
+  }, [outsideClickEvent])
 
   const handleAddNoteClick = () => {
     setOpenAddNoteForm(true)
