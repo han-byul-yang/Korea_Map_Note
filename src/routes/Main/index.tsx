@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react'
-import { CustomOverlayMap, Map, MapMarker } from 'react-kakao-maps-sdk'
+import { useCallback, useEffect, useState } from 'react'
+import { useRecoilState } from 'recoil'
+import { Map, MapMarker } from 'react-kakao-maps-sdk'
 
 import modalMessage from 'utils/modalMessage'
+import { geolocationAtom, markPositionAtom } from 'store/atom'
 import { IMessage } from 'types/messageType'
 import { IGeolocationError, IGeolocationPosition } from 'types/geolocationType'
 import MessageModal from 'components/Modal/MessageModal'
@@ -9,23 +11,23 @@ import AddNoteForm from 'routes/Main/AddNoteForm'
 import InfoWindow from './InfoWindow'
 import ModalPortal from 'components/Modal/ModalPortal'
 
-import markImg from 'assets/img/mark.png'
+import positionMarkImg from 'assets/img/mark.png'
+import geolocationMarkImg from 'assets/img/mark2.png'
 
 const Main = () => {
-  const [geolocation, setGeolocation] = useState({
-    latitude: 0,
-    longitude: 0,
-  })
-  const [markPosition, setMarkPosition] = useState({ latitude: 0, longitude: 0 })
-  const [openInfoWindow, setOpenInfoWindow] = useState(false)
+  const [geolocation, setGeolocation] = useRecoilState(geolocationAtom)
+  const [markPosition, setMarkPosition] = useRecoilState(markPositionAtom)
+  const [openInfoWindow, setOpenInfoWindow] = useState({ geolocation: false, position: false })
   const [openMessageModal, setOpenMessageModal] = useState(false)
   const [openAddNoteForm, setOpenAddNoteForm] = useState(false)
   const [message, setMessage] = useState<IMessage>({ kind: '', message: '' })
 
-  const retrieveSuccess = (position: IGeolocationPosition) => {
-    setGeolocation({ latitude: position.coords.latitude!, longitude: position.coords.longitude! })
-    setMarkPosition({ latitude: position.coords.latitude!, longitude: position.coords.longitude! })
-  }
+  const retrieveSuccess = useCallback(
+    (position: IGeolocationPosition) => {
+      setGeolocation({ latitude: position.coords.latitude!, longitude: position.coords.longitude! })
+    },
+    [setGeolocation]
+  )
 
   const retrieveError = (error: IGeolocationError) => {
     setOpenMessageModal(true)
@@ -38,11 +40,26 @@ const Main = () => {
       setOpenMessageModal(true)
       setMessage(modalMessage().error.geolocation.NOT_SUPPOERTED)
     } else navigator.geolocation.watchPosition(retrieveSuccess, retrieveError)
-  }, [])
+  }, [retrieveSuccess])
+
+  const handleMapMarkerClick = () => {
+    setOpenInfoWindow((prev) => {
+      return {
+        ...prev,
+        geolocation: !prev.geolocation,
+      }
+    })
+  }
+
+  const handleClickOutside = (mark: string) => {
+    setOpenInfoWindow((prev) => {
+      return { ...prev, [mark]: false }
+    })
+  }
 
   return (
     <>
-      {openAddNoteForm && <AddNoteForm setOpenAddNoteForm={setOpenAddNoteForm} />}
+      <AddNoteForm setOpenAddNoteForm={setOpenAddNoteForm} openAddNoteForm={openAddNoteForm} />
       <Map
         center={{
           lat: geolocation.latitude,
@@ -63,9 +80,9 @@ const Main = () => {
         <MapMarker
           position={{ lat: markPosition.latitude, lng: markPosition.longitude }}
           clickable
-          onClick={() => setOpenInfoWindow((prev) => !prev)}
+          onClick={handleMapMarkerClick}
           image={{
-            src: markImg,
+            src: positionMarkImg,
             size: {
               width: 74,
               height: 79,
@@ -78,8 +95,36 @@ const Main = () => {
             },
           }}
         >
-          {openInfoWindow && (
-            <InfoWindow setOpenInfoWindow={setOpenInfoWindow} setOpenAddNoteForm={setOpenAddNoteForm} />
+          {openInfoWindow.position && (
+            <InfoWindow
+              handleClickOutside={() => handleClickOutside('position')}
+              setOpenAddNoteForm={setOpenAddNoteForm}
+            />
+          )}
+        </MapMarker>
+        <MapMarker
+          position={{ lat: geolocation.latitude, lng: geolocation.longitude }}
+          clickable
+          onClick={handleMapMarkerClick}
+          image={{
+            src: geolocationMarkImg,
+            size: {
+              width: 74,
+              height: 79,
+            },
+            options: {
+              offset: {
+                x: 27,
+                y: 69,
+              },
+            },
+          }}
+        >
+          {openInfoWindow.geolocation && (
+            <InfoWindow
+              handleClickOutside={() => handleClickOutside('geolocation')}
+              setOpenAddNoteForm={setOpenAddNoteForm}
+            />
           )}
         </MapMarker>
       </Map>
@@ -97,3 +142,4 @@ export default Main
 // declare 정확히 알기
 // env 파일에 key 집어넣기
 // 지도 렌더링 시간 너무 오래걸림
+// mapmarker 리팩토링, handleMapMarkerClick 함수도
