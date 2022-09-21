@@ -1,22 +1,22 @@
 import { Dispatch, useEffect, useRef } from 'react'
 
-import useClickOutside from 'hooks/useClickOutside'
+import useNotTargetClick from 'hooks/useNotTargetClick'
 
 import { NotebookIcon, WriteIcon } from 'assets/svgs'
 import styles from './infoWindow.module.scss'
 
 interface IInfoWindowProps {
-  setOpenInfoWindow: Dispatch<React.SetStateAction<boolean>>
+  handleClickOutside: () => void // type 재설정
   setOpenAddNoteForm: Dispatch<React.SetStateAction<boolean>>
 }
 
-const InfoWindow = ({ setOpenInfoWindow, setOpenAddNoteForm }: IInfoWindowProps) => {
+const InfoWindow = ({ handleClickOutside, setOpenAddNoteForm }: IInfoWindowProps) => {
   const containerRef = useRef(null)
-  const { outsideClickEvent } = useClickOutside(containerRef, setOpenInfoWindow)
+  const { notTargetClickEvent } = useNotTargetClick(containerRef, handleClickOutside)
 
   useEffect(() => {
-    outsideClickEvent()
-  }, [outsideClickEvent])
+    notTargetClickEvent()
+  }, [notTargetClickEvent])
 
   const handleAddNoteClick = () => {
     setOpenAddNoteForm(true)
