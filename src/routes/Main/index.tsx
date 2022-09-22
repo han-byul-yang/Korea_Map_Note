@@ -51,7 +51,7 @@ const Main = () => {
     })
   }
 
-  const handleClickOutside = (mark: string) => {
+  const clickOutsideTarget = (mark: string) => {
     setOpenInfoWindow((prev) => {
       return { ...prev, [mark]: false }
     })
@@ -97,7 +97,7 @@ const Main = () => {
         >
           {openInfoWindow.position && (
             <InfoWindow
-              handleClickOutside={() => handleClickOutside('position')}
+              clickOutsideTarget={() => clickOutsideTarget('position')}
               setOpenAddNoteForm={setOpenAddNoteForm}
             />
           )}
@@ -122,7 +122,7 @@ const Main = () => {
         >
           {openInfoWindow.geolocation && (
             <InfoWindow
-              handleClickOutside={() => handleClickOutside('geolocation')}
+              clickOutsideTarget={() => clickOutsideTarget('geolocation')}
               setOpenAddNoteForm={setOpenAddNoteForm}
             />
           )}
