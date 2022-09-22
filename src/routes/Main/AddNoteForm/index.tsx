@@ -1,6 +1,11 @@
-import { Dispatch, useEffect } from 'react'
+import { Dispatch, useEffect, useState } from 'react'
+import { useRecoilValue } from 'recoil'
+import dayjs from 'dayjs'
 
 import useResize from 'hooks/useResize'
+import { clickedMarkPositionAtom } from 'store/atom'
+import Picture from './Picture'
+import HashTag from './HashTag'
 
 import { LeftArrowIcon, RightArrowIcon, XIcon } from 'assets/svgs'
 import styles from './addNoteForm.module.scss'
@@ -11,6 +16,8 @@ interface IAddNoteProps {
 }
 
 const AddNoteForm = ({ setOpenAddNoteForm, openAddNoteForm }: IAddNoteProps) => {
+  const [picture, setPicture] = useState<Blob>()
+  const clickedMarkPosition = useRecoilValue(clickedMarkPositionAtom)
   const { size, isSize: isMobile } = useResize()
 
   useEffect(() => {
@@ -26,12 +33,34 @@ const AddNoteForm = ({ setOpenAddNoteForm, openAddNoteForm }: IAddNoteProps) => 
     setOpenAddNoteForm((prev) => !prev)
   }
 
+  const presentDate = () => {
+    const nowDate = dayjs()
+    const nowDateFormat = dayjs(nowDate.format(), 'YYYY-MM-DDTHH:mm:ss+SSS')
+    return `${nowDateFormat.format('YYYY년 MM월 DD일 HH시 mm분')}`
+  }
+
   return (
     <div className={openAddNoteForm ? styles.openContainer : styles.closeContainer}>
       <div className={styles.addNoteBox}>
         {isMobile && <XIcon className={styles.xIcon} onClick={handleXButtonClick} />}
-        <p>지금 </p>
-        <form />
+        <p>
+          현재 위치는 ...
+          <br />
+          경도: {clickedMarkPosition.latitude} / 위도: {clickedMarkPosition.longitude}
+        </p>
+        <form>
+          <label>
+            이 장소의 이름은?
+            <input type='text' name='name' />
+          </label>
+          <p>
+            방문 시기: {presentDate()}
+            <button type='button'>날짜 변경</button>
+          </p>
+          <input type='text' />
+          <Picture setPicture={setPicture} />
+          <HashTag />
+        </form>
       </div>
       {!isMobile && (
         <button className={styles.closeButton} type='button' onClick={handleCloseButtonClick}>
