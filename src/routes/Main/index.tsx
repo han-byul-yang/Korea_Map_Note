@@ -48,6 +48,16 @@ const Main = () => {
     } else navigator.geolocation.watchPosition(retrieveSuccess, retrieveError)
   }, [retrieveSuccess])
 
+  const handleMapPositionClick = (_t: kakao.maps.Map, mouseEvent: kakao.maps.event.MouseEvent) => {
+    setMarkPosition((prev) => {
+      return {
+        ...prev,
+        location: { latitude: mouseEvent.latLng.getLat(), longitude: mouseEvent.latLng.getLng() },
+      }
+    })
+    setOpenAddNoteForm(false)
+  }
+
   const handleMapMarkerClick = (clickedPosition: string) => {
     setOpenInfoWindow((prev) => {
       return {
@@ -80,14 +90,7 @@ const Main = () => {
           height: '100%',
         }}
         level={12}
-        onClick={(_t, mouseEvent) =>
-          setMarkPosition((prev) => {
-            return {
-              ...prev,
-              location: { latitude: mouseEvent.latLng.getLat(), longitude: mouseEvent.latLng.getLng() },
-            }
-          })
-        }
+        onClick={handleMapPositionClick}
       >
         <MapMarker
           position={{ lat: markPosition.location.latitude, lng: markPosition.location.longitude }}
