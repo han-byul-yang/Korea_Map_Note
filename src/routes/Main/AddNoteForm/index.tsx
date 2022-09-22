@@ -1,8 +1,8 @@
 import { Dispatch, useEffect, useState } from 'react'
 import { useRecoilValue } from 'recoil'
-import dayjs from 'dayjs'
 
 import useResize from 'hooks/useResize'
+import presentDate from 'utils/presentDate'
 import { clickedMarkPositionAtom } from 'store/atom'
 import Picture from './Picture'
 import HashTag from './HashTag'
@@ -31,12 +31,6 @@ const AddNoteForm = ({ setOpenAddNoteForm, openAddNoteForm }: IAddNoteProps) => 
 
   const handleCloseButtonClick = () => {
     setOpenAddNoteForm((prev) => !prev)
-  }
-
-  const presentDate = () => {
-    const nowDate = dayjs()
-    const nowDateFormat = dayjs(nowDate.format(), 'YYYY-MM-DDTHH:mm:ss+SSS')
-    return `${nowDateFormat.format('YYYY년 MM월 DD일 HH시 mm분')}`
   }
 
   return (
