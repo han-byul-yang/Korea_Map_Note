@@ -2,20 +2,31 @@ import React from 'react'
 import { BrowserRouter } from 'react-router-dom'
 import { createRoot } from 'react-dom/client'
 import reportWebVitals from './reportWebVitals'
+import { RecoilRoot } from 'recoil'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 import App from 'routes'
 
 import './styles/index.scss'
-import { RecoilRoot } from 'recoil'
 
 const container = document.getElementById('root')!
 const root = createRoot(container)
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      suspense: true,
+    },
+  },
+})
 
 root.render(
   <React.StrictMode>
     <BrowserRouter basename={process.env.PUBLIC_URL}>
       <RecoilRoot>
-        <App />
+        <QueryClientProvider client={queryClient}>
+          <App />
+        </QueryClientProvider>
       </RecoilRoot>
     </BrowserRouter>
   </React.StrictMode>
