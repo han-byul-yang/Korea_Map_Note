@@ -4,44 +4,32 @@ import { useSetRecoilState } from 'recoil'
 
 import InfoWindow from 'routes/Main/InfoWindow'
 import { clickedMarkPositionAtom, isOpenAddNoteFormAtom } from 'store/atom'
-import { IMarkPosition, IOpenInfoWindow } from 'types/markPositionType'
+import { IPosition } from 'types/markPositionType'
 
 interface IMarker {
-  clickPosition: string
   markImg: any
-  markPosition: IMarkPosition
+  markPosition: IPosition
 }
 
-const Marker = ({ clickPosition, markImg, markPosition }: IMarker) => {
-  const [openInfoWindow, setOpenInfoWindow] = useState<IOpenInfoWindow>({ geolocation: false, location: false })
+const Marker = ({ markImg, markPosition }: IMarker) => {
+  const [openInfoWindow, setOpenInfoWindow] = useState(false)
   const setClickedMarkPosition = useSetRecoilState(clickedMarkPositionAtom)
   const setOpenAddNoteForm = useSetRecoilState(isOpenAddNoteFormAtom)
 
-  const handleMapMarkerClick = (clickedPosition: string) => {
-    setOpenInfoWindow((prev) => {
-      return {
-        ...prev,
-        [clickedPosition]: !prev[clickedPosition],
-      }
-    })
+  const handleMapMarkerClick = () => {
+    setOpenInfoWindow((prev) => !prev)
     setClickedMarkPosition({
-      latitude: markPosition[clickedPosition].latitude,
-      longitude: markPosition[clickedPosition].longitude,
+      latitude: markPosition.latitude,
+      longitude: markPosition.longitude,
     })
     setOpenAddNoteForm(false)
   }
 
-  const clickOutsideTarget = (mark: string) => {
-    setOpenInfoWindow((prev) => {
-      return { ...prev, [mark]: false }
-    })
-  }
-
   return (
     <MapMarker
-      position={{ lat: markPosition.location.latitude, lng: markPosition.location.longitude }}
+      position={{ lat: markPosition.latitude, lng: markPosition.longitude }}
       clickable
-      onClick={() => handleMapMarkerClick(clickPosition)}
+      onClick={handleMapMarkerClick}
       image={{
         src: markImg,
         size: {
@@ -56,9 +44,7 @@ const Marker = ({ clickPosition, markImg, markPosition }: IMarker) => {
         },
       }}
     >
-      {openInfoWindow.location && (
-        <InfoWindow clickOutsideTarget={() => clickOutsideTarget('location')} setOpenAddNoteForm={setOpenAddNoteForm} />
-      )}
+      {openInfoWindow && <InfoWindow setOpenInfoWindow={setOpenInfoWindow} setOpenAddNoteForm={setOpenAddNoteForm} />}
     </MapMarker>
   )
 }

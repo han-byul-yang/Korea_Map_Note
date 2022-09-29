@@ -14,7 +14,7 @@ import geolocationMarkImg from 'assets/img/geolocationMark.png'
 import locationMarkImg from 'assets/img/locationMark.png'
 
 const KakaoMap = () => {
-  const [mapPosition, setMapPosition] = useState<IPosition>({ latitude: 36, longitude: 127 })
+  const [mapPosition, setMapPosition] = useState<IPosition>({ latitude: 0, longitude: 0 })
   const [markPosition, setMarkPosition] = useState<IMarkPosition>({
     geolocation: { latitude: 0, longitude: 0 },
     location: { latitude: 0, longitude: 0 },
@@ -34,7 +34,7 @@ const KakaoMap = () => {
       ),
     {
       onSuccess: (res) => {
-        setMapPosition({ latitude: clickedResultPlaceInfo.latitude, longitude: clickedResultPlaceInfo.longitude })
+        setMapPosition({ latitude: res.data.gps_coordinates?.latitude, longitude: res.data.gps_coordinates?.longitude })
       },
       cacheTime: 1000 * 60 * 60,
       refetchOnWindowFocus: false,
@@ -85,11 +85,11 @@ const KakaoMap = () => {
         width: '100%',
         height: '100%',
       }}
-      level={3}
+      level={10}
       onClick={handleMapPositionClick}
     >
-      <Marker clickPosition='geolocation' markImg={geolocationMarkImg} markPosition={markPosition} />
-      <Marker clickPosition='location' markImg={locationMarkImg} markPosition={markPosition} />
+      <Marker markImg={geolocationMarkImg} markPosition={markPosition.geolocation} />
+      <Marker markImg={locationMarkImg} markPosition={markPosition.location} />
     </Map>
   )
 }
