@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useSetRecoilState } from 'recoil'
 
 import { getSearchPlacesApi } from 'services/getSearchPlacesApi'
-import { clickedResultPlaceInfoAtom } from 'store/atom'
+import { dropDownClickedPlaceAtom } from 'store/atom'
 import { ILocalResult } from 'types/searchPlacesType'
 
 interface IDropDownProps {
@@ -11,7 +11,7 @@ interface IDropDownProps {
 }
 
 const DropDown = ({ searchInput }: IDropDownProps) => {
-  const setClickedResultPlaceInfo = useSetRecoilState(clickedResultPlaceInfoAtom)
+  const setDropDownClickedPlace = useSetRecoilState(dropDownClickedPlaceAtom)
   const { isFetching, data } = useQuery(
     ['getSearchPlaces', searchInput],
     () => getSearchPlacesApi.searchListByQuery(searchInput),
@@ -30,7 +30,7 @@ const DropDown = ({ searchInput }: IDropDownProps) => {
   }
 
   const handleResultPlaceClick = (resultPlaces: ILocalResult) => {
-    setClickedResultPlaceInfo({
+    setDropDownClickedPlace({
       id: resultPlaces.data_id,
       latitude: resultPlaces.gps_coordinates.latitude,
       longitude: resultPlaces.gps_coordinates.longitude,

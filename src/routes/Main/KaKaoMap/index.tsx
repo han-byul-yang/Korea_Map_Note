@@ -4,7 +4,7 @@ import { Map } from 'react-kakao-maps-sdk'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 
 import { getSearchPlacesApi } from 'services/getSearchPlacesApi'
-import { clickedResultPlaceInfoAtom, isOpenAddNoteFormAtom, isOpenMessageModalAtom, messageAtom } from 'store/atom'
+import { dropDownClickedPlaceAtom, isOpenAddNoteFormAtom, isOpenMessageModalAtom, messageAtom } from 'store/atom'
 import { IGeolocationPosition, IGeolocationError } from 'types/geolocationType'
 import { IMarkPosition, IPosition } from 'types/markPositionType'
 import modalMessage from 'utils/modalMessage'
@@ -21,18 +21,18 @@ const KakaoMap = () => {
     location: { latitude: 0, longitude: 0 },
     searchPosition: { latitude: 0, longitude: 0 },
   })
-  const clickedResultPlaceInfo = useRecoilValue(clickedResultPlaceInfoAtom)
+  const dropDownClickedPlace = useRecoilValue(dropDownClickedPlaceAtom)
   const setMessage = useSetRecoilState(messageAtom)
   const [openAddNoteForm, setOpenAddNoteForm] = useRecoilState(isOpenAddNoteFormAtom)
   const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
 
   const { isFetching, data } = useQuery(
-    ['getSearchPlace', [clickedResultPlaceInfo.id, clickedResultPlaceInfo.latitude, clickedResultPlaceInfo.longitude]],
+    ['getSearchPlace', [dropDownClickedPlace.id, dropDownClickedPlace.latitude, dropDownClickedPlace.longitude]],
     () =>
       getSearchPlacesApi.searchPlaceById(
-        clickedResultPlaceInfo.id,
-        clickedResultPlaceInfo.latitude,
-        clickedResultPlaceInfo.longitude
+        dropDownClickedPlace.id,
+        dropDownClickedPlace.latitude,
+        dropDownClickedPlace.longitude
       ),
     {
       onSuccess: (res) => {

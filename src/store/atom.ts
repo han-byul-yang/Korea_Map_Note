@@ -10,8 +10,8 @@ export const clickedMarkPositionAtom = atom({
   default: { latitude: 0, longitude: 0 },
 })
 
-export const clickedResultPlaceInfoAtom = atom({
-  key: 'clickedResultPlaceInfo',
+export const dropDownClickedPlaceAtom = atom({
+  key: 'dropDownClickedPlace',
   default: {
     id: '0x357ad8c1a4766239:0x121821fa1995715e',
     latitude: 36.8006907,
