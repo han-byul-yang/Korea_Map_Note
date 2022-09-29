@@ -12,7 +12,7 @@ import Marker from './Marker'
 
 import geolocationMarkImg from 'assets/img/geolocationMark.png'
 import locationMarkImg from 'assets/img/locationMark.png'
-import searchMark from 'assets/img/searchMark.png'
+import searchMarkImg from 'assets/img/searchMark.png'
 
 const KakaoMap = () => {
   const [mapPosition, setMapPosition] = useState<IPosition>({ latitude: 0, longitude: 0 })
@@ -21,6 +21,7 @@ const KakaoMap = () => {
     location: { latitude: 0, longitude: 0 },
     searchPosition: { latitude: 0, longitude: 0 },
   })
+  const [mapLevel, setMapLevel] = useState(0)
   const dropDownClickedPlace = useRecoilValue(dropDownClickedPlaceAtom)
   const setMessage = useSetRecoilState(messageAtom)
   const [openAddNoteForm, setOpenAddNoteForm] = useRecoilState(isOpenAddNoteFormAtom)
@@ -36,17 +37,20 @@ const KakaoMap = () => {
       ),
     {
       onSuccess: (res) => {
-        setMapPosition({ latitude: res.data.gps_coordinates?.latitude, longitude: res.data.gps_coordinates?.longitude })
+        console.log(res.data)
+        setMapPosition({ latitude: dropDownClickedPlace.latitude, longitude: dropDownClickedPlace.longitude })
         setMarkPosition((prev) => {
           return {
             ...prev,
             searchPosition: {
-              latitude: res.data.gps_coordinates?.latitude,
-              longitude: res.data.gps_coordinates?.longitude,
+              latitude: dropDownClickedPlace.latitude,
+              longitude: dropDownClickedPlace.longitude,
             },
           }
         })
+        setMapLevel(4)
       },
+      staleTime: 1000 * 60 * 60,
       cacheTime: 1000 * 60 * 60,
       refetchOnWindowFocus: false,
       onError: (e) => console.log(e),
@@ -54,10 +58,11 @@ const KakaoMap = () => {
   )
 
   const retrieveSuccess = useCallback((position: IGeolocationPosition) => {
+    setMapPosition({ latitude: position.coords.latitude!, longitude: position.coords.longitude! })
     setMarkPosition((prev) => {
       return { ...prev, geolocation: { latitude: position.coords.latitude!, longitude: position.coords.longitude! } }
     })
-    setMapPosition({ latitude: position.coords.latitude!, longitude: position.coords.longitude! })
+    setMapLevel(12)
   }, [])
 
   const retrieveError = useCallback(
@@ -96,14 +101,16 @@ const KakaoMap = () => {
         width: '100%',
         height: '100%',
       }}
-      level={10}
+      level={mapLevel}
       onClick={handleMapPositionClick}
     >
       <Marker markImg={geolocationMarkImg} markPosition={markPosition.geolocation} />
       <Marker markImg={locationMarkImg} markPosition={markPosition.location} />
-      <Marker markImg={searchMark} markPosition={markPosition.searchPosition} />
+      <Marker markImg={searchMarkImg} markPosition={markPosition.searchPosition} />
     </Map>
   )
 }
 
 export default KakaoMap
+
+// location 이름 직관적으로 바꾸기 -> clickedLocation, clickedPosition
