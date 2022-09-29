@@ -6,12 +6,17 @@ import { NotebookIcon, WriteIcon } from 'assets/svgs'
 import styles from './infoWindow.module.scss'
 
 interface IInfoWindowProps {
-  clickOutsideTarget: () => void // type 재설정
+  setOpenInfoWindow: Dispatch<React.SetStateAction<boolean>> // type 재설정
   setOpenAddNoteForm: Dispatch<React.SetStateAction<boolean>>
 }
 
-const InfoWindow = ({ clickOutsideTarget, setOpenAddNoteForm }: IInfoWindowProps) => {
+const InfoWindow = ({ setOpenInfoWindow, setOpenAddNoteForm }: IInfoWindowProps) => {
   const containerRef = useRef(null)
+
+  const clickOutsideTarget = () => {
+    setOpenInfoWindow(false)
+  }
+
   const { clickOutsideEvent } = useClickOutside(containerRef, clickOutsideTarget)
 
   useEffect(() => {
