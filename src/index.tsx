@@ -12,13 +12,7 @@ import './styles/index.scss'
 const container = document.getElementById('root')!
 const root = createRoot(container)
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      suspense: true,
-    },
-  },
-})
+const queryClient = new QueryClient()
 
 root.render(
   <React.StrictMode>
