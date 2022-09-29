@@ -19,7 +19,7 @@ const getSearchPlacesApiList = {
         type: 'place',
         gl: 'kr',
         hl: 'ko',
-        data: `!4m5!3m4!1s + ${dataId} + !8m2!3d + ${latitude} + !4d + ${longitude}`,
+        data: `!4m5!3m4!1s${dataId}!8m2!3d${latitude}!4d${longitude}`,
         api_key: process.env.REACT_APP_GOOGLE_SEARCH_PLACES_KEY,
       },
     }),
