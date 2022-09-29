@@ -12,12 +12,14 @@ import Marker from './Marker'
 
 import geolocationMarkImg from 'assets/img/geolocationMark.png'
 import locationMarkImg from 'assets/img/locationMark.png'
+import searchMark from 'assets/img/searchMark.png'
 
 const KakaoMap = () => {
   const [mapPosition, setMapPosition] = useState<IPosition>({ latitude: 0, longitude: 0 })
   const [markPosition, setMarkPosition] = useState<IMarkPosition>({
     geolocation: { latitude: 0, longitude: 0 },
     location: { latitude: 0, longitude: 0 },
+    searchPosition: { latitude: 0, longitude: 0 },
   })
   const clickedResultPlaceInfo = useRecoilValue(clickedResultPlaceInfoAtom)
   const setMessage = useSetRecoilState(messageAtom)
@@ -35,6 +37,15 @@ const KakaoMap = () => {
     {
       onSuccess: (res) => {
         setMapPosition({ latitude: res.data.gps_coordinates?.latitude, longitude: res.data.gps_coordinates?.longitude })
+        setMarkPosition((prev) => {
+          return {
+            ...prev,
+            searchPosition: {
+              latitude: res.data.gps_coordinates?.latitude,
+              longitude: res.data.gps_coordinates?.longitude,
+            },
+          }
+        })
       },
       cacheTime: 1000 * 60 * 60,
       refetchOnWindowFocus: false,
@@ -90,6 +101,7 @@ const KakaoMap = () => {
     >
       <Marker markImg={geolocationMarkImg} markPosition={markPosition.geolocation} />
       <Marker markImg={locationMarkImg} markPosition={markPosition.location} />
+      <Marker markImg={searchMark} markPosition={markPosition.searchPosition} />
     </Map>
   )
 }
