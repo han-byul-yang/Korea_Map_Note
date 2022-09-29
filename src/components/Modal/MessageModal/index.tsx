@@ -1,12 +1,12 @@
 import { Dispatch } from 'react'
+import { useRecoilValue } from 'recoil'
 
-import { IMessage } from 'types/messageType'
+import { messageAtom } from 'store/atom'
 
 import { ErrorIcon, NoticeIcon, WarningIcon, XIcon } from 'assets/svgs'
 import styles from './messageModal.module.scss'
 
 interface IModalProps {
-  message: IMessage
   setOpenMessageModal: Dispatch<React.SetStateAction<boolean>>
 }
 
@@ -16,7 +16,8 @@ const modalIcon = {
   WARNING: <WarningIcon className={styles.typeIcon} />,
 }
 
-const MessageModal = ({ message, setOpenMessageModal }: IModalProps) => {
+const MessageModal = ({ setOpenMessageModal }: IModalProps) => {
+  const message = useRecoilValue(messageAtom)
   const handleModalButtonClick = () => {
     setOpenMessageModal(false)
   }
