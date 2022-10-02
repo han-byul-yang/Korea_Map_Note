@@ -1,4 +1,4 @@
-interface IGpsCoordinates {
+/* interface IGpsCoordinates {
   latitude: number
   longitude: number
 }
@@ -142,4 +142,25 @@ interface PlaceResults {
 
 export interface IPlaceResult {
   place_results: PlaceResults
+}
+*/
+
+export interface IPlacesList {
+  address: string
+  category: string
+  description: string
+  link: string
+  mapx: string
+  mapy: string
+  roadAddress: string
+  telephone: string
+  title: string
+}
+
+export interface IPlaceResult {
+  display: number
+  items: IPlacesList[]
+  lastBuildDate: string
+  start: number
+  total: number
 }
