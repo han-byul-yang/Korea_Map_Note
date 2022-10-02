@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const getSearchPlacesApiList = {
+/* const getSearchPlacesApiList = {
   searchListByQuery: (searchQuery: string) =>
     axios.get('/search.json', {
       params: {
@@ -35,4 +35,20 @@ export const getSearchPlacesApi = {
     const data = await getSearchPlacesApiList.searchPlaceById(dataId, latitude, longitude)
     return data
   },
+}
+*/
+
+export const getSearchPlaceApi = (searchQuery: string) => {
+  const data = axios.get('/v1/search/local.json', {
+    params: {
+      query: searchQuery,
+      display: 10,
+      sort: 'comment',
+    },
+    headers: {
+      'X-Naver-Client-Id': process.env.REACT_APP_NAVER_SEARCH_PLACES_ID!,
+      'X-Naver-Client-Secret': process.env.REACT_APP_NAVER_SEARCH_PLACES_KEY!,
+    },
+  })
+  return data
 }

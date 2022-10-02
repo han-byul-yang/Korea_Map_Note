@@ -2,7 +2,7 @@
   "name": "world_map_note",
   "version": "0.1.0",
   "private": true,
-  "proxy": "https://serpapi.com",
+  "proxy": "https://openapi.naver.com",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
