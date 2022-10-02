@@ -1,53 +1,53 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useSetRecoilState } from 'recoil'
 
-import { getSearchPlacesApi } from 'services/getSearchPlacesApi'
+import { getSearchPlaceApi } from 'services/getSearchPlacesApi'
 import { dropDownClickedPlaceAtom } from 'store/atom'
-import { ILocalResult } from 'types/searchPlacesType'
+import { IResultPlace } from 'types/searchPlacesType'
 
 interface IDropDownProps {
   searchInput: string
 }
 
 const DropDown = ({ searchInput }: IDropDownProps) => {
+  const [showDropDown, setShowDropDown] = useState(true)
   const setDropDownClickedPlace = useSetRecoilState(dropDownClickedPlaceAtom)
-  const { isFetching, data } = useQuery(
-    ['getSearchPlaces', searchInput],
-    () => getSearchPlacesApi.searchListByQuery(searchInput),
-    {
-      onSuccess: (res) => {
-        console.log(res.data)
-      },
-      cacheTime: 1000 * 60 * 60,
-      refetchOnWindowFocus: false,
-      onError: (e) => console.log(e),
-    }
-  )
+  const { isFetching, data } = useQuery(['getSearchPlaces', searchInput], () => getSearchPlaceApi(searchInput), {
+    onSuccess: (res) => {
+      console.log(res.data)
+    },
+    cacheTime: 1000 * 60 * 60,
+    refetchOnWindowFocus: false,
+    onError: (e) => console.log(e),
+  })
 
   if (isFetching) {
     return <div>loading...</div>
   }
 
-  const handleResultPlaceClick = (resultPlaces: ILocalResult) => {
+  const handleResultPlaceClick = (resultPlace: IResultPlace) => {
+    console.log(resultPlace)
     setDropDownClickedPlace({
-      id: resultPlaces.data_id,
-      latitude: resultPlaces.gps_coordinates.latitude,
-      longitude: resultPlaces.gps_coordinates.longitude,
+      latitude: Number(resultPlace.mapx),
+      longitude: Number(resultPlace.mapy),
     })
+    setShowDropDown(false)
   }
 
   return (
     <ul>
-      {data?.data.local_results?.map((resultPlaces: ILocalResult) => {
-        return (
-          <li key={resultPlaces.data_id}>
-            <button type='button' onClick={() => handleResultPlaceClick(resultPlaces)}>
-              {resultPlaces.title}
-            </button>
-          </li>
-        )
-      })}
+      {showDropDown &&
+        data?.data.items.map((resultPlace: IResultPlace, i: number) => {
+          const placeKey = `place-${i}`
+          return (
+            <li key={placeKey}>
+              <button type='button' onClick={() => handleResultPlaceClick(resultPlace)}>
+                {resultPlace.title}
+              </button>
+            </li>
+          )
+        })}
     </ul>
   )
 }
