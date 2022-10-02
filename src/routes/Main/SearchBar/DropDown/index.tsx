@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useSetRecoilState } from 'recoil'
 
-import { getSearchPlaceApi } from 'services/getSearchPlacesApi'
+import { getSearchPlaceApi } from 'services/api/getSearchPlacesApi'
 import { dropDownClickedPlaceAtom } from 'store/atom'
 import { IResultPlace } from 'types/searchPlacesType'
 

@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Map } from 'react-kakao-maps-sdk'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 
-import { getSearchPlacesApi } from 'services/getSearchPlacesApi'
+import { getSearchPlaceApi } from 'services/api/getSearchPlacesApi'
 import { dropDownClickedPlaceAtom, isOpenAddNoteFormAtom, isOpenMessageModalAtom, messageAtom } from 'store/atom'
 import { IGeolocationPosition, IGeolocationError } from 'types/geolocationType'
 import { IMarkPosition, IPosition } from 'types/markPositionType'
@@ -27,7 +27,7 @@ const KakaoMap = () => {
   const [openAddNoteForm, setOpenAddNoteForm] = useRecoilState(isOpenAddNoteFormAtom)
   const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
 
-  const { isFetching, data } = useQuery(
+  /* const { isFetching, data } = useQuery(
     ['getSearchPlace', [dropDownClickedPlace.id, dropDownClickedPlace.latitude, dropDownClickedPlace.longitude]],
     () =>
       getSearchPlacesApi.searchPlaceById(
@@ -38,7 +38,10 @@ const KakaoMap = () => {
     {
       onSuccess: (res) => {
         console.log(res.data)
-        setMapPosition({ latitude: dropDownClickedPlace.latitude, longitude: dropDownClickedPlace.longitude })
+        setMapPosition({
+          latitude: dropDownClickedPlace.latitude, // res.data?.gps_coordinates?.latitude가 안 되는 이유
+          longitude: dropDownClickedPlace.longitude, // res.data?.gps_coordinates?.longitude 안 되는 이유
+        })
         setMarkPosition((prev) => {
           return {
             ...prev,
@@ -55,7 +58,7 @@ const KakaoMap = () => {
       refetchOnWindowFocus: false,
       onError: (e) => console.log(e),
     }
-  )
+  ) */
 
   const retrieveSuccess = useCallback((position: IGeolocationPosition) => {
     setMapPosition({ latitude: position.coords.latitude!, longitude: position.coords.longitude! })
