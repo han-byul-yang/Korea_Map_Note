@@ -145,7 +145,7 @@ export interface IPlaceResult {
 }
 */
 
-export interface IPlacesList {
+export interface IResultPlace {
   address: string
   category: string
   description: string
@@ -157,7 +157,7 @@ export interface IPlacesList {
   title: string
 }
 
-export interface IPlaceResult {
+export interface ISearchResultInfo {
   display: number
   items: IPlacesList[]
   lastBuildDate: string
