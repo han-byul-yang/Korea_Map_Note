@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { Dispatch, useCallback, useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Map } from 'react-kakao-maps-sdk'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
@@ -14,7 +14,11 @@ import geolocationMarkImg from 'assets/img/geolocationMark.png'
 import locationMarkImg from 'assets/img/locationMark.png'
 import searchMarkImg from 'assets/img/searchMark.png'
 
-const KakaoMap = () => {
+interface IKakaoMapProps {
+  setMap: Dispatch<React.SetStateAction<boolean>>
+}
+
+const KakaoMap = ({ setMap }: IKakaoMapProps) => {
   const [mapPosition, setMapPosition] = useState<IPosition>({ latitude: 0, longitude: 0 })
   const [markPosition, setMarkPosition] = useState<IMarkPosition>({
     geolocation: { latitude: 0, longitude: 0 },
@@ -106,6 +110,7 @@ const KakaoMap = () => {
       }}
       level={mapLevel}
       onClick={handleMapPositionClick}
+      onCreate={() => setMap(true)}
     >
       <Marker markImg={geolocationMarkImg} markPosition={markPosition.geolocation} />
       <Marker markImg={locationMarkImg} markPosition={markPosition.location} />

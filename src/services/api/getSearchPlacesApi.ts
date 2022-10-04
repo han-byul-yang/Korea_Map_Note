@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { useEffect } from 'react'
 
 /* const getSearchPlacesApiList = {
   searchListByQuery: (searchQuery: string) =>
@@ -38,7 +39,7 @@ export const getSearchPlacesApi = {
 }
 */
 
-export const getSearchPlaceApi = (searchQuery: string) => {
+/* export const getSearchPlaceApi = (searchQuery: string) => {
   const data = axios.get('/v1/search/local.json', {
     params: {
       query: searchQuery,
@@ -51,4 +52,39 @@ export const getSearchPlaceApi = (searchQuery: string) => {
     },
   })
   return data
+}
+*/
+
+/* export const getSearchPlaceApi = (searchQuery: string) => {
+  const data = axios.get('/v2/acllo/search/keyword.json', {
+    params: {
+      query: searchQuery,
+    },
+    headers: {
+      Authorization: `KakaoAK ${process.env.REACT_APP_KAKAO_SEARCH_PLACES_KEY}`,
+    },
+  })
+  return data
+}
+*/
+export const getSearchPlaceApi = (searchQuery: string, map: boolean) => {
+  return new Promise((resolve, reject) => {
+    if (!map) return
+    const searchPlaces = new kakao.maps.services.Places()
+    searchPlaces.keywordSearch(searchQuery, (data, status, _pagination) => {
+      if (status === kakao.maps.services.Status.OK) {
+        // const bounds = new kakao.maps.LatLngBounds()
+        resolve(data)
+
+        // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+        // map.setBounds(bounds)
+      }
+      if (status === kakao.maps.services.Status.ERROR) {
+        reject(new Error('에러 발생 했습니다.'))
+      }
+      if (status === kakao.maps.services.Status.ZERO_RESULT) {
+        reject(new Error('검색 결과가 없습니다.'))
+      }
+    })
+  })
 }
