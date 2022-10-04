@@ -6,6 +6,10 @@ const modalMessage = () => {
         POSITION_UNAVAILABLE: { kind: 'error', message: '장소를 불러올 수 없습니다.' },
         NOT_SUPPOERTED: { kind: 'error', message: '해당 브라우저에서 api가 지원되지 않습니다.' },
       },
+      api: {
+        NO_NETWORK: { kind: 'error', message: '네트워크 연결을 확인해주세요' },
+        SOMETHING_WRONG: { kind: 'error', message: '데이터를 불러오는 중 오류 발생했습니다.' },
+      },
     },
     notification: {},
   }
