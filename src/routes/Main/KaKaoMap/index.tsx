@@ -1,12 +1,9 @@
 import { Dispatch, useCallback, useEffect, useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
 import { Map } from 'react-kakao-maps-sdk'
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { useRecoilState, useSetRecoilState } from 'recoil'
 
-import { getSearchPlacesApi } from 'services/api/getSearchPlacesApi'
-import { dropDownClickedPlaceAtom, isOpenAddNoteFormAtom, isOpenMessageModalAtom, messageAtom } from 'store/atom'
+import { isOpenMessageModalAtom, mapPositionAtom, markPositionAtom, messageAtom } from 'store/atom'
 import { IGeolocationPosition, IGeolocationError } from 'types/geolocationType'
-import { IMarkPosition, IPosition } from 'types/markPositionType'
 import modalMessage from 'utils/modalMessage'
 import Marker from './Marker'
 
@@ -16,61 +13,27 @@ import searchMarkImg from 'assets/img/searchMark.png'
 
 interface IKakaoMapProps {
   setMap: Dispatch<React.SetStateAction<boolean>>
+  setOpenAddNoteForm: Dispatch<React.SetStateAction<boolean>>
+  openAddNoteForm: boolean
 }
 
-const KakaoMap = ({ setMap }: IKakaoMapProps) => {
-  const [mapPosition, setMapPosition] = useState<IPosition>({ latitude: 0, longitude: 0 })
-  const [markPosition, setMarkPosition] = useState<IMarkPosition>({
-    geolocation: { latitude: 0, longitude: 0 },
-    location: { latitude: 0, longitude: 0 },
-    searchPosition: { latitude: 0, longitude: 0 },
-  })
+const KakaoMap = ({ setMap, setOpenAddNoteForm, openAddNoteForm }: IKakaoMapProps) => {
+  const [mapPosition, setMapPosition] = useRecoilState(mapPositionAtom)
+  const [markPosition, setMarkPosition] = useRecoilState(markPositionAtom)
   const [mapLevel, setMapLevel] = useState(0)
-  const dropDownClickedPlace = useRecoilValue(dropDownClickedPlaceAtom)
   const setMessage = useSetRecoilState(messageAtom)
-  const [openAddNoteForm, setOpenAddNoteForm] = useRecoilState(isOpenAddNoteFormAtom)
   const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
 
-  /* const { isFetching, data } = useQuery(
-    ['getSearchPlace', [dropDownClickedPlace.id, dropDownClickedPlace.latitude, dropDownClickedPlace.longitude]],
-    () =>
-      getSearchPlacesApi.searchPlaceById(
-        dropDownClickedPlace.id,
-        dropDownClickedPlace.latitude,
-        dropDownClickedPlace.longitude
-      ),
-    {
-      onSuccess: (res) => {
-        console.log(res.data)
-        setMapPosition({
-          latitude: dropDownClickedPlace.latitude, // res.data?.gps_coordinates?.latitude가 안 되는 이유
-          longitude: dropDownClickedPlace.longitude, // res.data?.gps_coordinates?.longitude 안 되는 이유
-        })
-        setMarkPosition((prev) => {
-          return {
-            ...prev,
-            searchPosition: {
-              latitude: dropDownClickedPlace.latitude,
-              longitude: dropDownClickedPlace.longitude,
-            },
-          }
-        })
-        setMapLevel(4)
-      },
-      staleTime: 1000 * 60 * 60,
-      cacheTime: 1000 * 60 * 60,
-      refetchOnWindowFocus: false,
-      onError: (e) => console.log(e),
-    }
-  ) */
-
-  const retrieveSuccess = useCallback((position: IGeolocationPosition) => {
-    setMapPosition({ latitude: position.coords.latitude!, longitude: position.coords.longitude! })
-    setMarkPosition((prev) => {
-      return { ...prev, geolocation: { latitude: position.coords.latitude!, longitude: position.coords.longitude! } }
-    })
-    setMapLevel(12)
-  }, [])
+  const retrieveSuccess = useCallback(
+    (position: IGeolocationPosition) => {
+      setMapPosition({ latitude: position.coords.latitude!, longitude: position.coords.longitude! })
+      setMarkPosition((prev) => {
+        return { ...prev, geolocation: { latitude: position.coords.latitude!, longitude: position.coords.longitude! } }
+      })
+      setMapLevel(12)
+    },
+    [setMapPosition, setMarkPosition]
+  )
 
   const retrieveError = useCallback(
     (error: IGeolocationError) => {
@@ -112,9 +75,17 @@ const KakaoMap = ({ setMap }: IKakaoMapProps) => {
       onClick={handleMapPositionClick}
       onCreate={() => setMap(true)}
     >
-      <Marker markImg={geolocationMarkImg} markPosition={markPosition.geolocation} />
-      <Marker markImg={locationMarkImg} markPosition={markPosition.location} />
-      <Marker markImg={searchMarkImg} markPosition={markPosition.searchPosition} />
+      <Marker
+        markImg={geolocationMarkImg}
+        markPosition={markPosition.geolocation}
+        setOpenAddNoteForm={setOpenAddNoteForm}
+      />
+      <Marker markImg={locationMarkImg} markPosition={markPosition.location} setOpenAddNoteForm={setOpenAddNoteForm} />
+      <Marker
+        markImg={searchMarkImg}
+        markPosition={markPosition.searchPosition}
+        setOpenAddNoteForm={setOpenAddNoteForm}
+      />
     </Map>
   )
 }
@@ -122,3 +93,4 @@ const KakaoMap = ({ setMap }: IKakaoMapProps) => {
 export default KakaoMap
 
 // location 이름 직관적으로 바꾸기 -> clickedLocation, clickedPosition
+// setOpenAddNoteForm, openAddNoteForm context api 로 핸들

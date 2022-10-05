@@ -4,7 +4,7 @@ import { useSetRecoilState } from 'recoil'
 
 import modalMessage from 'utils/modalMessage'
 import { getSearchPlacesApi } from 'services/api/getSearchPlacesApi'
-import { dropDownClickedPlaceAtom, isOpenMessageModalAtom, messageAtom } from 'store/atom'
+import { isOpenMessageModalAtom, mapPositionAtom, markPositionAtom, messageAtom } from 'store/atom'
 import { ISearchResultInfo } from 'types/searchPlacesType'
 
 import { SearchIcon } from 'assets/svgs'
@@ -19,7 +19,8 @@ interface IDropDownProps {
 const DropDown = ({ searchInput, setSearchInput, map }: IDropDownProps) => {
   const [showDropDown, setShowDropDown] = useState(true)
   const [resultTempData, setResultTempData] = useState<ISearchResultInfo[]>([])
-  const setDropDownClickedPlace = useSetRecoilState(dropDownClickedPlaceAtom)
+  const setMarkPosition = useSetRecoilState(markPositionAtom)
+  const setMapPosition = useSetRecoilState(mapPositionAtom)
   const setMessage = useSetRecoilState(messageAtom)
   const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
 
@@ -43,9 +44,9 @@ const DropDown = ({ searchInput, setSearchInput, map }: IDropDownProps) => {
 
   const handleResultPlaceClick = (resultPlace: ISearchResultInfo) => {
     setSearchInput(resultPlace.place_name)
-    setDropDownClickedPlace({
-      latitude: resultPlace.x,
-      longitude: resultPlace.y,
+    setMapPosition({ latitude: Number(resultPlace.x), longitude: Number(resultPlace.y) })
+    setMarkPosition((prev) => {
+      return { ...prev, searchPosition: { latitude: Number(resultPlace.x), longitude: Number(resultPlace.y) } }
     })
     setShowDropDown(false)
   }

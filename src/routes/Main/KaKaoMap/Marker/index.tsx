@@ -1,20 +1,20 @@
-import { useState } from 'react'
+import { Dispatch, useState } from 'react'
 import { MapMarker } from 'react-kakao-maps-sdk'
 import { useSetRecoilState } from 'recoil'
 
 import InfoWindow from 'routes/Main/InfoWindow'
-import { clickedMarkPositionAtom, isOpenAddNoteFormAtom } from 'store/atom'
+import { clickedMarkPositionAtom } from 'store/atom'
 import { IPosition } from 'types/markPositionType'
 
 interface IMarker {
   markImg: any
   markPosition: IPosition
+  setOpenAddNoteForm: Dispatch<React.SetStateAction<boolean>>
 }
 
-const Marker = ({ markImg, markPosition }: IMarker) => {
+const Marker = ({ markImg, markPosition, setOpenAddNoteForm }: IMarker) => {
   const [openInfoWindow, setOpenInfoWindow] = useState(false)
   const setClickedMarkPosition = useSetRecoilState(clickedMarkPositionAtom)
-  const setOpenAddNoteForm = useSetRecoilState(isOpenAddNoteFormAtom)
 
   const handleMapMarkerClick = () => {
     setOpenInfoWindow((prev) => !prev)

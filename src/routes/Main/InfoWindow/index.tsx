@@ -6,7 +6,7 @@ import { NotebookIcon, WriteIcon } from 'assets/svgs'
 import styles from './infoWindow.module.scss'
 
 interface IInfoWindowProps {
-  setOpenInfoWindow: Dispatch<React.SetStateAction<boolean>> // type 재설정
+  setOpenInfoWindow: Dispatch<React.SetStateAction<boolean>>
   setOpenAddNoteForm: Dispatch<React.SetStateAction<boolean>>
 }
 
