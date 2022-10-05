@@ -15,10 +15,10 @@ interface IDropDownProps {
   setSearchInput: Dispatch<React.SetStateAction<string>>
   showDropDown: boolean
   setShowDropDown: Dispatch<React.SetStateAction<boolean>>
-  map: boolean
+  isMapLoaded: boolean
 }
 
-const DropDown = ({ searchInput, setSearchInput, showDropDown, setShowDropDown, map }: IDropDownProps) => {
+const DropDown = ({ searchInput, setSearchInput, showDropDown, setShowDropDown, isMapLoaded }: IDropDownProps) => {
   const [resultTempData, setResultTempData] = useState<ISearchResultInfo[]>([])
   const setMarkPosition = useSetRecoilState(markPositionAtom)
   const setMapPosition = useSetRecoilState(mapPositionAtom)
@@ -26,19 +26,23 @@ const DropDown = ({ searchInput, setSearchInput, showDropDown, setShowDropDown, 
   const setMessage = useSetRecoilState(messageAtom)
   const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
 
-  const { isLoading, data } = useQuery(['getSearchPlaces', searchInput], () => getSearchPlacesApi(searchInput, map), {
-    onSuccess: (res: ISearchResultInfo[]) => {
-      console.log(res)
-      setResultTempData(res)
-    },
-    cacheTime: 1000 * 60 * 60,
-    enabled: !!searchInput, // dropdown이 mount 될 때 query도 생성되니까 없어도 됨
-    keepPreviousData: true,
-    onError: () => {
-      setOpenMessageModal(true)
-      setMessage(modalMessage().error.api.SOMETHING_WRONG)
-    },
-  })
+  const { isLoading, data } = useQuery(
+    ['getSearchPlaces', searchInput],
+    () => getSearchPlacesApi(searchInput, isMapLoaded),
+    {
+      onSuccess: (res: ISearchResultInfo[]) => {
+        console.log(res)
+        setResultTempData(res)
+      },
+      cacheTime: 1000 * 60 * 60,
+      enabled: !!searchInput, // dropdown이 mount 될 때 query도 생성되니까 없어도 됨
+      keepPreviousData: true,
+      onError: () => {
+        setOpenMessageModal(true)
+        setMessage(modalMessage().error.api.SOMETHING_WRONG)
+      },
+    }
+  )
 
   if (isLoading) {
     return <div>loading...</div>

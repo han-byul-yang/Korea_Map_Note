@@ -19,10 +19,11 @@ import locationMarkImg from 'assets/img/locationMark.png'
 import searchMarkImg from 'assets/img/searchMark.png'
 
 interface IKakaoMapProps {
-  setMap: Dispatch<React.SetStateAction<boolean>>
+  setIsMapLoaded: Dispatch<React.SetStateAction<boolean>>
+  isMapLoaded: boolean
 }
 
-const KakaoMap = ({ setMap }: IKakaoMapProps) => {
+const KakaoMap = ({ setIsMapLoaded, isMapLoaded }: IKakaoMapProps) => {
   const [mapPosition, setMapPosition] = useRecoilState(mapPositionAtom)
   const [markPosition, setMarkPosition] = useRecoilState(markPositionAtom)
   const [openAddNoteForm, setOpenAddNoteForm] = useRecoilState(isOpenAddNoteFormAtom)
@@ -79,19 +80,11 @@ const KakaoMap = ({ setMap }: IKakaoMapProps) => {
       }}
       level={mapLevel}
       onClick={handleMapPositionClick}
-      onCreate={() => setMap(true)}
+      onCreate={() => setIsMapLoaded(true)}
     >
-      <Marker
-        markImg={geolocationMarkImg}
-        markPosition={markPosition.geolocation}
-        setOpenAddNoteForm={setOpenAddNoteForm}
-      />
-      <Marker markImg={locationMarkImg} markPosition={markPosition.location} setOpenAddNoteForm={setOpenAddNoteForm} />
-      <Marker
-        markImg={searchMarkImg}
-        markPosition={markPosition.searchPosition}
-        setOpenAddNoteForm={setOpenAddNoteForm}
-      />
+      <Marker markImg={geolocationMarkImg} markPosition={markPosition.geolocation} isMapLoaded={isMapLoaded} />
+      <Marker markImg={locationMarkImg} markPosition={markPosition.location} isMapLoaded={isMapLoaded} />
+      <Marker markImg={searchMarkImg} markPosition={markPosition.searchPosition} isMapLoaded={isMapLoaded} />
     </Map>
   )
 }

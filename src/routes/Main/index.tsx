@@ -9,15 +9,15 @@ import SearchBar from './SearchBar'
 import KakaoMap from './KaKaoMap'
 
 const Main = () => {
-  const [map, setMap] = useState(false)
+  const [isMapLoaded, setIsMapLoaded] = useState(false)
   const openMessageModal = useRecoilValue(isOpenMessageModalAtom)
   const [openAddNoteForm, setOpenAddNoteForm] = useRecoilState(isOpenAddNoteFormAtom)
 
   return (
     <>
-      <SearchBar map={map} />
+      <SearchBar isMapLoaded={isMapLoaded} />
       <AddNoteForm />
-      <KakaoMap setMap={setMap} />
+      <KakaoMap setIsMapLoaded={setIsMapLoaded} isMapLoaded={isMapLoaded} />
       {openMessageModal && (
         <ModalPortal>
           <MessageModal />

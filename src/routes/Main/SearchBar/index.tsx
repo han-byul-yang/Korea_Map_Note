@@ -6,10 +6,10 @@ import { SearchIcon } from 'assets/svgs'
 import styles from './searchBar.module.scss'
 
 interface ISearchBarProps {
-  map: boolean
+  isMapLoaded: boolean
 }
 
-const SearchBar = ({ map }: ISearchBarProps) => {
+const SearchBar = ({ isMapLoaded }: ISearchBarProps) => {
   const [searchInput, setSearchInput] = useState('')
   const [showDropDown, setShowDropDown] = useState(true)
 
@@ -29,7 +29,7 @@ const SearchBar = ({ map }: ISearchBarProps) => {
           setSearchInput={setSearchInput}
           showDropDown={showDropDown}
           setShowDropDown={setShowDropDown}
-          map={map}
+          isMapLoaded={isMapLoaded}
         />
       )}
     </form>

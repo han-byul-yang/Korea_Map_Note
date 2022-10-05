@@ -14,6 +14,7 @@ const modalIcon = {
 const MessageModal = () => {
   const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
   const message = useRecoilValue(messageAtom)
+
   const handleModalButtonClick = () => {
     setOpenMessageModal(false)
   }
