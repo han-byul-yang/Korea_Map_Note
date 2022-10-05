@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Map } from 'react-kakao-maps-sdk'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 
-import { getSearchPlaceApi } from 'services/api/getSearchPlacesApi'
+import { getSearchPlacesApi } from 'services/api/getSearchPlacesApi'
 import { dropDownClickedPlaceAtom, isOpenAddNoteFormAtom, isOpenMessageModalAtom, messageAtom } from 'store/atom'
 import { IGeolocationPosition, IGeolocationError } from 'types/geolocationType'
 import { IMarkPosition, IPosition } from 'types/markPositionType'
