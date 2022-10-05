@@ -1,23 +1,18 @@
 import { Dispatch, FormEvent, MouseEventHandler, useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import { addDoc, collection, DocumentData } from 'firebase/firestore'
 
 import useResize from 'hooks/useResize'
 import presentDate from 'utils/presentDate'
 import { firebaseDB } from 'utils/firebaseSetting'
-import { clickedMarkPositionAtom, userIdAtom } from 'store/atom'
+import { clickedMarkPositionAtom, isOpenAddNoteFormAtom, userIdAtom } from 'store/atom'
 import Picture from './Picture'
 import HashTag from './HashTag'
 
 import { LeftArrowIcon, RightArrowIcon, XIcon } from 'assets/svgs'
 import styles from './addNoteForm.module.scss'
 
-interface IAddNoteProps {
-  setOpenAddNoteForm: Dispatch<React.SetStateAction<boolean>>
-  openAddNoteForm: boolean
-}
-
-const AddNoteForm = ({ setOpenAddNoteForm, openAddNoteForm }: IAddNoteProps) => {
+const AddNoteForm = () => {
   const [memo, setMemo] = useState<IMemo>({
     siteName: '',
     travelDate: '',
@@ -26,6 +21,7 @@ const AddNoteForm = ({ setOpenAddNoteForm, openAddNoteForm }: IAddNoteProps) => 
     hashTag: [''],
   }) // type 설정
   const userId = useRecoilValue(userIdAtom)
+  const [openAddNoteForm, setOpenAddNoteForm] = useRecoilState(isOpenAddNoteFormAtom)
   const clickedMarkPosition = useRecoilValue(clickedMarkPositionAtom)
   const { size, isSize: isMobile } = useResize()
 

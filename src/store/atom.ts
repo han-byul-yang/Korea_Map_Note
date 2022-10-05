@@ -39,6 +39,11 @@ export const markPositionAtom = atom<IMarkPosition>({
   },
 })
 
+export const isOpenAddNoteFormAtom = atom({
+  key: 'isOpenAddNoteFormAtom',
+  default: false,
+}) // context api 사용 or props로 넘겨주기
+
 export const isOpenMessageModalAtom = atom({
   key: 'isOpenMessageModal',
   default: false,

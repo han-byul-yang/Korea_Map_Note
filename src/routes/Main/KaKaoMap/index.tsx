@@ -2,7 +2,13 @@ import { Dispatch, useCallback, useEffect, useState } from 'react'
 import { Map } from 'react-kakao-maps-sdk'
 import { useRecoilState, useSetRecoilState } from 'recoil'
 
-import { isOpenMessageModalAtom, mapPositionAtom, markPositionAtom, messageAtom } from 'store/atom'
+import {
+  isOpenAddNoteFormAtom,
+  isOpenMessageModalAtom,
+  mapPositionAtom,
+  markPositionAtom,
+  messageAtom,
+} from 'store/atom'
 import { IGeolocationPosition, IGeolocationError } from 'types/geolocationType'
 import modalMessage from 'utils/modalMessage'
 import Marker from './Marker'
@@ -13,13 +19,12 @@ import searchMarkImg from 'assets/img/searchMark.png'
 
 interface IKakaoMapProps {
   setMap: Dispatch<React.SetStateAction<boolean>>
-  setOpenAddNoteForm: Dispatch<React.SetStateAction<boolean>>
-  openAddNoteForm: boolean
 }
 
-const KakaoMap = ({ setMap, setOpenAddNoteForm, openAddNoteForm }: IKakaoMapProps) => {
+const KakaoMap = ({ setMap }: IKakaoMapProps) => {
   const [mapPosition, setMapPosition] = useRecoilState(mapPositionAtom)
   const [markPosition, setMarkPosition] = useRecoilState(markPositionAtom)
+  const [openAddNoteForm, setOpenAddNoteForm] = useRecoilState(isOpenAddNoteFormAtom)
   const [mapLevel, setMapLevel] = useState(0)
   const setMessage = useSetRecoilState(messageAtom)
   const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
