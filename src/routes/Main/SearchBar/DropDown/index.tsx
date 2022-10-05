@@ -7,6 +7,9 @@ import { getSearchPlacesApi } from 'services/api/getSearchPlacesApi'
 import { dropDownClickedPlaceAtom, isOpenMessageModalAtom, messageAtom } from 'store/atom'
 import { ISearchResultInfo } from 'types/searchPlacesType'
 
+import { SearchIcon } from 'assets/svgs'
+import styles from './dropDown.module.scss'
+
 interface IDropDownProps {
   searchInput: string
   map: boolean
@@ -46,14 +49,15 @@ const DropDown = ({ searchInput, map }: IDropDownProps) => {
   }
 
   return (
-    <ul>
+    <ul className={styles.dropDownList}>
       {showDropDown &&
-        resultTempData?.map((resultPlace, i) => {
-          const placeKey = `place-${i}`
+        resultTempData?.map((resultPlace) => {
           return (
-            <li key={placeKey}>
+            <li key={resultPlace?.id} className={styles.dropDownItem}>
+              <SearchIcon className={styles.searchIcon} />
               <button type='button' onClick={() => handleResultPlaceClick(resultPlace)}>
-                {resultPlace?.place_name}
+                <p className={styles.placeName}>{resultPlace?.place_name}</p>
+                <p className={styles.addressName}>{resultPlace?.address_name}</p>
               </button>
             </li>
           )

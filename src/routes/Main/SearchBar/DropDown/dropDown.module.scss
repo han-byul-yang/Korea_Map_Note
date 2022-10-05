@@ -1,0 +1,30 @@
+@use '../../../../styles/constants/colors';
+
+.dropDownList {
+  .dropDownItem {
+    display: flex;
+    padding: 3px 10px;
+    transition: 0.1s;
+
+    &:hover {
+      cursor: pointer;
+      background: colors.$GRAY_100;
+    }
+
+    .searchIcon {
+      width: 14px;
+      height: 14px;
+      margin-right: 10px;
+    }
+
+    .placeName {
+      font-size: 12px;
+      text-align: start;
+    }
+
+    .addressName {
+      font-size: 10px;
+      text-align: start;
+    }
+  }
+}
