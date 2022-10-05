@@ -5,6 +5,7 @@ import { useRecoilState, useSetRecoilState } from 'recoil'
 import {
   isOpenAddNoteFormAtom,
   isOpenMessageModalAtom,
+  mapLevelAtom,
   mapPositionAtom,
   markPositionAtom,
   messageAtom,
@@ -25,7 +26,7 @@ const KakaoMap = ({ setMap }: IKakaoMapProps) => {
   const [mapPosition, setMapPosition] = useRecoilState(mapPositionAtom)
   const [markPosition, setMarkPosition] = useRecoilState(markPositionAtom)
   const [openAddNoteForm, setOpenAddNoteForm] = useRecoilState(isOpenAddNoteFormAtom)
-  const [mapLevel, setMapLevel] = useState(0)
+  const [mapLevel, setMapLevel] = useRecoilState(mapLevelAtom)
   const setMessage = useSetRecoilState(messageAtom)
   const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
 
@@ -37,7 +38,7 @@ const KakaoMap = ({ setMap }: IKakaoMapProps) => {
       })
       setMapLevel(12)
     },
-    [setMapPosition, setMarkPosition]
+    [setMapLevel, setMapPosition, setMarkPosition]
   )
 
   const retrieveError = useCallback(

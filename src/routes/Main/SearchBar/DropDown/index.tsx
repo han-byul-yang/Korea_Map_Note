@@ -4,7 +4,7 @@ import { useSetRecoilState } from 'recoil'
 
 import modalMessage from 'utils/modalMessage'
 import { getSearchPlacesApi } from 'services/api/getSearchPlacesApi'
-import { isOpenMessageModalAtom, mapPositionAtom, markPositionAtom, messageAtom } from 'store/atom'
+import { isOpenMessageModalAtom, mapLevelAtom, mapPositionAtom, markPositionAtom, messageAtom } from 'store/atom'
 import { ISearchResultInfo } from 'types/searchPlacesType'
 
 import { SearchIcon } from 'assets/svgs'
@@ -13,14 +13,16 @@ import styles from './dropDown.module.scss'
 interface IDropDownProps {
   searchInput: string
   setSearchInput: Dispatch<React.SetStateAction<string>>
+  showDropDown: boolean
+  setShowDropDown: Dispatch<React.SetStateAction<boolean>>
   map: boolean
 }
 
-const DropDown = ({ searchInput, setSearchInput, map }: IDropDownProps) => {
-  const [showDropDown, setShowDropDown] = useState(true)
+const DropDown = ({ searchInput, setSearchInput, showDropDown, setShowDropDown, map }: IDropDownProps) => {
   const [resultTempData, setResultTempData] = useState<ISearchResultInfo[]>([])
   const setMarkPosition = useSetRecoilState(markPositionAtom)
   const setMapPosition = useSetRecoilState(mapPositionAtom)
+  const setMapLevel = useSetRecoilState(mapLevelAtom)
   const setMessage = useSetRecoilState(messageAtom)
   const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
 
@@ -44,10 +46,11 @@ const DropDown = ({ searchInput, setSearchInput, map }: IDropDownProps) => {
 
   const handleResultPlaceClick = (resultPlace: ISearchResultInfo) => {
     setSearchInput(resultPlace.place_name)
-    setMapPosition({ latitude: Number(resultPlace.x), longitude: Number(resultPlace.y) })
+    setMapPosition({ latitude: Number(resultPlace.y), longitude: Number(resultPlace.x) })
     setMarkPosition((prev) => {
-      return { ...prev, searchPosition: { latitude: Number(resultPlace.x), longitude: Number(resultPlace.y) } }
+      return { ...prev, searchPosition: { latitude: Number(resultPlace.y), longitude: Number(resultPlace.x) } }
     })
+    setMapLevel(4)
     setShowDropDown(false)
   }
 

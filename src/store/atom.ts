@@ -12,14 +12,6 @@ export const clickedMarkPositionAtom = atom({
   default: { latitude: 0, longitude: 0 },
 })
 
-export const dropDownClickedPlaceAtom = atom({
-  key: 'dropDownClickedPlace',
-  default: {
-    latitude: '',
-    longitude: '',
-  },
-})
-
 export const messageAtom = atom({
   key: 'message',
   default: { kind: '', message: '' },
@@ -48,3 +40,8 @@ export const isOpenMessageModalAtom = atom({
   key: 'isOpenMessageModal',
   default: false,
 }) // context api 사용 or props로 넘겨주기
+
+export const mapLevelAtom = atom({
+  key: 'mapLevel',
+  default: 0,
+})
