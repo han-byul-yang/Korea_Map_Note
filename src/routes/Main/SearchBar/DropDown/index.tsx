@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { Dispatch, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useSetRecoilState } from 'recoil'
 
@@ -12,10 +12,11 @@ import styles from './dropDown.module.scss'
 
 interface IDropDownProps {
   searchInput: string
+  setSearchInput: Dispatch<React.SetStateAction<string>>
   map: boolean
 }
 
-const DropDown = ({ searchInput, map }: IDropDownProps) => {
+const DropDown = ({ searchInput, setSearchInput, map }: IDropDownProps) => {
   const [showDropDown, setShowDropDown] = useState(true)
   const [resultTempData, setResultTempData] = useState<ISearchResultInfo[]>([])
   const setDropDownClickedPlace = useSetRecoilState(dropDownClickedPlaceAtom)
@@ -41,6 +42,7 @@ const DropDown = ({ searchInput, map }: IDropDownProps) => {
   }
 
   const handleResultPlaceClick = (resultPlace: ISearchResultInfo) => {
+    setSearchInput(resultPlace.place_name)
     setDropDownClickedPlace({
       latitude: resultPlace.x,
       longitude: resultPlace.y,

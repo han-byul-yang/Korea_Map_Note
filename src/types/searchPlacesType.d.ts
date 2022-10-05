@@ -6,7 +6,7 @@ export interface ISearchResultInfo {
   distance: string | null
   id: string
   phone: string | null
-  place_name: string | null
+  place_name: string
   place_url: string | null
   road_address_name: string | null
   x: string

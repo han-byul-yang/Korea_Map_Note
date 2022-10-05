@@ -21,7 +21,7 @@ const SearchBar = ({ map }: ISearchBarProps) => {
     <form className={styles.searchBarForm}>
       <SearchIcon className={styles.searchIcon} />
       <input type='search' value={searchInput} onChange={handleSearchInputChange} />
-      {searchInput.length !== 0 && <DropDown searchInput={searchInput} map={map} />}
+      {searchInput.length !== 0 && <DropDown searchInput={searchInput} setSearchInput={setSearchInput} map={map} />}
     </form>
   )
 }
