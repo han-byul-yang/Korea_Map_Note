@@ -2,35 +2,45 @@ import React, { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useSetRecoilState } from 'recoil'
 
-import { getSearchPlaceApi } from 'services/api/getSearchPlacesApi'
-import { dropDownClickedPlaceAtom } from 'store/atom'
-import { IResultPlace } from 'types/searchPlacesType'
+import modalMessage from 'utils/modalMessage'
+import { getSearchPlacesApi } from 'services/api/getSearchPlacesApi'
+import { dropDownClickedPlaceAtom, isOpenMessageModalAtom, messageAtom } from 'store/atom'
+import { ISearchResultInfo } from 'types/searchPlacesType'
 
 interface IDropDownProps {
   searchInput: string
+  map: boolean
 }
 
-const DropDown = ({ searchInput }: IDropDownProps) => {
+const DropDown = ({ searchInput, map }: IDropDownProps) => {
   const [showDropDown, setShowDropDown] = useState(true)
+  const [resultTempData, setResultTempData] = useState<ISearchResultInfo[]>([])
   const setDropDownClickedPlace = useSetRecoilState(dropDownClickedPlaceAtom)
-  const { isFetching, data } = useQuery(['getSearchPlaces', searchInput], () => getSearchPlaceApi(searchInput), {
-    onSuccess: (res) => {
-      console.log(res.data)
+  const setMessage = useSetRecoilState(messageAtom)
+  const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
+
+  const { isLoading, data } = useQuery(['getSearchPlaces', searchInput], () => getSearchPlacesApi(searchInput, map), {
+    onSuccess: (res: ISearchResultInfo[]) => {
+      console.log(res)
+      setResultTempData(res)
     },
     cacheTime: 1000 * 60 * 60,
-    refetchOnWindowFocus: false,
-    onError: (e) => console.log(e),
+    enabled: !!searchInput, // dropdown이 mount 될 때 query도 생성되니까 없어도 됨
+    keepPreviousData: true,
+    onError: () => {
+      setOpenMessageModal(true)
+      setMessage(modalMessage().error.api.SOMETHING_WRONG)
+    },
   })
 
-  if (isFetching) {
+  if (isLoading) {
     return <div>loading...</div>
   }
 
-  const handleResultPlaceClick = (resultPlace: IResultPlace) => {
-    console.log(resultPlace)
+  const handleResultPlaceClick = (resultPlace: ISearchResultInfo) => {
     setDropDownClickedPlace({
-      latitude: Number(resultPlace.mapx),
-      longitude: Number(resultPlace.mapy),
+      latitude: resultPlace.x,
+      longitude: resultPlace.y,
     })
     setShowDropDown(false)
   }
@@ -38,12 +48,12 @@ const DropDown = ({ searchInput }: IDropDownProps) => {
   return (
     <ul>
       {showDropDown &&
-        data?.data.items.map((resultPlace: IResultPlace, i: number) => {
+        resultTempData?.map((resultPlace, i) => {
           const placeKey = `place-${i}`
           return (
             <li key={placeKey}>
               <button type='button' onClick={() => handleResultPlaceClick(resultPlace)}>
-                {resultPlace.title}
+                {resultPlace?.place_name}
               </button>
             </li>
           )
