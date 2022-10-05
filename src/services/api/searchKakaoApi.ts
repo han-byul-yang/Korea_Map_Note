@@ -1,7 +1,7 @@
 import { ISearchResultInfo } from 'types/searchPlacesType'
 import { IPosition } from 'types/markPositionType'
 
-export const getSearchPlacesApi = (searchQuery: string, map: boolean) => {
+export const getPlacesByKeywordApi = (searchQuery: string, map: boolean) => {
   return new Promise((resolve, reject) => {
     if (!map) return
 

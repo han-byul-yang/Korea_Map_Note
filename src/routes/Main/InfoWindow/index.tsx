@@ -27,7 +27,7 @@ const InfoWindow = ({ setOpenInfoWindow, setOpenAddNoteForm, isMapLoaded }: IInf
   }
   const { clickOutsideEvent } = useClickOutside(containerRef, clickOutsideTarget)
   const { isLoading, data } = useQuery(
-    ['getAddressByPosition', clickedMarkPosition],
+    ['getAddressByPosition', clickedMarkPosition.latitude, clickedMarkPosition.longitude],
     () => getAddressByPositionApi(clickedMarkPosition, isMapLoaded),
     {
       onSuccess: (res) => {
@@ -35,7 +35,6 @@ const InfoWindow = ({ setOpenInfoWindow, setOpenAddNoteForm, isMapLoaded }: IInf
       },
       cacheTime: 1000 * 60 * 60,
       enabled: !!clickedMarkPosition.latitude,
-      keepPreviousData: true,
       onError: () => {
         setOpenMessageModal(true)
         setMessage(modalMessage().error.api.SOMETHING_WRONG)

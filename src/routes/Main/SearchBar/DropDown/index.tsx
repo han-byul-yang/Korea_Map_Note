@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useSetRecoilState } from 'recoil'
 
 import modalMessage from 'utils/modalMessage'
-import { getSearchPlacesApi } from 'services/api/getSearchPlacesApi'
+import { getPlacesByKeywordApi } from 'services/api/searchKakaoApi'
 import { isOpenMessageModalAtom, mapLevelAtom, mapPositionAtom, markPositionAtom, messageAtom } from 'store/atom'
 import { ISearchResultInfo } from 'types/searchPlacesType'
 
@@ -27,8 +27,8 @@ const DropDown = ({ searchInput, setSearchInput, showDropDown, setShowDropDown, 
   const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
 
   const { isLoading, data } = useQuery(
-    ['getSearchPlaces', searchInput],
-    () => getSearchPlacesApi(searchInput, isMapLoaded),
+    ['getPlacesByKeyword', searchInput],
+    () => getPlacesByKeywordApi(searchInput, isMapLoaded),
     {
       onSuccess: (res: ISearchResultInfo[]) => {
         console.log(res)
