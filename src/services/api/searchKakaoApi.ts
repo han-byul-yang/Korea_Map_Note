@@ -11,7 +11,7 @@ const searchProcess = (
     resolve(data)
   }
   if (status === kakao.maps.services.Status.ERROR) {
-    reject(new Error('에러 발생 했습니다.'))
+    reject(new Error())
   }
   if (status === kakao.maps.services.Status.ZERO_RESULT) {
     resolve(null)
