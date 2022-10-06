@@ -5,7 +5,7 @@ import { useSetRecoilState } from 'recoil'
 import modalMessage from 'utils/modalMessage'
 import { getPlacesByKeywordApi } from 'services/api/searchKakaoApi'
 import { isOpenMessageModalAtom, mapLevelAtom, mapPositionAtom, markPositionAtom, messageAtom } from 'store/atom'
-import { ISearchResultInfo } from 'types/searchPlacesType'
+import { ISearchPlacesResultInfo } from 'types/searchPlacesType'
 
 import { SearchIcon } from 'assets/svgs'
 import styles from './dropDown.module.scss'
@@ -19,20 +19,18 @@ interface IDropDownProps {
 }
 
 const DropDown = ({ searchInput, setSearchInput, showDropDown, setShowDropDown, isMapLoaded }: IDropDownProps) => {
-  const [resultTempData, setResultTempData] = useState<ISearchResultInfo[]>([])
   const setMarkPosition = useSetRecoilState(markPositionAtom)
   const setMapPosition = useSetRecoilState(mapPositionAtom)
   const setMapLevel = useSetRecoilState(mapLevelAtom)
   const setMessage = useSetRecoilState(messageAtom)
   const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
 
-  const { isLoading, data } = useQuery(
+  const { isLoading, data: placesResultData } = useQuery(
     ['getPlacesByKeyword', searchInput],
     () => getPlacesByKeywordApi(searchInput, isMapLoaded),
     {
-      onSuccess: (res: ISearchResultInfo[]) => {
+      onSuccess: (res: ISearchPlacesResultInfo[]) => {
         console.log(res)
-        setResultTempData(res)
       },
       cacheTime: 1000 * 60 * 60,
       enabled: !!searchInput, // dropdown이 mount 될 때 query도 생성되니까 없어도 됨
@@ -48,7 +46,7 @@ const DropDown = ({ searchInput, setSearchInput, showDropDown, setShowDropDown, 
     return <div>loading...</div>
   }
 
-  const handleResultPlaceClick = (resultPlace: ISearchResultInfo) => {
+  const handleResultPlaceClick = (resultPlace: ISearchPlacesResultInfo) => {
     setSearchInput(resultPlace.place_name)
     setMapPosition({ latitude: Number(resultPlace.y), longitude: Number(resultPlace.x) })
     setMarkPosition((prev) => {
@@ -61,7 +59,7 @@ const DropDown = ({ searchInput, setSearchInput, showDropDown, setShowDropDown, 
   return (
     <ul className={styles.dropDownList}>
       {showDropDown &&
-        resultTempData?.map((resultPlace) => {
+        placesResultData?.map((resultPlace) => {
           return (
             <li key={resultPlace?.id} className={styles.dropDownItem}>
               <SearchIcon className={styles.searchIcon} />
