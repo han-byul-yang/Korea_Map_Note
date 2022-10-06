@@ -5,7 +5,9 @@ import { useRecoilValue, useSetRecoilState } from 'recoil'
 import useClickOutside from 'hooks/useClickOutside'
 import { clickedMarkPositionAtom, isOpenMessageModalAtom, messageAtom } from 'store/atom'
 import modalMessage from 'utils/modalMessage'
-import { getAddressByPositionApi } from 'services/api/getSearchPlacesApi'
+import { getAddressByPositionApi } from 'services/api/searchKakaoApi'
+import { ISearchAddressResultInfo } from 'types/searchPlacesType'
+import PlaceInfoBox from './PlaceInfoBox'
 
 import { NotebookIcon, WriteIcon } from 'assets/svgs'
 import styles from './infoWindow.module.scss'
@@ -26,15 +28,14 @@ const InfoWindow = ({ setOpenInfoWindow, setOpenAddNoteForm, isMapLoaded }: IInf
     setOpenInfoWindow(false)
   }
   const { clickOutsideEvent } = useClickOutside(containerRef, clickOutsideTarget)
-  const { isLoading, data } = useQuery(
+  const { isLoading, data: addressResultData } = useQuery(
     ['getAddressByPosition', clickedMarkPosition.latitude, clickedMarkPosition.longitude],
     () => getAddressByPositionApi(clickedMarkPosition, isMapLoaded),
     {
-      onSuccess: (res) => {
+      onSuccess: (res: ISearchAddressResultInfo[]) => {
         console.log(res)
       },
       cacheTime: 1000 * 60 * 60,
-      enabled: !!clickedMarkPosition.latitude,
       onError: () => {
         setOpenMessageModal(true)
         setMessage(modalMessage().error.api.SOMETHING_WRONG)
@@ -56,11 +57,12 @@ const InfoWindow = ({ setOpenInfoWindow, setOpenAddNoteForm, isMapLoaded }: IInf
     <>
       <div className={styles.background} />
       <div className={styles.infoWindowContainer} ref={containerRef}>
-        <button className={styles.box} type='button' onClick={handleAddNoteClick}>
+        <PlaceInfoBox addressResultData={addressResultData} isLoading={isLoading} />
+        <button className={styles.memoButton} type='button' onClick={handleAddNoteClick}>
           <WriteIcon className={styles.icon} />
           추억 추가
         </button>
-        <button className={styles.box} type='button' onClick={handleReadNoteClick}>
+        <button className={styles.memoButton} type='button' onClick={handleReadNoteClick}>
           <NotebookIcon className={styles.icon} />
           추억 보기
         </button>
