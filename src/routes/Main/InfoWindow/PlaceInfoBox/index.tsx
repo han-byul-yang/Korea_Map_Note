@@ -22,7 +22,7 @@ const PlaceInfoBox = ({ isLoading }: IPlaceInfoBoxProps) => {
   const placesResultsData: ISearchPlacesResultInfo[] | undefined = queryClient.getQueryData(['getPlacesByKeyword'], {
     exact: false,
   })
-  const placeResultData = placesResultsData?.filter((place) => Number(place.x), clickedMarkPosition.longitude)
+  const placeResultData = placesResultsData?.filter((place) => Number(place.x) === clickedMarkPosition.longitude)
 
   if (isLoading) {
     return <div>loading...</div>
@@ -30,7 +30,7 @@ const PlaceInfoBox = ({ isLoading }: IPlaceInfoBoxProps) => {
 
   return (
     <div className={styles.placeInfoBox}>
-      {placeResultData ? (
+      {placeResultData && placeResultData.length !== 0 ? (
         <>
           <p>{placeResultData[0].place_name}</p>
           <p>카테고리: {placeResultData[0]?.category_name}</p>
