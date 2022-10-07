@@ -9,7 +9,7 @@ interface IMarkPositionKey {
 }
 
 export interface IMarkPosition extends IMarkKeyPosition {
-  [key: string]: IPosition
+  [key: string]: IPosition | any
 }
 
 interface IOpenInfoWindowKey {

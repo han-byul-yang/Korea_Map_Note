@@ -8,7 +8,7 @@ import { IPosition } from 'types/markPositionType'
 
 interface IMarker {
   markImg: any
-  markPosition: IPosition
+  markPosition: IPosition | any
   isMapLoaded: boolean
 }
 
