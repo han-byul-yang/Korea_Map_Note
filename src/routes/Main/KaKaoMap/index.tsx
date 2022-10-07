@@ -1,4 +1,4 @@
-import { Dispatch, useCallback, useEffect, useState } from 'react'
+import { Dispatch, useCallback, useEffect } from 'react'
 import { Map } from 'react-kakao-maps-sdk'
 import { useRecoilState, useSetRecoilState } from 'recoil'
 
@@ -11,7 +11,9 @@ import {
   messageAtom,
 } from 'store/atom'
 import { IGeolocationPosition, IGeolocationError } from 'types/geolocationType'
+import { IPosition } from 'types/markPositionType'
 import modalMessage from 'utils/modalMessage'
+import { getDocsFromFirebase } from 'utils/firebaseService/firebaseDBService'
 import Marker from './Marker'
 
 import geolocationMarkImg from 'assets/img/geolocationMark.png'
@@ -58,6 +60,16 @@ const KakaoMap = ({ setIsMapLoaded, isMapLoaded }: IKakaoMapProps) => {
     } else navigator.geolocation.watchPosition(retrieveSuccess, retrieveError)
   }, [retrieveError, retrieveSuccess, setMessage, setOpenMessageModal])
 
+  useEffect(() => {
+    getDocsFromFirebase('memoInfo').then((memoDocs) =>
+      memoDocs.forEach((memo) => {
+        setMarkPosition((prevPosition) => {
+          return { ...prevPosition, memoPlacePosition: [memo.data().geolocation, ...prevPosition.memoPlacePosition] }
+        })
+      })
+    )
+  }, [setMarkPosition])
+
   const handleMapPositionClick = (_t: kakao.maps.Map, mouseEvent: kakao.maps.event.MouseEvent) => {
     setMarkPosition((prev) => {
       return {
@@ -85,6 +97,9 @@ const KakaoMap = ({ setIsMapLoaded, isMapLoaded }: IKakaoMapProps) => {
       <Marker markImg={geolocationMarkImg} markPosition={markPosition.geolocation} isMapLoaded={isMapLoaded} />
       <Marker markImg={locationMarkImg} markPosition={markPosition.location} isMapLoaded={isMapLoaded} />
       <Marker markImg={searchMarkImg} markPosition={markPosition.searchPosition} isMapLoaded={isMapLoaded} />
+      {markPosition.memoPlacePosition.map((memoPosition: IPosition, i: number) => (
+        <Marker key={i} markImg={geolocationMarkImg} markPosition={memoPosition} isMapLoaded={isMapLoaded} />
+      ))}
     </Map>
   )
 }
