@@ -3,7 +3,7 @@ import { Route, Routes } from 'react-router-dom'
 import { useSetRecoilState } from 'recoil'
 import { onAuthStateChanged } from 'firebase/auth'
 
-import { firebaseAuthService } from 'utils/firebaseSetting'
+import { firebaseAuthService } from 'utils/firebaseService/firebaseSetting'
 import { userIdAtom } from 'store/atom'
 import Main from './Main'
 import Auth from './Auth'

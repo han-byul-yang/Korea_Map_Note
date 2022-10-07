@@ -1,7 +1,7 @@
 import { FormEvent, useEffect, useState } from 'react'
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
 
-import { firebaseAuthService } from 'utils/firebaseSetting'
+import { firebaseAuthService } from 'utils/firebaseService/firebaseSetting'
 
 import worldMap from 'assets/img/worldMap.jpg'
 import styles from './auth.module.scss'
