@@ -1,11 +1,11 @@
-import { Dispatch, FormEvent, MouseEventHandler, useEffect, useState } from 'react'
+import { FormEvent, useEffect, useMemo, useState } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
-import { addDoc, collection, DocumentData } from 'firebase/firestore'
 
 import useResize from 'hooks/useResize'
 import presentDate from 'utils/presentDate'
-import { firebaseDB } from 'utils/firebaseSetting'
+import { createDocsToFirebase } from 'utils/firebaseService/firebaseDBService'
 import { clickedMarkPositionAtom, isOpenAddNoteFormAtom, userIdAtom } from 'store/atom'
+import { IMemo } from 'types/memoType'
 import Picture from './Picture'
 import HashTag from './HashTag'
 
@@ -50,41 +50,29 @@ const AddNoteForm = () => {
     })
   }
 
+  const sendMemoData = {
+    writer: userId,
+    createAt: new Date(),
+    geolocation: {
+      latitude: clickedMarkPosition.latitude,
+      longitude: clickedMarkPosition.longitude,
+    },
+    memo: {
+      siteName: memo.siteName,
+      travelDate: memo.travelDate,
+      text: memo.text,
+      picture: memo.picture,
+      hashTag: memo.hashTag,
+    },
+  } // useMemo?
+
   const handleMemoSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    addDoc(collection(firebaseDB, 'memoInfo'), {
-      writer: userId,
-      createAt: new Date(),
-      geolocation: {
-        latitude: clickedMarkPosition.latitude,
-        logitude: clickedMarkPosition.longitude,
-      },
-      memo: {
-        siteName: memo.siteName,
-        travelDate: memo.travelDate,
-        text: memo.text,
-        picture: memo.picture,
-        hashTag: memo.hashTag,
-      },
-    })
+    createDocsToFirebase('memoInfo', sendMemoData)
   }
 
   const handleMemoClick = () => {
-    addDoc(collection(firebaseDB, 'memoInfo'), {
-      writer: userId,
-      createAt: new Date(),
-      geolocation: {
-        latitude: clickedMarkPosition.latitude,
-        logitude: clickedMarkPosition.longitude,
-      },
-      memo: {
-        siteName: memo.siteName,
-        travelDate: memo.travelDate,
-        text: memo.text,
-        picture: memo.picture,
-        hashTag: memo.hashTag,
-      },
-    })
+    createDocsToFirebase('memoInfo', sendMemoData)
   }
 
   return (
