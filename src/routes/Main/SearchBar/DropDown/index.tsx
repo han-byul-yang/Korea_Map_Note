@@ -1,4 +1,4 @@
-import React, { Dispatch, useState } from 'react'
+import React, { Dispatch } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useSetRecoilState } from 'recoil'
 
@@ -29,11 +29,10 @@ const DropDown = ({ searchInput, setSearchInput, showDropDown, setShowDropDown, 
     ['getPlacesByKeyword', searchInput],
     () => getPlacesByKeywordApi(searchInput, isMapLoaded),
     {
-      onSuccess: (res: ISearchPlacesResultInfo[]) => {
-        console.log(res)
-      },
-      cacheTime: 1000 * 60 * 60,
-      enabled: !!searchInput, // dropdown이 mount 될 때 query도 생성되니까 없어도 됨
+      onSuccess: (res: ISearchPlacesResultInfo[]) => {},
+      staleTime: 1000,
+      cacheTime: 1000,
+      // enabled: !!searchInput, // dropdown이 mount 될 때 query도 생성되니까 없어도 됨
       keepPreviousData: true,
       onError: () => {
         setOpenMessageModal(true)

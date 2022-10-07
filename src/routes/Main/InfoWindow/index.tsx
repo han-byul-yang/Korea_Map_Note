@@ -28,14 +28,14 @@ const InfoWindow = ({ setOpenInfoWindow, setOpenAddNoteForm, isMapLoaded }: IInf
     setOpenInfoWindow(false)
   }
   const { clickOutsideEvent } = useClickOutside(containerRef, clickOutsideTarget)
-  const { isLoading, data: addressResultData } = useQuery(
+
+  const { isLoading } = useQuery(
     ['getAddressByPosition', clickedMarkPosition.latitude, clickedMarkPosition.longitude],
     () => getAddressByPositionApi(clickedMarkPosition, isMapLoaded),
     {
-      onSuccess: (res: ISearchAddressResultInfo[]) => {
-        console.log(res)
-      },
-      cacheTime: 1000 * 60 * 60,
+      onSuccess: (res: ISearchAddressResultInfo[]) => {},
+      staleTime: 1000,
+      cacheTime: 1000,
       onError: () => {
         setOpenMessageModal(true)
         setMessage(modalMessage().error.api.SOMETHING_WRONG)
@@ -57,7 +57,7 @@ const InfoWindow = ({ setOpenInfoWindow, setOpenAddNoteForm, isMapLoaded }: IInf
     <>
       <div className={styles.background} />
       <div className={styles.infoWindowContainer} ref={containerRef}>
-        <PlaceInfoBox addressResultData={addressResultData} isLoading={isLoading} />
+        <PlaceInfoBox isLoading={isLoading} />
         <button className={styles.memoButton} type='button' onClick={handleAddNoteClick}>
           <WriteIcon className={styles.icon} />
           추억 추가
