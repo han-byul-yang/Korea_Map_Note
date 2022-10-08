@@ -14,7 +14,7 @@ const HashTag = () => {
   const handleHashTagSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!memo.hashTagList.includes(hashTag)) {
-      setMemo((prevMemo) => ({ ...prevMemo, hashTag: [...prevMemo.hashTagList, hashTag] }))
+      setMemo((prevMemo) => ({ ...prevMemo, hashTagList: [...prevMemo.hashTagList, hashTag] }))
     }
     setHashTag('')
   }
