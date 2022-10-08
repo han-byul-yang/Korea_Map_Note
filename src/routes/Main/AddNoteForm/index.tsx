@@ -1,9 +1,8 @@
-import { FormEvent, useEffect, useMemo, useState } from 'react'
+import { Dispatch, FormEvent, useEffect, useMemo } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useRecoilState, useRecoilValue } from 'recoil'
 
 import useResize from 'hooks/useResize'
-import presentDate from 'utils/presentDate'
 import { createDocsToFirebase } from 'utils/firebaseService/firebaseDBService'
 import { isOpenAddNoteFormAtom, markPositionAtom, memoAtom, userIdAtom } from 'store/atom'
 import { ISearchAddressResultInfo, ISearchPlacesResultInfo } from 'types/searchPlacesType'
@@ -13,8 +12,12 @@ import HashTag from './HashTag'
 import { XIcon } from 'assets/svgs'
 import styles from './addNoteForm.module.scss'
 
-const AddNoteForm = () => {
-  const [changeMemoPlaceName, setChangeMemoPlaceName] = useState(false)
+interface IAddNoteFormProps {
+  setChangeMemoPlaceName: Dispatch<React.SetStateAction<boolean>>
+  changeMemoPlaceName: boolean
+}
+
+const AddNoteForm = ({ setChangeMemoPlaceName, changeMemoPlaceName }: IAddNoteFormProps) => {
   const userId = useRecoilValue(userIdAtom)
   const [openAddNoteForm, setOpenAddNoteForm] = useRecoilState(isOpenAddNoteFormAtom)
   const [memo, setMemo] = useRecoilState(memoAtom) // type 설정
@@ -105,32 +108,27 @@ const AddNoteForm = () => {
             도로명 주소: {addressResultsData[0].road_address?.address_name}
           </p>
         )}
-        <form onSubmit={handleMemoSubmit}>
-          <label>
-            이 장소의 이름은?
-            {placeResultData && placeResultData.length !== 0 ? (
-              <>
-                {changeMemoPlaceName ? (
-                  <input type='text' name='siteName' value={memo.siteName} onChange={handleInputChange} />
-                ) : (
-                  <span>{placeResultData && placeResultData.length !== 0 && placeResultData[0].place_name}</span>
-                )}
-                <button type='button' onClick={handleChangePlaceNameClick}>
-                  {changeMemoPlaceName ? '되돌리기' : '이름 수정'}
-                </button>
-              </>
-            ) : (
-              <input type='text' name='siteName' value={memo.siteName} onChange={handleInputChange} />
-            )}
-          </label>
-          <p>
-            방문 시기: {presentDate()}
-            <button type='button'>날짜 변경</button>
-          </p>
-          <input type='text' name='text' value={memo.text} onChange={handleInputChange} />
-          <Picture />
-          <HashTag />
-        </form>
+        <label>
+          이 장소의 이름은?
+          {placeResultData && placeResultData.length !== 0 ? (
+            <>
+              {changeMemoPlaceName ? (
+                <input type='text' name='siteName' value={memo.siteName} onChange={handleInputChange} />
+              ) : (
+                <span>{placeResultData && placeResultData.length !== 0 && placeResultData[0].place_name}</span>
+              )}
+              <button type='button' onClick={handleChangePlaceNameClick}>
+                {changeMemoPlaceName ? '되돌리기' : '이름 수정'}
+              </button>
+            </>
+          ) : (
+            <input type='text' name='siteName' value={memo.siteName} onChange={handleInputChange} />
+          )}
+        </label>
+        {/* <VisitedDate /> */}
+        <input type='text' name='text' value={memo.text} onChange={handleInputChange} />
+        <Picture />
+        <HashTag />
         <button type='button' onClick={handleMemoClick}>
           메모 저장
         </button>
