@@ -1,7 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { useRecoilValue } from 'recoil'
 
-import { clickedMarkPositionAtom } from 'store/atom'
+import { markPositionAtom } from 'store/atom'
 import { ISearchAddressResultInfo, ISearchPlacesResultInfo } from 'types/searchPlacesType'
 
 import styles from './placeInfoBox.module.scss'
@@ -11,18 +11,20 @@ interface IPlaceInfoBoxProps {
 }
 
 const PlaceInfoBox = ({ isLoading }: IPlaceInfoBoxProps) => {
-  const clickedMarkPosition = useRecoilValue(clickedMarkPositionAtom)
+  const markPosition = useRecoilValue(markPositionAtom)
   const queryClient = useQueryClient()
 
   const addressResultsData: ISearchAddressResultInfo[] | undefined = queryClient.getQueryData([
     'getAddressByPosition',
-    clickedMarkPosition.latitude,
-    clickedMarkPosition.longitude,
+    markPosition.clickedPosition.latitude,
+    markPosition.clickedPosition.longitude,
   ])
   const placesResultsData: ISearchPlacesResultInfo[] | undefined = queryClient.getQueryData(['getPlacesByKeyword'], {
     exact: false,
   })
-  const placeResultData = placesResultsData?.filter((place) => Number(place.x) === clickedMarkPosition.longitude)
+  const placeResultData = placesResultsData?.filter(
+    (place) => Number(place.x) === markPosition.clickedPosition.longitude
+  )
 
   if (isLoading) {
     return <div>loading...</div>
@@ -40,7 +42,7 @@ const PlaceInfoBox = ({ isLoading }: IPlaceInfoBoxProps) => {
       ) : (
         <>
           <p>기본 주소: {addressResultsData![0].address.address_name}</p>
-          <p>도로명 주소: {addressResultsData![0].road_address && addressResultsData![0].road_address.address_name}</p>
+          <p>도로명 주소: {addressResultsData![0].road_address?.address_name}</p>
         </>
       )}
     </div>

@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 
 import useClickOutside from 'hooks/useClickOutside'
-import { clickedMarkPositionAtom, isOpenMessageModalAtom, messageAtom } from 'store/atom'
+import { isOpenMessageModalAtom, markPositionAtom, messageAtom } from 'store/atom'
 import modalMessage from 'utils/modalMessage'
 import { getAddressByPositionApi } from 'services/api/searchKakaoApi'
 import { ISearchAddressResultInfo } from 'types/searchPlacesType'
@@ -20,7 +20,7 @@ interface IInfoWindowProps {
 
 const InfoWindow = ({ setOpenInfoWindow, setOpenAddNoteForm, isMapLoaded }: IInfoWindowProps) => {
   const containerRef = useRef(null)
-  const clickedMarkPosition = useRecoilValue(clickedMarkPositionAtom)
+  const markPosition = useRecoilValue(markPositionAtom)
   const setMessage = useSetRecoilState(messageAtom)
   const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
 
@@ -30,8 +30,8 @@ const InfoWindow = ({ setOpenInfoWindow, setOpenAddNoteForm, isMapLoaded }: IInf
   const { clickOutsideEvent } = useClickOutside(containerRef, clickOutsideTarget)
 
   const { isLoading } = useQuery(
-    ['getAddressByPosition', clickedMarkPosition.latitude, clickedMarkPosition.longitude],
-    () => getAddressByPositionApi(clickedMarkPosition, isMapLoaded),
+    ['getAddressByPosition', markPosition.clickedPosition.latitude, markPosition.clickedPosition.longitude],
+    () => getAddressByPositionApi(markPosition.clickedPosition, isMapLoaded),
     {
       onSuccess: (res: ISearchAddressResultInfo[]) => {},
       staleTime: 1000,

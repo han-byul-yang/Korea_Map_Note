@@ -3,7 +3,7 @@ import { MapMarker } from 'react-kakao-maps-sdk'
 import { useSetRecoilState } from 'recoil'
 
 import InfoWindow from 'routes/Main/InfoWindow'
-import { clickedMarkPositionAtom, isOpenAddNoteFormAtom, memoAtom } from 'store/atom'
+import { markPositionAtom, isOpenAddNoteFormAtom, memoAtom } from 'store/atom'
 import { IPosition } from 'types/markPositionType'
 
 interface IMarker {
@@ -14,16 +14,16 @@ interface IMarker {
 
 const Marker = ({ markImg, markPosition, isMapLoaded }: IMarker) => {
   const [openInfoWindow, setOpenInfoWindow] = useState(false)
-  const setClickedMarkPosition = useSetRecoilState(clickedMarkPositionAtom)
+  const setMarkPosition = useSetRecoilState(markPositionAtom)
   const setOpenAddNoteForm = useSetRecoilState(isOpenAddNoteFormAtom)
   const setMemo = useSetRecoilState(memoAtom) // type 설정
 
   const handleMapMarkerClick = () => {
     setOpenInfoWindow((prev) => !prev)
-    setClickedMarkPosition({
-      latitude: markPosition.latitude,
-      longitude: markPosition.longitude,
-    })
+    setMarkPosition((prevPosition) => ({
+      ...prevPosition,
+      clickedPosition: { latitude: markPosition.latitude, longitude: markPosition.longitude },
+    }))
     setMemo({ siteName: '', travelDate: '', text: '', picture: '', hashTag: [''] })
     setOpenAddNoteForm(false)
   }

@@ -1,12 +1,11 @@
-import { Dispatch, FormEvent, useEffect, useMemo, useState } from 'react'
+import { FormEvent, useEffect, useMemo, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useRecoilState, useRecoilValue } from 'recoil'
 
 import useResize from 'hooks/useResize'
 import presentDate from 'utils/presentDate'
 import { createDocsToFirebase } from 'utils/firebaseService/firebaseDBService'
-import { clickedMarkPositionAtom, isOpenAddNoteFormAtom, memoAtom, userIdAtom } from 'store/atom'
-import { IMemo } from 'types/memoType'
+import { isOpenAddNoteFormAtom, markPositionAtom, memoAtom, userIdAtom } from 'store/atom'
 import { ISearchAddressResultInfo, ISearchPlacesResultInfo } from 'types/searchPlacesType'
 import Picture from './Picture'
 import HashTag from './HashTag'
@@ -18,22 +17,23 @@ const AddNoteForm = () => {
   const [changeMemoPlaceName, setChangeMemoPlaceName] = useState(false)
   const userId = useRecoilValue(userIdAtom)
   const [openAddNoteForm, setOpenAddNoteForm] = useRecoilState(isOpenAddNoteFormAtom)
+  const [memo, setMemo] = useRecoilState(memoAtom) // type 설정
+  const markPosition = useRecoilValue(markPositionAtom)
   const { size, isSize: isMobile } = useResize()
 
   const queryClient = useQueryClient()
-  const clickedMarkPosition = useRecoilValue(clickedMarkPositionAtom)
 
   const addressResultsData: ISearchAddressResultInfo[] | undefined = queryClient.getQueryData([
     'getAddressByPosition',
-    clickedMarkPosition.latitude,
-    clickedMarkPosition.longitude,
+    markPosition.clickedPosition.latitude,
+    markPosition.clickedPosition.longitude,
   ])
   const placesResultsData: ISearchPlacesResultInfo[] | undefined = queryClient.getQueryData(['getPlacesByKeyword'], {
     exact: false,
   })
-  const placeResultData = placesResultsData?.filter((place) => Number(place.x) === clickedMarkPosition.longitude)
-
-  const [memo, setMemo] = useRecoilState(memoAtom) // type 설정
+  const placeResultData = placesResultsData?.filter(
+    (place) => Number(place.x) === markPosition.clickedPosition.longitude
+  )
 
   useEffect(() => {
     size.MOBILE.RESIZE()
@@ -65,8 +65,8 @@ const AddNoteForm = () => {
     writer: userId,
     createAt: new Date(),
     geolocation: {
-      latitude: clickedMarkPosition.latitude,
-      longitude: clickedMarkPosition.longitude,
+      latitude: markPosition.clickedPosition.latitude,
+      longitude: markPosition.clickedPosition.longitude,
     },
     memo: {
       siteName: memo.siteName,

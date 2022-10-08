@@ -8,11 +8,6 @@ export const userIdAtom = atom({
   default: '',
 })
 
-export const clickedMarkPositionAtom = atom({
-  key: 'clickedMarkPosition',
-  default: { latitude: 0, longitude: 0 },
-})
-
 export const messageAtom = atom({
   key: 'message',
   default: { kind: '', message: '' },
@@ -30,6 +25,7 @@ export const markPositionAtom = atom<IMarkPosition>({
     location: { latitude: 0, longitude: 0 },
     searchPosition: { latitude: 0, longitude: 0 },
     memoPlacePosition: [{ latitude: 0, longitude: 0 }],
+    clickedPosition: { latitude: 0, longitude: 0 },
   },
 })
 
