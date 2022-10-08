@@ -36,7 +36,7 @@ export const memoAtom = atom<IMemo>({
     travelDate: '',
     text: '',
     picture: '',
-    hashTag: [''],
+    hashTagList: [''],
   },
 })
 

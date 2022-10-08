@@ -80,7 +80,7 @@ const KakaoMap = ({ setIsMapLoaded, isMapLoaded, setChangeMemoPlaceName }: IKaka
         location: { latitude: mouseEvent.latLng.getLat(), longitude: mouseEvent.latLng.getLng() },
       }
     })
-    setMemo({ siteName: '', travelDate: '', text: '', picture: '', hashTag: [''] })
+    setMemo({ siteName: '', travelDate: '', text: '', picture: '', hashTagList: [''] })
     setChangeMemoPlaceName(false)
     if (openAddNoteForm) setOpenAddNoteForm(false)
   }

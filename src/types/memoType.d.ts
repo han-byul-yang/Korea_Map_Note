@@ -3,7 +3,7 @@ export interface IMemo {
   travelDate: string
   text: string
   picture: string | null
-  hashTag: Array | null
+  hashTagList: Array | null
 }
 
 export interface IMemoDocs {

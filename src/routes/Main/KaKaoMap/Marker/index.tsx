@@ -25,14 +25,14 @@ const Marker = ({ markImg, markPosition, isMapLoaded, setChangeMemoPlaceName }: 
       ...prevPosition,
       clickedPosition: { latitude: markPosition.latitude, longitude: markPosition.longitude },
     }))
-    setMemo({ siteName: '', travelDate: '', text: '', picture: '', hashTag: [''] })
+    setMemo({ siteName: '', travelDate: '', text: '', picture: '', hashTagList: [''] })
     setChangeMemoPlaceName(false)
     setOpenAddNoteForm(false)
   }
 
   return (
     <MapMarker
-      position={{ lat: markPosition.latitude, lng: markPosition.longitude }}
+      position={{ lat: markPosition?.latitude, lng: markPosition?.longitude }}
       clickable
       onClick={handleMapMarkerClick}
       image={{

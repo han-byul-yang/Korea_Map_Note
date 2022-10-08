@@ -60,7 +60,7 @@ const AddNoteForm = ({ setChangeMemoPlaceName, changeMemoPlaceName }: IAddNoteFo
       if (e.currentTarget?.name === 'text') {
         return { ...prev, text: e.currentTarget.value }
       }
-      return { ...prev, hashTag: ['여행', '힐링'] }
+      return { ...prev, hashTagList: ['여행', '힐링'] }
     })
   }
 
@@ -76,7 +76,7 @@ const AddNoteForm = ({ setChangeMemoPlaceName, changeMemoPlaceName }: IAddNoteFo
       travelDate: memo.travelDate,
       text: memo.text,
       picture: memo.picture,
-      hashTag: memo.hashTag,
+      hashTagList: memo.hashTagList,
     },
   } // useMemo?
 
