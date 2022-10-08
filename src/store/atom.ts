@@ -1,6 +1,7 @@
 import { atom } from 'recoil'
 
 import { IMarkPosition, IPosition } from 'types/markPositionType'
+import { IMemo } from 'types/memoType'
 
 export const userIdAtom = atom({
   key: 'userId',
@@ -29,6 +30,17 @@ export const markPositionAtom = atom<IMarkPosition>({
     location: { latitude: 0, longitude: 0 },
     searchPosition: { latitude: 0, longitude: 0 },
     memoPlacePosition: [{ latitude: 0, longitude: 0 }],
+  },
+})
+
+export const memoAtom = atom<IMemo>({
+  key: 'memo',
+  default: {
+    siteName: '',
+    travelDate: '',
+    text: '',
+    picture: '',
+    hashTag: [''],
   },
 })
 

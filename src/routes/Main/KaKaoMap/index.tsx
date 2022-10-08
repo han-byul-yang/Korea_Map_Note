@@ -8,6 +8,7 @@ import {
   mapLevelAtom,
   mapPositionAtom,
   markPositionAtom,
+  memoAtom,
   messageAtom,
 } from 'store/atom'
 import { IGeolocationPosition, IGeolocationError } from 'types/geolocationType'
@@ -32,6 +33,7 @@ const KakaoMap = ({ setIsMapLoaded, isMapLoaded }: IKakaoMapProps) => {
   const [mapLevel, setMapLevel] = useRecoilState(mapLevelAtom)
   const setMessage = useSetRecoilState(messageAtom)
   const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
+  const setMemo = useSetRecoilState(memoAtom) // type 설정
 
   const retrieveSuccess = useCallback(
     (position: IGeolocationPosition) => {
@@ -77,6 +79,7 @@ const KakaoMap = ({ setIsMapLoaded, isMapLoaded }: IKakaoMapProps) => {
         location: { latitude: mouseEvent.latLng.getLat(), longitude: mouseEvent.latLng.getLng() },
       }
     })
+    setMemo({ siteName: '', travelDate: '', text: '', picture: '', hashTag: [''] })
     if (openAddNoteForm) setOpenAddNoteForm(false)
   }
 

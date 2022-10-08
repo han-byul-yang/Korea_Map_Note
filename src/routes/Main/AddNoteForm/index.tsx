@@ -1,29 +1,39 @@
-import { FormEvent, useEffect, useMemo, useState } from 'react'
+import { Dispatch, FormEvent, useEffect, useMemo, useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { useRecoilState, useRecoilValue } from 'recoil'
 
 import useResize from 'hooks/useResize'
 import presentDate from 'utils/presentDate'
 import { createDocsToFirebase } from 'utils/firebaseService/firebaseDBService'
-import { clickedMarkPositionAtom, isOpenAddNoteFormAtom, userIdAtom } from 'store/atom'
+import { clickedMarkPositionAtom, isOpenAddNoteFormAtom, memoAtom, userIdAtom } from 'store/atom'
 import { IMemo } from 'types/memoType'
+import { ISearchAddressResultInfo, ISearchPlacesResultInfo } from 'types/searchPlacesType'
 import Picture from './Picture'
 import HashTag from './HashTag'
 
-import { LeftArrowIcon, RightArrowIcon, XIcon } from 'assets/svgs'
+import { XIcon } from 'assets/svgs'
 import styles from './addNoteForm.module.scss'
 
 const AddNoteForm = () => {
-  const [memo, setMemo] = useState<IMemo>({
-    siteName: '',
-    travelDate: '',
-    text: '',
-    picture: '',
-    hashTag: [''],
-  }) // type 설정
+  const [changeMemoPlaceName, setChangeMemoPlaceName] = useState(false)
   const userId = useRecoilValue(userIdAtom)
   const [openAddNoteForm, setOpenAddNoteForm] = useRecoilState(isOpenAddNoteFormAtom)
-  const clickedMarkPosition = useRecoilValue(clickedMarkPositionAtom)
   const { size, isSize: isMobile } = useResize()
+
+  const queryClient = useQueryClient()
+  const clickedMarkPosition = useRecoilValue(clickedMarkPositionAtom)
+
+  const addressResultsData: ISearchAddressResultInfo[] | undefined = queryClient.getQueryData([
+    'getAddressByPosition',
+    clickedMarkPosition.latitude,
+    clickedMarkPosition.longitude,
+  ])
+  const placesResultsData: ISearchPlacesResultInfo[] | undefined = queryClient.getQueryData(['getPlacesByKeyword'], {
+    exact: false,
+  })
+  const placeResultData = placesResultsData?.filter((place) => Number(place.x) === clickedMarkPosition.longitude)
+
+  const [memo, setMemo] = useRecoilState(memoAtom) // type 설정
 
   useEffect(() => {
     size.MOBILE.RESIZE()
@@ -35,7 +45,8 @@ const AddNoteForm = () => {
   }
 
   const handleCloseButtonClick = () => {
-    setOpenAddNoteForm((prev) => !prev)
+    setOpenAddNoteForm(false)
+    setMemo((prevMemo) => ({ ...prevMemo, siteName: '' }))
   }
 
   const handleInputChange = (e: FormEvent<HTMLInputElement>) => {
@@ -75,19 +86,42 @@ const AddNoteForm = () => {
     createDocsToFirebase('memoInfo', sendMemoData)
   }
 
+  const handleChangePlaceNameClick = () => {
+    setChangeMemoPlaceName(true)
+    setMemo((prev) => ({
+      ...prev,
+      siteName: placeResultData && placeResultData.length !== 0 ? placeResultData[0].place_name : '',
+    }))
+  }
+
   return (
     <div className={openAddNoteForm ? styles.openContainer : styles.closeContainer}>
       <div className={styles.addNoteBox}>
         {isMobile && <XIcon className={styles.xIcon} onClick={handleXButtonClick} />}
-        <p>
-          현재 위치는 ...
-          <br />
-          경도: {clickedMarkPosition.latitude} / 위도: {clickedMarkPosition.longitude}
-        </p>
+        {addressResultsData && (
+          <p>
+            기본 주소: {addressResultsData[0].address.address_name}
+            <br />
+            도로명 주소: {addressResultsData[0].road_address?.address_name}
+          </p>
+        )}
         <form onSubmit={handleMemoSubmit}>
           <label>
             이 장소의 이름은?
-            <input type='text' name='siteName' value={memo.siteName} onChange={handleInputChange} />
+            {placeResultData && placeResultData.length !== 0 ? (
+              <>
+                {changeMemoPlaceName ? (
+                  <input type='text' name='siteName' value={memo.siteName} onChange={handleInputChange} />
+                ) : (
+                  <span>{placeResultData && placeResultData.length !== 0 && placeResultData[0].place_name}</span>
+                )}
+                <button type='button' onClick={handleChangePlaceNameClick}>
+                  {changeMemoPlaceName ? '되돌리기' : '이름 수정'}
+                </button>
+              </>
+            ) : (
+              <input type='text' name='siteName' value={memo.siteName} onChange={handleInputChange} />
+            )}
           </label>
           <p>
             방문 시기: {presentDate()}
@@ -101,13 +135,9 @@ const AddNoteForm = () => {
           메모 저장
         </button>
       </div>
-      {!isMobile && (
-        <button className={styles.closeButton} type='button' onClick={handleCloseButtonClick}>
-          {openAddNoteForm ? (
-            <LeftArrowIcon className={styles.arrowIcon} />
-          ) : (
-            <RightArrowIcon className={styles.arrowIcon} />
-          )}
+      {!isMobile && openAddNoteForm && (
+        <button className={openAddNoteForm && styles.closeButton} type='button' onClick={handleCloseButtonClick}>
+          <XIcon className={styles.arrowIcon} />
         </button>
       )}
     </div>
