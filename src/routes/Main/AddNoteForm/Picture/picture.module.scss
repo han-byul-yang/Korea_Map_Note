@@ -1,0 +1,28 @@
+@use '../../../../styles/constants/colors';
+
+.image {
+  position: relative;
+  margin-top: 10px;
+  color: colors.$FONT;
+
+  .prevShowImage {
+    position: relative;
+    width: 30px;
+    height: 30px;
+  }
+
+  .imageLabel {
+    display: flex;
+    align-items: center;
+    color: colors.$FONT;
+    cursor: pointer;
+
+    .imageBtn {
+      margin-right: 5px;
+    }
+  }
+
+  input {
+    display: none;
+  }
+}
