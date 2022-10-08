@@ -1,6 +1,6 @@
 import { Dispatch, useCallback, useEffect } from 'react'
 import { Map } from 'react-kakao-maps-sdk'
-import { useRecoilState, useSetRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 
 import {
   isOpenAddNoteFormAtom,
@@ -10,6 +10,7 @@ import {
   markPositionAtom,
   memoAtom,
   messageAtom,
+  userIdAtom,
 } from 'store/atom'
 import { IGeolocationPosition, IGeolocationError } from 'types/geolocationType'
 import modalMessage from 'utils/modalMessage'
@@ -27,6 +28,7 @@ interface IKakaoMapProps {
 }
 
 const KakaoMap = ({ setIsMapLoaded, isMapLoaded, setChangeMemoPlaceName }: IKakaoMapProps) => {
+  const userId = useRecoilValue(userIdAtom)
   const [mapPosition, setMapPosition] = useRecoilState(mapPositionAtom)
   const [markPosition, setMarkPosition] = useRecoilState(markPositionAtom)
   const [openAddNoteForm, setOpenAddNoteForm] = useRecoilState(isOpenAddNoteFormAtom)
@@ -63,7 +65,7 @@ const KakaoMap = ({ setIsMapLoaded, isMapLoaded, setChangeMemoPlaceName }: IKaka
   }, [retrieveError, retrieveSuccess, setMessage, setOpenMessageModal])
 
   useEffect(() => {
-    getDocsFromFirebase('memoInfo').then((memoDocs) =>
+    getDocsFromFirebase(userId).then((memoDocs) =>
       setMarkPosition((prevPosition) => {
         return {
           ...prevPosition,

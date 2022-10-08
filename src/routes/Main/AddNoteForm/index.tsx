@@ -80,13 +80,8 @@ const AddNoteForm = ({ setChangeMemoPlaceName, changeMemoPlaceName }: IAddNoteFo
     },
   } // useMemo?
 
-  const handleMemoSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    createDocsToFirebase('memoInfo', sendMemoData)
-  }
-
   const handleMemoClick = () => {
-    createDocsToFirebase('memoInfo', sendMemoData)
+    createDocsToFirebase(userId, sendMemoData)
   }
 
   const handleChangePlaceNameClick = () => {
