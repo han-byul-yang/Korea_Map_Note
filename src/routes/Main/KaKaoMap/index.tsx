@@ -12,7 +12,6 @@ import {
   messageAtom,
 } from 'store/atom'
 import { IGeolocationPosition, IGeolocationError } from 'types/geolocationType'
-import { IPosition } from 'types/markPositionType'
 import modalMessage from 'utils/modalMessage'
 import { getDocsFromFirebase } from 'utils/firebaseService/firebaseDBService'
 import Marker from './Marker'
@@ -65,10 +64,21 @@ const KakaoMap = ({ setIsMapLoaded, isMapLoaded, setChangeMemoPlaceName }: IKaka
 
   useEffect(() => {
     getDocsFromFirebase('memoInfo').then((memoDocs) =>
-      memoDocs.forEach((memo) => {
-        setMarkPosition((prevPosition) => {
-          return { ...prevPosition, memoPlacePosition: [memo.data().geolocation, ...prevPosition.memoPlacePosition] }
-        })
+      setMarkPosition((prevPosition) => {
+        return {
+          ...prevPosition,
+          memoPlacePosition: memoDocs.docs.map((doc) => {
+            const {
+              geolocation: { latitude, longitude },
+              memo: { picture },
+            } = doc.data().data
+            return {
+              latitude,
+              longitude,
+              image: picture,
+            }
+          }),
+        }
       })
     )
   }, [setMarkPosition])
@@ -80,7 +90,7 @@ const KakaoMap = ({ setIsMapLoaded, isMapLoaded, setChangeMemoPlaceName }: IKaka
         location: { latitude: mouseEvent.latLng.getLat(), longitude: mouseEvent.latLng.getLng() },
       }
     })
-    setMemo({ siteName: '', travelDate: '', text: '', picture: '', hashTagList: [''] })
+    setMemo({ siteName: '', travelDate: '', text: '', picture: '', hashTagList: [] })
     setChangeMemoPlaceName(false)
     if (openAddNoteForm) setOpenAddNoteForm(false)
   }
@@ -117,10 +127,10 @@ const KakaoMap = ({ setIsMapLoaded, isMapLoaded, setChangeMemoPlaceName }: IKaka
         isMapLoaded={isMapLoaded}
         setChangeMemoPlaceName={setChangeMemoPlaceName}
       />
-      {markPosition.memoPlacePosition.map((memoPosition: IPosition, i: number) => (
+      {markPosition.memoPlacePosition.map((memoPosition: any, i: number) => (
         <Marker
           key={i}
-          markImg={geolocationMarkImg}
+          markImg={memoPosition.image}
           markPosition={memoPosition}
           isMapLoaded={isMapLoaded}
           setChangeMemoPlaceName={setChangeMemoPlaceName}
