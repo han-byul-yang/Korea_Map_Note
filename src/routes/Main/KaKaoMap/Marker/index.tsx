@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { Dispatch, useState } from 'react'
 import { MapMarker } from 'react-kakao-maps-sdk'
 import { useSetRecoilState } from 'recoil'
 
@@ -10,9 +10,10 @@ interface IMarker {
   markImg: any
   markPosition: IPosition | any
   isMapLoaded: boolean
+  setChangeMemoPlaceName: Dispatch<React.SetStateAction<boolean>>
 }
 
-const Marker = ({ markImg, markPosition, isMapLoaded }: IMarker) => {
+const Marker = ({ markImg, markPosition, isMapLoaded, setChangeMemoPlaceName }: IMarker) => {
   const [openInfoWindow, setOpenInfoWindow] = useState(false)
   const setMarkPosition = useSetRecoilState(markPositionAtom)
   const setOpenAddNoteForm = useSetRecoilState(isOpenAddNoteFormAtom)
@@ -25,6 +26,7 @@ const Marker = ({ markImg, markPosition, isMapLoaded }: IMarker) => {
       clickedPosition: { latitude: markPosition.latitude, longitude: markPosition.longitude },
     }))
     setMemo({ siteName: '', travelDate: '', text: '', picture: '', hashTag: [''] })
+    setChangeMemoPlaceName(false)
     setOpenAddNoteForm(false)
   }
 
