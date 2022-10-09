@@ -48,6 +48,12 @@
     }
   }
 
+  .buttonBox {
+    display: flex;
+    justify-content: space-evenly;
+    width: inherit;
+  }
+
   button {
     padding: 10px 20px;
     border: 1px solid colors.$FONT;
