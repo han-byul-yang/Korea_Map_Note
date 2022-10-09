@@ -5,7 +5,7 @@ import useResize from 'hooks/useResize'
 import { isOpenReadNotesAtom, memoAtom } from 'store/atom'
 
 import { XIcon } from 'assets/svgs'
-import styles from './storedNotes.module.scss'
+import styles from './readNotes.module.scss'
 
 const ReadNotes = () => {
   const [openReadNotes, setOpenReadNotes] = useRecoilState(isOpenReadNotesAtom)
