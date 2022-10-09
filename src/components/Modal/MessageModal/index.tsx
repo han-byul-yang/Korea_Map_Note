@@ -19,19 +19,28 @@ const MessageModal = () => {
     WARNING: <WarningIcon className={styles.typeIcon} />,
   }[message.kind.toUpperCase()]
 
+  const messageModalButton = {
+    ERROR: <button type='button'>확인</button>,
+    NOTIFICATION: (
+      <div className={styles.buttonBox}>
+        <button type='button'>예</button>
+        <button type='button'>아니오</button>
+      </div>
+    ),
+    WARNING: <button type='button'>확인했습니다</button>,
+  }[message.kind.toUpperCase()]
+
   return (
     <>
       <div className={styles.background} />
       <div className={styles.modalBox}>
-        <XIcon className={styles.xIcon} onClick={handleModalButtonClick} />
+        {/* <XIcon className={styles.xIcon} onClick={handleModalButtonClick} /> */}
         <div className={styles.typeBox}>
           {modalIcon}
           {message.kind.toUpperCase()}
         </div>
         <p>{message.message}</p>
-        <button type='button' onClick={handleModalButtonClick}>
-          확인
-        </button>
+        {messageModalButton}
       </div>
     </>
   )
