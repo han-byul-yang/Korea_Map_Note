@@ -35,8 +35,13 @@ const AddNoteForm = ({ setChangeMemoPlaceName, changeMemoPlaceName }: IAddNoteFo
     exact: false,
   })
   const placeResultData = useMemo(
-    () => placesResultsData?.filter((place) => Number(place.x) === markPosition.clickedPosition.longitude),
-    [markPosition.clickedPosition.longitude, placesResultsData]
+    () =>
+      placesResultsData?.filter(
+        (place) =>
+          Number(place.x) === markPosition.clickedPosition.longitude &&
+          Number(place.y) === markPosition.clickedPosition.latitude
+      ),
+    [markPosition.clickedPosition.latitude, markPosition.clickedPosition.longitude, placesResultsData]
   )
 
   useEffect(() => {
@@ -73,13 +78,15 @@ const AddNoteForm = ({ setChangeMemoPlaceName, changeMemoPlaceName }: IAddNoteFo
       longitude: markPosition.clickedPosition.longitude,
     },
     memo: {
-      siteName: memo.siteName,
+      siteName: changeMemoPlaceName
+        ? memo.siteName
+        : (placeResultData && placeResultData.length !== 0 && placeResultData[0].place_name) || '',
       travelDate: memo.travelDate,
       text: memo.text,
       picture: memo.picture,
       hashTagList: memo.hashTagList,
     },
-  } // useMemo?
+  }
 
   const handleMemoClick = () => {
     createDocsToFirebase(userId, sendMemoData)
@@ -89,7 +96,7 @@ const AddNoteForm = ({ setChangeMemoPlaceName, changeMemoPlaceName }: IAddNoteFo
     setChangeMemoPlaceName(true)
     setMemo((prev) => ({
       ...prev,
-      siteName: placeResultData && placeResultData.length !== 0 ? placeResultData[0].place_name : '',
+      siteName: placeResultData![0].place_name,
     }))
   }
 
