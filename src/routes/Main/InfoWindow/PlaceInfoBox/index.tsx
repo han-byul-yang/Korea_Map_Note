@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useRecoilValue } from 'recoil'
 
@@ -22,8 +23,9 @@ const PlaceInfoBox = ({ isLoading }: IPlaceInfoBoxProps) => {
   const placesResultsData: ISearchPlacesResultInfo[] | undefined = queryClient.getQueryData(['getPlacesByKeyword'], {
     exact: false,
   })
-  const placeResultData = placesResultsData?.filter(
-    (place) => Number(place.x) === markPosition.clickedPosition.longitude
+  const placeResultData = useMemo(
+    () => placesResultsData?.filter((place) => Number(place.x) === markPosition.clickedPosition.longitude),
+    [markPosition.clickedPosition.longitude, placesResultsData]
   )
 
   if (isLoading) {
