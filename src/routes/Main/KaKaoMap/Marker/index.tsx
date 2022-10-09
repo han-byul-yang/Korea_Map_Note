@@ -25,7 +25,7 @@ const Marker = ({ markImg, markPosition, isMapLoaded, setChangeMemoPlaceName }: 
       ...prevPosition,
       clickedPosition: { latitude: markPosition.latitude, longitude: markPosition.longitude },
     }))
-    setMemo({ siteName: '', travelDate: '', text: '', picture: '', hashTagList: [] })
+    setMemo({ siteName: '', travelDate: '', text: '', picture: [], hashTagList: [] })
     setChangeMemoPlaceName(false)
     setOpenAddNoteForm(false)
   }

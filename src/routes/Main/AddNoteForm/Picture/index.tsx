@@ -1,29 +1,42 @@
 import { ChangeEvent, Fragment, useEffect, useState } from 'react'
 import { useSetRecoilState } from 'recoil'
 
-import { memoAtom } from 'store/atom'
+import { isOpenMessageModalAtom, memoAtom, messageAtom } from 'store/atom'
+import modalMessage from 'utils/modalMessage'
 
 import { ImageIcon } from 'assets/svgs'
 import styles from './picture.module.scss'
 
 const Picture = () => {
   const setMemo = useSetRecoilState(memoAtom)
+  const setMessage = useSetRecoilState(messageAtom)
+  const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
   const [fileImageList, setFileImageList] = useState<File[]>([])
 
   const handleImageChange = (e: any) => {
-    setFileImageList((prevFile) =>
-      [...e.target.files, ...prevFile].length > 4 ? [...prevFile] : [...e.target.files, ...prevFile]
-    )
     const { files } = e.target
-    const reader = new FileReader()
-    reader.readAsDataURL(files)
 
-    return new Promise(() => {
-      reader.onload = () => {
-        setMemo((prevMemo) => ({ ...prevMemo, picture: reader.result }))
-      }
-    })
+    if ([...files, ...fileImageList].length > 4) {
+      setOpenMessageModal(true)
+      setMessage(modalMessage().error.memo.LIMIT_IMAGE_NUMBER)
+    } else {
+      setFileImageList((prevFile) => [...files, ...prevFile])
+    }
   }
+
+  useEffect(() => {
+    const settingFileList = () => {
+      fileImageList.forEach((fileImage: File) => {
+        const reader = new FileReader()
+        reader.readAsDataURL(fileImage)
+
+        reader.onload = () => {
+          setMemo((prevMemo) => ({ ...prevMemo, picture: [reader.result, ...prevMemo.picture] }))
+        }
+      })
+    }
+    settingFileList()
+  }, [fileImageList, setMemo])
 
   const handleDeletePictureClick = (fileImage: File) => {
     setFileImageList((prevFile) => prevFile.filter((file) => file.name !== fileImage.name))

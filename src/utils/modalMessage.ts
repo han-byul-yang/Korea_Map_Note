@@ -10,6 +10,9 @@ const modalMessage = () => {
         NO_NETWORK: { kind: 'error', message: '네트워크 연결을 확인해주세요' },
         SOMETHING_WRONG: { kind: 'error', message: '데이터를 불러오는 중 오류 발생했습니다.' },
       },
+      memo: {
+        LIMIT_IMAGE_NUMBER: { kind: 'error', message: '이미지 개수가 4개를 초과할 수 없습니다.' },
+      },
     },
     notification: {},
   }

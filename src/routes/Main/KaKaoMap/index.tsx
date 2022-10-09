@@ -83,7 +83,7 @@ const KakaoMap = ({ setIsMapLoaded, isMapLoaded, setChangeMemoPlaceName }: IKaka
         }
       })
     )
-  }, [setMarkPosition])
+  }, [setMarkPosition, userId])
 
   const handleMapPositionClick = (_t: kakao.maps.Map, mouseEvent: kakao.maps.event.MouseEvent) => {
     setMarkPosition((prev) => {
@@ -92,7 +92,7 @@ const KakaoMap = ({ setIsMapLoaded, isMapLoaded, setChangeMemoPlaceName }: IKaka
         location: { latitude: mouseEvent.latLng.getLat(), longitude: mouseEvent.latLng.getLng() },
       }
     })
-    setMemo({ siteName: '', travelDate: '', text: '', picture: '', hashTagList: [] })
+    setMemo({ siteName: '', travelDate: '', text: '', picture: [], hashTagList: [] })
     setChangeMemoPlaceName(false)
     if (openAddNoteForm) setOpenAddNoteForm(false)
   }
@@ -132,7 +132,7 @@ const KakaoMap = ({ setIsMapLoaded, isMapLoaded, setChangeMemoPlaceName }: IKaka
       {markPosition.memoPlacePosition.map((memoPosition: any, i: number) => (
         <Marker
           key={i}
-          markImg={memoPosition.image}
+          markImg={memoPosition.image[0]}
           markPosition={memoPosition}
           isMapLoaded={isMapLoaded}
           setChangeMemoPlaceName={setChangeMemoPlaceName}

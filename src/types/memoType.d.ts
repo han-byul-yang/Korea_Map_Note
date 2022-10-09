@@ -2,7 +2,7 @@ export interface IMemo {
   siteName: string
   travelDate: string
   text: string
-  picture: string | null | ArrayBuffer
+  picture: (string | null | ArrayBuffer)[]
   hashTagList: Array | null
 }
 
