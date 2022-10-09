@@ -45,6 +45,11 @@ export const isOpenAddNoteFormAtom = atom({
   default: false,
 }) // context api 사용 or props로 넘겨주기
 
+export const isOpenReadStoredNotesAtom = atom({
+  key: 'isOpenReadStoredNotesAtom',
+  default: false,
+}) // context api 사용 or props로 넘겨주기
+
 export const isOpenMessageModalAtom = atom({
   key: 'isOpenMessageModal',
   default: false,

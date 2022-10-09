@@ -3,7 +3,13 @@ import { useQuery } from '@tanstack/react-query'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 
 import useClickOutside from 'hooks/useClickOutside'
-import { isOpenMessageModalAtom, markPositionAtom, messageAtom } from 'store/atom'
+import {
+  isOpenAddNoteFormAtom,
+  isOpenMessageModalAtom,
+  isOpenReadStoredNotesAtom,
+  markPositionAtom,
+  messageAtom,
+} from 'store/atom'
 import modalMessage from 'utils/modalMessage'
 import { getAddressByPositionApi } from 'services/api/searchKakaoApi'
 import { ISearchAddressResultInfo } from 'types/searchPlacesType'
@@ -14,14 +20,15 @@ import styles from './infoWindow.module.scss'
 
 interface IInfoWindowProps {
   setOpenInfoWindow: Dispatch<React.SetStateAction<boolean>>
-  setOpenAddNoteForm: Dispatch<React.SetStateAction<boolean>>
   isMapLoaded: boolean
 }
 
-const InfoWindow = ({ setOpenInfoWindow, setOpenAddNoteForm, isMapLoaded }: IInfoWindowProps) => {
+const InfoWindow = ({ setOpenInfoWindow, isMapLoaded }: IInfoWindowProps) => {
   const containerRef = useRef(null)
   const markPosition = useRecoilValue(markPositionAtom)
   const setMessage = useSetRecoilState(messageAtom)
+  const setOpenAddNoteForm = useSetRecoilState(isOpenAddNoteFormAtom)
+  const setOpenReadStoredNotes = useSetRecoilState(isOpenReadStoredNotesAtom)
   const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
 
   const clickOutsideTarget = () => {
@@ -51,7 +58,9 @@ const InfoWindow = ({ setOpenInfoWindow, setOpenAddNoteForm, isMapLoaded }: IInf
     setOpenAddNoteForm(true)
   }
 
-  const handleReadNoteClick = () => {}
+  const handleReadNoteClick = () => {
+    setOpenReadStoredNotes(true)
+  }
 
   return (
     <>

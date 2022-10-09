@@ -49,13 +49,7 @@ const Marker = ({ markImg, markPosition, isMapLoaded, setChangeMemoPlaceName }: 
         },
       }}
     >
-      {openInfoWindow && (
-        <InfoWindow
-          setOpenInfoWindow={setOpenInfoWindow}
-          setOpenAddNoteForm={setOpenAddNoteForm}
-          isMapLoaded={isMapLoaded}
-        />
-      )}
+      {openInfoWindow && <InfoWindow setOpenInfoWindow={setOpenInfoWindow} isMapLoaded={isMapLoaded} />}
     </MapMarker>
   )
 }
