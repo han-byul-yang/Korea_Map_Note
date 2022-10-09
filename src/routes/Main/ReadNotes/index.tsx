@@ -2,7 +2,15 @@ import { useEffect } from 'react'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 
 import useResize from 'hooks/useResize'
-import { isOpenReadNotesAtom, markPositionAtom, memoAtom, userIdAtom } from 'store/atom'
+import {
+  isOpenMessageModalAtom,
+  isOpenReadNotesAtom,
+  markPositionAtom,
+  memoAtom,
+  messageAtom,
+  userIdAtom,
+} from 'store/atom'
+import modalMessage from 'utils/modalMessage'
 import { getDocsFromFirebase } from 'utils/firebaseService/firebaseDBService'
 
 import { XIcon, HamburgerCloseIcon } from 'assets/svgs'
@@ -13,6 +21,8 @@ const ReadNotes = () => {
   const [openReadNotes, setOpenReadNotes] = useRecoilState(isOpenReadNotesAtom)
   const setMemo = useSetRecoilState(memoAtom)
   const markPosition = useRecoilValue(markPositionAtom)
+  const setMessage = useSetRecoilState(messageAtom)
+  const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
   const { size, isSize: isMobile } = useResize()
 
   useEffect(() => {
@@ -34,6 +44,8 @@ const ReadNotes = () => {
 
   const handleCloseButtonClick = () => {
     setOpenReadNotes(false)
+    setOpenMessageModal(true)
+    setMessage(modalMessage().notification.memo.CLOSE_ADD_NOTE_FORM)
     setMemo((prevMemo) => ({ ...prevMemo, siteName: '' }))
   }
 

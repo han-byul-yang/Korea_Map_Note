@@ -1,10 +1,18 @@
 import { Dispatch, FormEvent, useEffect, useMemo } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 
 import useResize from 'hooks/useResize'
 import { createDocsToFirebase } from 'utils/firebaseService/firebaseDBService'
-import { isOpenAddNoteFormAtom, markPositionAtom, memoAtom, userIdAtom } from 'store/atom'
+import modalMessage from 'utils/modalMessage'
+import {
+  isOpenAddNoteFormAtom,
+  isOpenMessageModalAtom,
+  markPositionAtom,
+  memoAtom,
+  messageAtom,
+  userIdAtom,
+} from 'store/atom'
 import { ISearchAddressResultInfo, ISearchPlacesResultInfo } from 'types/searchPlacesType'
 import Picture from './Picture'
 import HashTag from './HashTag'
@@ -22,6 +30,8 @@ const AddNoteForm = ({ setChangeMemoPlaceName, changeMemoPlaceName }: IAddNoteFo
   const [openAddNoteForm, setOpenAddNoteForm] = useRecoilState(isOpenAddNoteFormAtom)
   const [memo, setMemo] = useRecoilState(memoAtom) // type 설정
   const markPosition = useRecoilValue(markPositionAtom)
+  const setMessage = useSetRecoilState(messageAtom)
+  const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
   const { size, isSize: isMobile } = useResize()
 
   const queryClient = useQueryClient()
@@ -55,6 +65,8 @@ const AddNoteForm = ({ setChangeMemoPlaceName, changeMemoPlaceName }: IAddNoteFo
 
   const handleCloseButtonClick = () => {
     setOpenAddNoteForm(false)
+    setOpenMessageModal(true)
+    setMessage(modalMessage().notification.memo.CLOSE_ADD_NOTE_FORM)
     setMemo((prevMemo) => ({ ...prevMemo, siteName: '' }))
   }
 
