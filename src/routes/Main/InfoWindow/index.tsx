@@ -6,7 +6,7 @@ import useClickOutside from 'hooks/useClickOutside'
 import {
   isOpenAddNoteFormAtom,
   isOpenMessageModalAtom,
-  isOpenReadStoredNotesAtom,
+  isOpenReadNotesAtom,
   markPositionAtom,
   messageAtom,
 } from 'store/atom'
@@ -28,7 +28,7 @@ const InfoWindow = ({ setOpenInfoWindow, isMapLoaded }: IInfoWindowProps) => {
   const markPosition = useRecoilValue(markPositionAtom)
   const setMessage = useSetRecoilState(messageAtom)
   const setOpenAddNoteForm = useSetRecoilState(isOpenAddNoteFormAtom)
-  const setOpenReadStoredNotes = useSetRecoilState(isOpenReadStoredNotesAtom)
+  const setOpenReadNotes = useSetRecoilState(isOpenReadNotesAtom)
   const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
 
   const clickOutsideTarget = () => {
@@ -59,7 +59,7 @@ const InfoWindow = ({ setOpenInfoWindow, isMapLoaded }: IInfoWindowProps) => {
   }
 
   const handleReadNoteClick = () => {
-    setOpenReadStoredNotes(true)
+    setOpenReadNotes(true)
   }
 
   return (
