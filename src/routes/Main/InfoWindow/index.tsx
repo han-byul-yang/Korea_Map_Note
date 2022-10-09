@@ -55,10 +55,12 @@ const InfoWindow = ({ setOpenInfoWindow, isMapLoaded }: IInfoWindowProps) => {
   }, [clickOutsideEvent])
 
   const handleAddNoteClick = () => {
+    setOpenReadNotes(false)
     setOpenAddNoteForm(true)
   }
 
   const handleReadNoteClick = () => {
+    setOpenAddNoteForm(false)
     setOpenReadNotes(true)
   }
 
