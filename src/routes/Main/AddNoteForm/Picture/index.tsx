@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { useSetRecoilState } from 'recoil'
 
 import { memoAtom } from 'store/atom'
@@ -8,15 +8,17 @@ import styles from './picture.module.scss'
 
 const Picture = () => {
   const setMemo = useSetRecoilState(memoAtom)
-  const [fileImage, setFileImage] = useState('')
+  const [fileImageList, setFileImageList] = useState<any>([])
 
   const handleImageChange = (e: any) => {
-    console.log(e.target.files)
-    const file = e.target.files[0]
-    setFileImage(URL.createObjectURL(file))
+    setFileImageList((prevFile: any) =>
+      [...e.target.files, ...prevFile].length > 4 ? [...prevFile] : [...e.target.files, ...prevFile]
+    )
+    const { files } = e.target
     const reader = new FileReader()
-    reader.readAsDataURL(file)
+    reader.readAsDataURL(files)
 
+    // eslint-disable-next-line consistent-return
     return new Promise(() => {
       reader.onload = () => {
         setMemo((prevMemo) => ({ ...prevMemo, picture: reader.result }))
@@ -24,9 +26,24 @@ const Picture = () => {
     })
   }
 
+  const handleDeletePictureClick = (fileImage: any) => {
+    setFileImageList((prevFile: any) => prevFile.filter((file: any) => file.name !== fileImage.name))
+  }
+
   return (
     <div className={styles.image}>
-      <img className={styles.prevShowImage} alt='fileImage' src={fileImage} />
+      {fileImageList.map((fileImage: any, index: any) => {
+        const fileImageKey = `fileImage-${index}`
+        return (
+          <Fragment key={fileImageKey}>
+            <img className={styles.prevShowImage} alt='fileImage' src={URL.createObjectURL(fileImage)} />
+            <p>{fileImage.name}</p>
+            <button type='button' onClick={() => handleDeletePictureClick(fileImage)}>
+              지우기
+            </button>
+          </Fragment>
+        )
+      })}
       <label className={styles.imageLabel} htmlFor='chooseFile'>
         <ImageIcon className={styles.imageBtn} />
         사진 추가 👈
