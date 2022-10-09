@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from 'react'
+import { ChangeEvent, Fragment, useEffect, useState } from 'react'
 import { useSetRecoilState } from 'recoil'
 
 import { memoAtom } from 'store/atom'
@@ -8,17 +8,16 @@ import styles from './picture.module.scss'
 
 const Picture = () => {
   const setMemo = useSetRecoilState(memoAtom)
-  const [fileImageList, setFileImageList] = useState<any>([])
+  const [fileImageList, setFileImageList] = useState<File[]>([])
 
   const handleImageChange = (e: any) => {
-    setFileImageList((prevFile: any) =>
+    setFileImageList((prevFile) =>
       [...e.target.files, ...prevFile].length > 4 ? [...prevFile] : [...e.target.files, ...prevFile]
     )
     const { files } = e.target
     const reader = new FileReader()
     reader.readAsDataURL(files)
 
-    // eslint-disable-next-line consistent-return
     return new Promise(() => {
       reader.onload = () => {
         setMemo((prevMemo) => ({ ...prevMemo, picture: reader.result }))
@@ -26,13 +25,13 @@ const Picture = () => {
     })
   }
 
-  const handleDeletePictureClick = (fileImage: any) => {
-    setFileImageList((prevFile: any) => prevFile.filter((file: any) => file.name !== fileImage.name))
+  const handleDeletePictureClick = (fileImage: File) => {
+    setFileImageList((prevFile) => prevFile.filter((file) => file.name !== fileImage.name))
   }
 
   return (
     <div className={styles.image}>
-      {fileImageList.map((fileImage: any, index: any) => {
+      {fileImageList.map((fileImage, index) => {
         const fileImageKey = `fileImage-${index}`
         return (
           <Fragment key={fileImageKey}>
