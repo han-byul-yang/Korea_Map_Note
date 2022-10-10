@@ -1,15 +1,27 @@
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 
-import { isOpenMessageModalAtom, messageAtom } from 'store/atom'
+import { isOpenAddNoteFormAtom, isOpenMessageModalAtom, memoAtom, messageAtom } from 'store/atom'
 
 import { ErrorIcon, NoticeIcon, WarningIcon, XIcon } from 'assets/svgs'
 import styles from './messageModal.module.scss'
 
 const MessageModal = () => {
   const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
+  const setOpenAddNoteForm = useSetRecoilState(isOpenAddNoteFormAtom)
+  const setMemo = useSetRecoilState(memoAtom)
   const message = useRecoilValue(messageAtom)
 
-  const handleModalButtonClick = () => {
+  const handleErrorOkButtonClick = () => {
+    setOpenMessageModal(false)
+  }
+
+  const handleNotificationOkButtonClick = () => {
+    setOpenAddNoteForm(false)
+    setOpenMessageModal(false)
+    setMemo((prevMemo) => ({ ...prevMemo, siteName: '' }))
+  }
+
+  const handleNotificationCancelButtonClick = () => {
     setOpenMessageModal(false)
   }
 
@@ -20,11 +32,19 @@ const MessageModal = () => {
   }[message.kind.toUpperCase()]
 
   const messageModalButton = {
-    ERROR: <button type='button'>확인</button>,
+    ERROR: (
+      <button type='button' onClick={handleErrorOkButtonClick}>
+        확인
+      </button>
+    ),
     NOTIFICATION: (
       <div className={styles.buttonBox}>
-        <button type='button'>예</button>
-        <button type='button'>아니오</button>
+        <button type='button' onClick={handleNotificationOkButtonClick}>
+          예
+        </button>
+        <button type='button' onClick={handleNotificationCancelButtonClick}>
+          아니오
+        </button>
       </div>
     ),
     WARNING: <button type='button'>확인했습니다</button>,

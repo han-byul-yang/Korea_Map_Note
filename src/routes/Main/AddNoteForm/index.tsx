@@ -64,10 +64,8 @@ const AddNoteForm = ({ setChangeMemoPlaceName, changeMemoPlaceName }: IAddNoteFo
   }
 
   const handleCloseButtonClick = () => {
-    setOpenAddNoteForm(false)
     setOpenMessageModal(true)
     setMessage(modalMessage().notification.memo.CLOSE_ADD_NOTE_FORM)
-    setMemo((prevMemo) => ({ ...prevMemo, siteName: '' }))
   }
 
   const handleInputChange = (e: FormEvent<HTMLInputElement>) => {
