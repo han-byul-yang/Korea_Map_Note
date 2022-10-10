@@ -3,12 +3,10 @@ import { Map } from 'react-kakao-maps-sdk'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 
 import {
-  isOpenAddNoteFormAtom,
   isOpenMessageModalAtom,
   mapLevelAtom,
   mapPositionAtom,
   markPositionAtom,
-  memoAtom,
   messageAtom,
   userIdAtom,
 } from 'store/atom'
@@ -24,18 +22,15 @@ import searchMarkImg from 'assets/img/searchMark.png'
 interface IKakaoMapProps {
   setIsMapLoaded: Dispatch<React.SetStateAction<boolean>>
   isMapLoaded: boolean
-  setChangeMemoPlaceName: Dispatch<React.SetStateAction<boolean>>
 }
 
-const KakaoMap = ({ setIsMapLoaded, isMapLoaded, setChangeMemoPlaceName }: IKakaoMapProps) => {
+const KakaoMap = ({ setIsMapLoaded, isMapLoaded }: IKakaoMapProps) => {
   const userId = useRecoilValue(userIdAtom)
   const [mapPosition, setMapPosition] = useRecoilState(mapPositionAtom)
   const [markPosition, setMarkPosition] = useRecoilState(markPositionAtom)
-  const [openAddNoteForm, setOpenAddNoteForm] = useRecoilState(isOpenAddNoteFormAtom)
   const [mapLevel, setMapLevel] = useRecoilState(mapLevelAtom)
   const setMessage = useSetRecoilState(messageAtom)
   const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
-  const setMemo = useSetRecoilState(memoAtom) // type 설정
 
   const retrieveSuccess = useCallback(
     (position: IGeolocationPosition) => {
@@ -92,9 +87,6 @@ const KakaoMap = ({ setIsMapLoaded, isMapLoaded, setChangeMemoPlaceName }: IKaka
         location: { latitude: mouseEvent.latLng.getLat(), longitude: mouseEvent.latLng.getLng() },
       }
     })
-    setMemo({ siteName: '', travelDate: '', text: '', picture: [], hashTagList: [] })
-    setChangeMemoPlaceName(false)
-    if (openAddNoteForm) setOpenAddNoteForm(false)
   }
 
   return (
@@ -111,32 +103,11 @@ const KakaoMap = ({ setIsMapLoaded, isMapLoaded, setChangeMemoPlaceName }: IKaka
       onClick={handleMapPositionClick}
       onCreate={() => setIsMapLoaded(true)}
     >
-      <Marker
-        markImg={geolocationMarkImg}
-        markPosition={markPosition.geolocation}
-        isMapLoaded={isMapLoaded}
-        setChangeMemoPlaceName={setChangeMemoPlaceName}
-      />
-      <Marker
-        markImg={locationMarkImg}
-        markPosition={markPosition.location}
-        isMapLoaded={isMapLoaded}
-        setChangeMemoPlaceName={setChangeMemoPlaceName}
-      />
-      <Marker
-        markImg={searchMarkImg}
-        markPosition={markPosition.searchPosition}
-        isMapLoaded={isMapLoaded}
-        setChangeMemoPlaceName={setChangeMemoPlaceName}
-      />
+      <Marker markImg={geolocationMarkImg} markPosition={markPosition.geolocation} isMapLoaded={isMapLoaded} />
+      <Marker markImg={locationMarkImg} markPosition={markPosition.location} isMapLoaded={isMapLoaded} />
+      <Marker markImg={searchMarkImg} markPosition={markPosition.searchPosition} isMapLoaded={isMapLoaded} />
       {markPosition.memoPlacePosition.map((memoPosition: any, i: number) => (
-        <Marker
-          key={i}
-          markImg={memoPosition.image[0]}
-          markPosition={memoPosition}
-          isMapLoaded={isMapLoaded}
-          setChangeMemoPlaceName={setChangeMemoPlaceName}
-        />
+        <Marker key={i} markImg={memoPosition.image[0]} markPosition={memoPosition} isMapLoaded={isMapLoaded} />
       ))}
     </Map>
   )

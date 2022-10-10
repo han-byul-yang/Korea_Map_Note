@@ -1,3 +1,4 @@
+import { Dispatch } from 'react'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 
 import { isOpenAddNoteFormAtom, isOpenMessageModalAtom, memoAtom, messageAtom } from 'store/atom'
@@ -5,7 +6,12 @@ import { isOpenAddNoteFormAtom, isOpenMessageModalAtom, memoAtom, messageAtom } 
 import { ErrorIcon, NoticeIcon, WarningIcon, XIcon } from 'assets/svgs'
 import styles from './messageModal.module.scss'
 
-const MessageModal = () => {
+interface IMessageModalProps {
+  setChangeMemoPlaceName: Dispatch<React.SetStateAction<boolean>>
+  setFileImageList: Dispatch<React.SetStateAction<File[]>>
+}
+
+const MessageModal = ({ setChangeMemoPlaceName, setFileImageList }: IMessageModalProps) => {
   const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
   const setOpenAddNoteForm = useSetRecoilState(isOpenAddNoteFormAtom)
   const setMemo = useSetRecoilState(memoAtom)
@@ -15,13 +21,15 @@ const MessageModal = () => {
     setOpenMessageModal(false)
   }
 
-  const handleNotificationOkButtonClick = () => {
+  const handleWarningOkButtonClick = () => {
     setOpenAddNoteForm(false)
     setOpenMessageModal(false)
-    setMemo((prevMemo) => ({ ...prevMemo, siteName: '' }))
+    setMemo({ siteName: '', travelDate: '', text: '', picture: [], hashTagList: [] })
+    setChangeMemoPlaceName(false)
+    setFileImageList([])
   }
 
-  const handleNotificationCancelButtonClick = () => {
+  const handleWarningCancelButtonClick = () => {
     setOpenMessageModal(false)
   }
 
@@ -37,17 +45,17 @@ const MessageModal = () => {
         확인
       </button>
     ),
-    NOTIFICATION: (
+    NOTIFICATION: <button type='button'>확인했습니다</button>,
+    WARNING: (
       <div className={styles.buttonBox}>
-        <button type='button' onClick={handleNotificationOkButtonClick}>
+        <button type='button' onClick={handleWarningOkButtonClick}>
           예
         </button>
-        <button type='button' onClick={handleNotificationCancelButtonClick}>
+        <button type='button' onClick={handleWarningCancelButtonClick}>
           아니오
         </button>
       </div>
     ),
-    WARNING: <button type='button'>확인했습니다</button>,
   }[message.kind.toUpperCase()]
 
   return (

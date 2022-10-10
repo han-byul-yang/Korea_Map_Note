@@ -23,9 +23,16 @@ import styles from './addNoteForm.module.scss'
 interface IAddNoteFormProps {
   setChangeMemoPlaceName: Dispatch<React.SetStateAction<boolean>>
   changeMemoPlaceName: boolean
+  setFileImageList: Dispatch<React.SetStateAction<File[]>>
+  fileImageList: File[]
 }
 
-const AddNoteForm = ({ setChangeMemoPlaceName, changeMemoPlaceName }: IAddNoteFormProps) => {
+const AddNoteForm = ({
+  setChangeMemoPlaceName,
+  changeMemoPlaceName,
+  setFileImageList,
+  fileImageList,
+}: IAddNoteFormProps) => {
   const userId = useRecoilValue(userIdAtom)
   const [openAddNoteForm, setOpenAddNoteForm] = useRecoilState(isOpenAddNoteFormAtom)
   const [memo, setMemo] = useRecoilState(memoAtom) // type 설정
@@ -141,7 +148,7 @@ const AddNoteForm = ({ setChangeMemoPlaceName, changeMemoPlaceName }: IAddNoteFo
         </label>
         {/* <VisitedDate /> */}
         <input type='text' name='text' value={memo.text} onChange={handleInputChange} />
-        <Picture />
+        <Picture setFileImageList={setFileImageList} fileImageList={fileImageList} />
         <HashTag />
         <button type='button' onClick={handleMemoClick}>
           메모 저장

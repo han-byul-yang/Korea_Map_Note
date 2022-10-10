@@ -1,4 +1,4 @@
-import { ChangeEvent, Fragment, useEffect, useState } from 'react'
+import { Dispatch, Fragment, useEffect } from 'react'
 import { useSetRecoilState } from 'recoil'
 
 import { isOpenMessageModalAtom, memoAtom, messageAtom } from 'store/atom'
@@ -7,11 +7,15 @@ import modalMessage from 'utils/modalMessage'
 import { ImageIcon } from 'assets/svgs'
 import styles from './picture.module.scss'
 
-const Picture = () => {
+interface IPictureProps {
+  setFileImageList: Dispatch<React.SetStateAction<File[]>>
+  fileImageList: File[]
+}
+
+const Picture = ({ setFileImageList, fileImageList }: IPictureProps) => {
   const setMemo = useSetRecoilState(memoAtom)
   const setMessage = useSetRecoilState(messageAtom)
   const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
-  const [fileImageList, setFileImageList] = useState<File[]>([])
 
   const handleImageChange = (e: any) => {
     const { files } = e.target
