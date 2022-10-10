@@ -1,7 +1,3 @@
-import { useRecoilState } from 'recoil'
-
-import { messageAtom } from 'store/atom'
-
 const modalMessage = () => {
   const messages = {
     error: {
@@ -18,9 +14,10 @@ const modalMessage = () => {
         LIMIT_IMAGE_NUMBER: { kind: 'error', message: '이미지 개수가 4개를 초과할 수 없습니다.' },
       },
     },
-    notification: {
+    notification: {},
+    warning: {
       memo: {
-        CLOSE_ADD_NOTE_FORM: { kind: 'notification', message: '작성을 그만 두시겠습니까?' },
+        CLOSE_ADD_NOTE_FORM: { kind: 'warning', message: '작성을 그만 두시겠습니까?' },
       },
     },
   }

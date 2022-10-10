@@ -1,33 +1,35 @@
-import { Dispatch, useState } from 'react'
+import { useState } from 'react'
 import { MapMarker } from 'react-kakao-maps-sdk'
-import { useSetRecoilState } from 'recoil'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
 
 import InfoWindow from 'routes/Main/InfoWindow'
-import { markPositionAtom, isOpenAddNoteFormAtom, memoAtom } from 'store/atom'
+import { markPositionAtom, isOpenAddNoteFormAtom, isOpenMessageModalAtom, messageAtom } from 'store/atom'
 import { IPosition } from 'types/markPositionType'
+import modalMessage from 'utils/modalMessage'
 
 interface IMarker {
   markImg: any
   markPosition: IPosition | any
   isMapLoaded: boolean
-  setChangeMemoPlaceName: Dispatch<React.SetStateAction<boolean>>
 }
 
-const Marker = ({ markImg, markPosition, isMapLoaded, setChangeMemoPlaceName }: IMarker) => {
+const Marker = ({ markImg, markPosition, isMapLoaded }: IMarker) => {
   const [openInfoWindow, setOpenInfoWindow] = useState(false)
   const setMarkPosition = useSetRecoilState(markPositionAtom)
-  const setOpenAddNoteForm = useSetRecoilState(isOpenAddNoteFormAtom)
-  const setMemo = useSetRecoilState(memoAtom) // type 설정
+  const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
+  const setMessage = useSetRecoilState(messageAtom)
+  const openAddNoteForm = useRecoilValue(isOpenAddNoteFormAtom)
 
   const handleMapMarkerClick = () => {
     setOpenInfoWindow((prev) => !prev)
+    if (openAddNoteForm) {
+      setOpenMessageModal(true)
+      setMessage(modalMessage().warning.memo.CLOSE_ADD_NOTE_FORM)
+    }
     setMarkPosition((prevPosition) => ({
       ...prevPosition,
       clickedPosition: { latitude: markPosition.latitude, longitude: markPosition.longitude },
     }))
-    setMemo({ siteName: '', travelDate: '', text: '', picture: [], hashTagList: [] })
-    setChangeMemoPlaceName(false)
-    setOpenAddNoteForm(false)
   }
 
   return (

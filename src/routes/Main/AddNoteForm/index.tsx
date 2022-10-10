@@ -1,4 +1,4 @@
-import { Dispatch, FormEvent, useEffect, useMemo } from 'react'
+import { Dispatch, FormEvent, useEffect, useMemo, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 
@@ -33,6 +33,7 @@ const AddNoteForm = ({ setChangeMemoPlaceName, changeMemoPlaceName }: IAddNoteFo
   const setMessage = useSetRecoilState(messageAtom)
   const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
   const { size, isSize: isMobile } = useResize()
+  const [addressResultData, setAddressResultData] = useState<ISearchAddressResultInfo[] | undefined>([])
 
   const queryClient = useQueryClient()
 
@@ -65,7 +66,7 @@ const AddNoteForm = ({ setChangeMemoPlaceName, changeMemoPlaceName }: IAddNoteFo
 
   const handleCloseButtonClick = () => {
     setOpenMessageModal(true)
-    setMessage(modalMessage().notification.memo.CLOSE_ADD_NOTE_FORM)
+    setMessage(modalMessage().warning.memo.CLOSE_ADD_NOTE_FORM)
   }
 
   const handleInputChange = (e: FormEvent<HTMLInputElement>) => {
