@@ -52,11 +52,15 @@ const ReadNotes = () => {
         {isMobile && (
           <HamburgerCloseIcon className={styles.hamburgerCloseIcon} onClick={handleHamburgerCloseButtonClick} />
         )}
-        <ul>
-          {storedMemoList.map((storedMemo) => (
-            <ReadNote key={`${storedMemo.createAt}`} storedMemo={storedMemo} />
-          ))}
-        </ul>
+        {storedMemoList.length !== 0 ? (
+          <ul>
+            {storedMemoList.map((storedMemo) => (
+              <ReadNote key={`${storedMemo.createAt}`} storedMemo={storedMemo} />
+            ))}
+          </ul>
+        ) : (
+          <p>저장된 추억이 없습니다</p>
+        )}
       </div>
       {!isMobile && openReadNotes && (
         <button className={openReadNotes && styles.closeButton} type='button' onClick={handleCloseButtonClick}>
