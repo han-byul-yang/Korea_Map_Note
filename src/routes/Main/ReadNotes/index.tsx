@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 
 import useResize from 'hooks/useResize'
-import { isOpenReadNotesAtom, markPositionAtom, memoAtom, userIdAtom } from 'store/atom'
+import { isOpenReadNotesAtom, markPositionAtom, memoAtom, isOkChangeMarkAtom, userIdAtom } from 'store/atom'
 import { getDocsFromFirebase } from 'utils/firebaseService/firebaseDBService'
 import { IMemoDocs } from 'types/memoType'
 import ReadNote from './ReadNote'
@@ -16,6 +16,7 @@ const ReadNotes = () => {
   const [openReadNotes, setOpenReadNotes] = useRecoilState(isOpenReadNotesAtom)
   const setMemo = useSetRecoilState(memoAtom)
   const markPosition = useRecoilValue(markPositionAtom)
+  const [isOkChangeMark, setIsOkChangeMark] = useRecoilState(isOkChangeMarkAtom)
   const { size, isSize: isMobile } = useResize()
 
   useEffect(() => {
@@ -24,18 +25,27 @@ const ReadNotes = () => {
   }, [size.MOBILE])
 
   useEffect(() => {
-    getDocsFromFirebase(userId).then((memoDocs) => {
-      setStoredMemoList(
-        memoDocs.docs
-          .map((firebaseMemo) => firebaseMemo.data().data)
-          .filter(
-            (doc) =>
-              doc.geolocation?.latitude === markPosition.clickedPosition.latitude &&
-              doc.geolocation?.longitude === markPosition.clickedPosition.longitude
-          )
-      )
-    })
-  }, [markPosition.clickedPosition.latitude, markPosition.clickedPosition.longitude, userId])
+    if (isOkChangeMark) {
+      getDocsFromFirebase(userId).then((memoDocs) => {
+        setStoredMemoList(
+          memoDocs.docs
+            .map((firebaseMemo) => firebaseMemo.data().data)
+            .filter(
+              (doc) =>
+                doc.geolocation?.latitude === markPosition.clickedPosition.latitude &&
+                doc.geolocation?.longitude === markPosition.clickedPosition.longitude
+            )
+        )
+      })
+    }
+    setIsOkChangeMark(false)
+  }, [
+    markPosition.clickedPosition.latitude,
+    markPosition.clickedPosition.longitude,
+    isOkChangeMark,
+    setIsOkChangeMark,
+    userId,
+  ])
 
   const handleCloseButtonClick = () => {
     setOpenReadNotes(false)

@@ -11,7 +11,7 @@ import {
   markPositionAtom,
   memoAtom,
   messageAtom,
-  okOpenAddNoteFormAtom,
+  isOkChangeMarkAtom,
   userIdAtom,
 } from 'store/atom'
 import { ISearchAddressResultInfo, ISearchPlacesResultInfo } from 'types/searchPlacesType'
@@ -46,12 +46,12 @@ const AddNoteForm = ({
   const { size, isSize: isMobile } = useResize()
   const [addressResult, setAddressResult] = useState<ISearchAddressResultInfo[] | undefined>([])
   const [placeResult, setPlaceResult] = useState<ISearchPlacesResultInfo[] | undefined>([])
-  const [okOpenAddNoteForm, setOkOpenAddNoteForm] = useRecoilState(okOpenAddNoteFormAtom)
+  const [isOkChangeMark, setIsOkChangeMark] = useRecoilState(isOkChangeMarkAtom)
 
   const queryClient = useQueryClient()
 
   useEffect(() => {
-    if (okOpenAddNoteForm) {
+    if (isOkChangeMark) {
       setAddressResult(
         queryClient.getQueryData([
           'getAddressByPosition',
@@ -72,14 +72,14 @@ const AddNoteForm = ({
             Number(place.y) === markPosition.clickedPosition.latitude
         )
       )
-      setOkOpenAddNoteForm(false)
+      setIsOkChangeMark(false)
     }
   }, [
     markPosition.clickedPosition.latitude,
     markPosition.clickedPosition.longitude,
-    okOpenAddNoteForm,
+    isOkChangeMark,
     queryClient,
-    setOkOpenAddNoteForm,
+    setIsOkChangeMark,
   ])
 
   useEffect(() => {

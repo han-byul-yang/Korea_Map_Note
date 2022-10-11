@@ -60,7 +60,7 @@ export const mapLevelAtom = atom({
   default: 0,
 })
 
-export const okOpenAddNoteFormAtom = atom({
-  key: 'okOpenAddNoteForm',
+export const isOkChangeMarkAtom = atom({
+  key: 'isOkChangeMark',
   default: false,
 })

@@ -22,10 +22,6 @@ const Marker = ({ markImg, markPosition, isMapLoaded }: IMarker) => {
 
   const handleMapMarkerClick = () => {
     setOpenInfoWindow((prev) => !prev)
-    if (openAddNoteForm) {
-      setOpenMessageModal(true)
-      setMessage(modalMessage().warning.memo.CLOSE_ADD_NOTE_FORM)
-    }
     setMarkPosition((prevPosition) => ({
       ...prevPosition,
       clickedPosition: { latitude: markPosition.latitude, longitude: markPosition.longitude },

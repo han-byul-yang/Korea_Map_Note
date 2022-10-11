@@ -1,6 +1,6 @@
 import { Dispatch, useEffect, useRef } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 
 import useClickOutside from 'hooks/useClickOutside'
 import {
@@ -9,6 +9,7 @@ import {
   isOpenReadNotesAtom,
   markPositionAtom,
   messageAtom,
+  isOkChangeMarkAtom,
 } from 'store/atom'
 import modalMessage from 'utils/modalMessage'
 import { getAddressByPositionApi } from 'services/api/searchKakaoApi'
@@ -27,9 +28,10 @@ const InfoWindow = ({ setOpenInfoWindow, isMapLoaded }: IInfoWindowProps) => {
   const containerRef = useRef(null)
   const markPosition = useRecoilValue(markPositionAtom)
   const setMessage = useSetRecoilState(messageAtom)
-  const setOpenAddNoteForm = useSetRecoilState(isOpenAddNoteFormAtom)
+  const [openAddNoteForm, setOpenAddNoteForm] = useRecoilState(isOpenAddNoteFormAtom)
   const setOpenReadNotes = useSetRecoilState(isOpenReadNotesAtom)
   const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
+  const setIsOkChangeMark = useSetRecoilState(isOkChangeMarkAtom)
 
   const clickOutsideTarget = () => {
     setOpenInfoWindow(false)
@@ -42,7 +44,7 @@ const InfoWindow = ({ setOpenInfoWindow, isMapLoaded }: IInfoWindowProps) => {
     {
       onSuccess: (res: ISearchAddressResultInfo[]) => {},
       staleTime: 1000,
-      cacheTime: 1000,
+      cacheTime: 1000 * 60 * 60,
       onError: () => {
         setOpenMessageModal(true)
         setMessage(modalMessage().error.api.SOMETHING_WRONG)
@@ -57,11 +59,21 @@ const InfoWindow = ({ setOpenInfoWindow, isMapLoaded }: IInfoWindowProps) => {
   const handleAddNoteClick = () => {
     setOpenReadNotes(false)
     setOpenAddNoteForm(true)
+    /* if (openAddNoteForm) {
+      setOpenMessageModal(true)
+      setMessage(modalMessage().warning.memo.CLOSE_ADD_NOTE_FORM)
+    } */
+    setIsOkChangeMark(true)
   }
 
   const handleReadNoteClick = () => {
     setOpenAddNoteForm(false)
     setOpenReadNotes(true)
+    if (openAddNoteForm) {
+      setOpenMessageModal(true)
+      setMessage(modalMessage().warning.memo.CLOSE_ADD_NOTE_FORM)
+    }
+    setIsOkChangeMark(true)
   }
 
   return (
