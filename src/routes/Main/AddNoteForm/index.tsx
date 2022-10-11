@@ -1,5 +1,5 @@
 import { Dispatch, FormEvent, useEffect, useMemo, useState } from 'react'
-import { useQueryClient } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 
 import useResize from 'hooks/useResize'
@@ -11,6 +11,7 @@ import {
   markPositionAtom,
   memoAtom,
   messageAtom,
+  okOpenAddNoteFormAtom,
   userIdAtom,
 } from 'store/atom'
 import { ISearchAddressResultInfo, ISearchPlacesResultInfo } from 'types/searchPlacesType'
@@ -19,6 +20,7 @@ import HashTag from './HashTag'
 
 import { XIcon } from 'assets/svgs'
 import styles from './addNoteForm.module.scss'
+import Address from './Address'
 
 interface IAddNoteFormProps {
   setChangeMemoPlaceName: Dispatch<React.SetStateAction<boolean>>
@@ -40,27 +42,43 @@ const AddNoteForm = ({
   const setMessage = useSetRecoilState(messageAtom)
   const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
   const { size, isSize: isMobile } = useResize()
-  const [addressResultData, setAddressResultData] = useState<ISearchAddressResultInfo[] | undefined>([])
+  const [addressResult, setAddressResult] = useState<ISearchAddressResultInfo[] | undefined>([])
+  const [placeResult, setPlaceResult] = useState<ISearchPlacesResultInfo[] | undefined>([])
+  const [okOpenAddNoteForm, setOkOpenAddNoteForm] = useRecoilState(okOpenAddNoteFormAtom)
 
   const queryClient = useQueryClient()
 
-  const addressResultsData: ISearchAddressResultInfo[] | undefined = queryClient.getQueryData([
-    'getAddressByPosition',
+  useEffect(() => {
+    if (okOpenAddNoteForm) {
+      setAddressResult(
+        queryClient.getQueryData([
+          'getAddressByPosition',
+          markPosition.clickedPosition.latitude,
+          markPosition.clickedPosition.longitude,
+        ])
+      )
+      const placesResultsData: ISearchPlacesResultInfo[] | undefined = queryClient.getQueryData(
+        ['getPlacesByKeyword'],
+        {
+          exact: false,
+        }
+      )
+      setPlaceResult(
+        placesResultsData?.filter(
+          (place) =>
+            Number(place.x) === markPosition.clickedPosition.longitude &&
+            Number(place.y) === markPosition.clickedPosition.latitude
+        )
+      )
+      setOkOpenAddNoteForm(false)
+    }
+  }, [
     markPosition.clickedPosition.latitude,
     markPosition.clickedPosition.longitude,
+    okOpenAddNoteForm,
+    queryClient,
+    setOkOpenAddNoteForm,
   ])
-  const placesResultsData: ISearchPlacesResultInfo[] | undefined = queryClient.getQueryData(['getPlacesByKeyword'], {
-    exact: false,
-  })
-  const placeResultData = useMemo(
-    () =>
-      placesResultsData?.filter(
-        (place) =>
-          Number(place.x) === markPosition.clickedPosition.longitude &&
-          Number(place.y) === markPosition.clickedPosition.latitude
-      ),
-    [markPosition.clickedPosition.latitude, markPosition.clickedPosition.longitude, placesResultsData]
-  )
 
   useEffect(() => {
     size.MOBILE.RESIZE()
@@ -98,7 +116,7 @@ const AddNoteForm = ({
     memo: {
       siteName: changeMemoPlaceName
         ? memo.siteName
-        : (placeResultData && placeResultData.length !== 0 && placeResultData[0].place_name) || '',
+        : (placeResult && placeResult.length !== 0 && placeResult[0].place_name) || '',
       travelDate: memo.travelDate,
       text: memo.text,
       picture: memo.picture,
@@ -114,7 +132,7 @@ const AddNoteForm = ({
     setChangeMemoPlaceName(true)
     setMemo((prev) => ({
       ...prev,
-      siteName: placeResultData![0].place_name,
+      siteName: placeResult![0].place_name,
     }))
   }
 
@@ -122,21 +140,15 @@ const AddNoteForm = ({
     <div className={openAddNoteForm ? styles.openContainer : styles.closeContainer}>
       <div className={styles.addNoteBox}>
         {isMobile && <XIcon className={styles.xIcon} onClick={handleXButtonClick} />}
-        {addressResultsData && (
-          <p>
-            기본 주소: {addressResultsData[0].address.address_name}
-            <br />
-            도로명 주소: {addressResultsData[0].road_address?.address_name}
-          </p>
-        )}
+        <Address addressResult={addressResult} />
         <label>
           이 장소의 이름은?
-          {placeResultData && placeResultData.length !== 0 ? (
+          {placeResult && placeResult.length !== 0 ? (
             <>
               {changeMemoPlaceName ? (
                 <input type='text' name='siteName' value={memo.siteName} onChange={handleInputChange} />
               ) : (
-                <span>{placeResultData && placeResultData.length !== 0 && placeResultData[0].place_name}</span>
+                <span>{placeResult && placeResult.length !== 0 && placeResult[0].place_name}</span>
               )}
               <button type='button' onClick={handleChangePlaceNameClick}>
                 {changeMemoPlaceName ? '되돌리기' : '이름 수정'}
