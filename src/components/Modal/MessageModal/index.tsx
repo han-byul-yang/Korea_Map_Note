@@ -33,6 +33,10 @@ const MessageModal = ({ setChangeMemoPlaceName, setFileImageList }: IMessageModa
     setOpenMessageModal(false)
   }
 
+  const handleNotificationOkButtonClick = () => {
+    setOpenMessageModal(false)
+  }
+
   const modalIcon = {
     ERROR: <ErrorIcon className={styles.typeIcon} />,
     NOTIFICATION: <NoticeIcon className={styles.typeIcon} />,
@@ -45,7 +49,11 @@ const MessageModal = ({ setChangeMemoPlaceName, setFileImageList }: IMessageModa
         확인
       </button>
     ),
-    NOTIFICATION: <button type='button'>확인했습니다</button>,
+    NOTIFICATION: (
+      <button type='button' onClick={handleNotificationOkButtonClick}>
+        확인했습니다
+      </button>
+    ),
     WARNING: (
       <div className={styles.buttonBox}>
         <button type='button' onClick={handleWarningOkButtonClick}>

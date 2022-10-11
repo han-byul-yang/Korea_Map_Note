@@ -14,7 +14,11 @@ const modalMessage = () => {
         LIMIT_IMAGE_NUMBER: { kind: 'error', message: '이미지 개수가 4개를 초과할 수 없습니다.' },
       },
     },
-    notification: {},
+    notification: {
+      memo: {
+        NO_PLACE_NAME: { kind: 'notification', message: '장소 이름 입력은 필수입니다.' },
+      },
+    },
     warning: {
       memo: {
         CLOSE_ADD_NOTE_FORM: { kind: 'warning', message: '작성을 그만 두시겠습니까?' },

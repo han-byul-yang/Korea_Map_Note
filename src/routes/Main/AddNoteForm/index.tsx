@@ -106,7 +106,7 @@ const AddNoteForm = ({
     memo: {
       siteName: changeMemoPlaceName
         ? memo.siteName
-        : (placeResult && placeResult.length !== 0 && placeResult[0].place_name) || '',
+        : (placeResult && placeResult.length !== 0 && placeResult[0].place_name) || memo.siteName,
       travelDate: memo.travelDate,
       text: memo.text,
       picture: memo.picture,
@@ -114,8 +114,13 @@ const AddNoteForm = ({
     },
   }
 
-  const handleMemoClick = () => {
-    createDocsToFirebase(userId, sendMemoData)
+  const handleMemoSubmitClick = () => {
+    if (!memo.siteName) {
+      setOpenMessageModal(true)
+      setMessage(modalMessage().notification.memo.NO_PLACE_NAME)
+    } else {
+      createDocsToFirebase(userId, sendMemoData)
+    }
   }
 
   return (
@@ -132,7 +137,7 @@ const AddNoteForm = ({
         <DescriptionText />
         <Picture setFileImageList={setFileImageList} fileImageList={fileImageList} />
         <HashTag />
-        <button type='button' onClick={handleMemoClick}>
+        <button type='button' onClick={handleMemoSubmitClick}>
           메모 저장
         </button>
       </div>
