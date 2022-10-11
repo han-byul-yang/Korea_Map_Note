@@ -1,14 +1,17 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 
 import useResize from 'hooks/useResize'
 import { isOpenReadNotesAtom, markPositionAtom, memoAtom, userIdAtom } from 'store/atom'
 import { getDocsFromFirebase } from 'utils/firebaseService/firebaseDBService'
+import { IMemoDocs } from 'types/memoType'
+import ReadNote from './ReadNote'
 
 import { XIcon, HamburgerCloseIcon } from 'assets/svgs'
 import styles from './readNotes.module.scss'
 
 const ReadNotes = () => {
+  const [storedMemoList, setStoredMemoList] = useState<IMemoDocs[]>([])
   const userId = useRecoilValue(userIdAtom)
   const [openReadNotes, setOpenReadNotes] = useRecoilState(isOpenReadNotesAtom)
   const setMemo = useSetRecoilState(memoAtom)
@@ -22,13 +25,15 @@ const ReadNotes = () => {
 
   useEffect(() => {
     getDocsFromFirebase(userId).then((memoDocs) => {
-      const result = memoDocs.docs
-        .map((firebaseMemo) => firebaseMemo.data().data)
-        .filter(
-          (doc) =>
-            doc.geolocation?.latitude === markPosition.clickedPosition.latitude &&
-            doc.geolocation?.longitude === markPosition.clickedPosition.longitude
-        )
+      setStoredMemoList(
+        memoDocs.docs
+          .map((firebaseMemo) => firebaseMemo.data().data)
+          .filter(
+            (doc) =>
+              doc.geolocation?.latitude === markPosition.clickedPosition.latitude &&
+              doc.geolocation?.longitude === markPosition.clickedPosition.longitude
+          )
+      )
     })
   }, [markPosition.clickedPosition.latitude, markPosition.clickedPosition.longitude, userId])
 
@@ -47,6 +52,11 @@ const ReadNotes = () => {
         {isMobile && (
           <HamburgerCloseIcon className={styles.hamburgerCloseIcon} onClick={handleHamburgerCloseButtonClick} />
         )}
+        <ul>
+          {storedMemoList.map((storedMemo) => (
+            <ReadNote key={`${storedMemo.createAt}`} storedMemo={storedMemo} />
+          ))}
+        </ul>
       </div>
       {!isMobile && openReadNotes && (
         <button className={openReadNotes && styles.closeButton} type='button' onClick={handleCloseButtonClick}>
