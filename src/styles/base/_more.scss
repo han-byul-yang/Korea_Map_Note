@@ -9,7 +9,7 @@
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
   -ms-overflow-style: none; // IE and Edge
-  scrollbar-width: none; // Firefox
+  // scrollbar-width: none; // Firefox
 
   &::before,
   &::after {
@@ -17,7 +17,7 @@
   }
 
   &::-webkit-scrollbar {
-    display: none; // Chrome
+    // display: none; // Chrome
   }
 }
 

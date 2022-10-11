@@ -34,13 +34,27 @@
   position: relative;
   width: 20vw;
   height: 100vh;
+  overflow-y: scroll;
   background: colors.$WHITE;
   box-shadow: 2px 2px 10px rgba(0, 0, 0, 10%);
+
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: colors.$GRAY_300;
+    border-radius: 8px;
+  }
 
   @media screen and (max-width: 425px) {
     width: 100vw;
     height: 90vh;
     border-radius: 15px 15px 0 0;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   .hamburgerCloseIcon {
