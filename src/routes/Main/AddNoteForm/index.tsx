@@ -1,5 +1,5 @@
-import { Dispatch, FormEvent, useEffect, useMemo, useState } from 'react'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { Dispatch, useEffect, useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 
 import useResize from 'hooks/useResize'
@@ -15,12 +15,14 @@ import {
   userIdAtom,
 } from 'store/atom'
 import { ISearchAddressResultInfo, ISearchPlacesResultInfo } from 'types/searchPlacesType'
-import Picture from './Picture'
+import Address from './Address'
+import PlaceName from './PlaceName'
+import DescriptionText from './DescriptionText'
 import HashTag from './HashTag'
+import Picture from './Picture'
 
 import { XIcon } from 'assets/svgs'
 import styles from './addNoteForm.module.scss'
-import Address from './Address'
 
 interface IAddNoteFormProps {
   setChangeMemoPlaceName: Dispatch<React.SetStateAction<boolean>>
@@ -94,18 +96,6 @@ const AddNoteForm = ({
     setMessage(modalMessage().warning.memo.CLOSE_ADD_NOTE_FORM)
   }
 
-  const handleInputChange = (e: FormEvent<HTMLInputElement>) => {
-    setMemo((prev) => {
-      if (e.currentTarget?.name === 'siteName') {
-        return { ...prev, siteName: e.currentTarget.value }
-      }
-      if (e.currentTarget?.name === 'text') {
-        return { ...prev, text: e.currentTarget.value }
-      }
-      return { ...prev, hashTagList: ['여행', '힐링'] }
-    })
-  }
-
   const sendMemoData = {
     writer: userId,
     createAt: new Date(),
@@ -128,38 +118,18 @@ const AddNoteForm = ({
     createDocsToFirebase(userId, sendMemoData)
   }
 
-  const handleChangePlaceNameClick = () => {
-    setChangeMemoPlaceName(true)
-    setMemo((prev) => ({
-      ...prev,
-      siteName: placeResult![0].place_name,
-    }))
-  }
-
   return (
     <div className={openAddNoteForm ? styles.openContainer : styles.closeContainer}>
       <div className={styles.addNoteBox}>
         {isMobile && <XIcon className={styles.xIcon} onClick={handleXButtonClick} />}
         <Address addressResult={addressResult} />
-        <label>
-          이 장소의 이름은?
-          {placeResult && placeResult.length !== 0 ? (
-            <>
-              {changeMemoPlaceName ? (
-                <input type='text' name='siteName' value={memo.siteName} onChange={handleInputChange} />
-              ) : (
-                <span>{placeResult && placeResult.length !== 0 && placeResult[0].place_name}</span>
-              )}
-              <button type='button' onClick={handleChangePlaceNameClick}>
-                {changeMemoPlaceName ? '되돌리기' : '이름 수정'}
-              </button>
-            </>
-          ) : (
-            <input type='text' name='siteName' value={memo.siteName} onChange={handleInputChange} />
-          )}
-        </label>
+        <PlaceName
+          setChangeMemoPlaceName={setChangeMemoPlaceName}
+          changeMemoPlaceName={changeMemoPlaceName}
+          placeResult={placeResult}
+        />
         {/* <VisitedDate /> */}
-        <input type='text' name='text' value={memo.text} onChange={handleInputChange} />
+        <DescriptionText />
         <Picture setFileImageList={setFileImageList} fileImageList={fileImageList} />
         <HashTag />
         <button type='button' onClick={handleMemoClick}>
