@@ -1,4 +1,4 @@
-import { Dispatch, useEffect, useState } from 'react'
+import { Dispatch, useEffect, useMemo, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 
@@ -87,13 +87,22 @@ const AddNoteForm = ({
     size.MOBILE.SIZEEVENT()
   }, [size.MOBILE])
 
-  const handleXButtonClick = () => {
+  const warningMessageOkButtonHandle = () => {
+    setOpenMessageModal(false)
     setOpenAddNoteForm(false)
+    setMemo({ siteName: '', travelDate: '', text: '', picture: [], hashTagList: [] })
+    setChangeMemoPlaceName(false)
+    setFileImageList([])
+  }
+
+  const handleXButtonClick = () => {
+    setOpenMessageModal(true)
+    setMessage({ ...modalMessage().warning.memo.CLOSE_ADD_NOTE_FORM, warningMessageOkButtonHandle })
   }
 
   const handleCloseButtonClick = () => {
     setOpenMessageModal(true)
-    setMessage(modalMessage().warning.memo.CLOSE_ADD_NOTE_FORM)
+    setMessage({ ...modalMessage().warning.memo.CLOSE_ADD_NOTE_FORM, warningMessageOkButtonHandle })
   }
 
   const sendMemoData = {
@@ -117,7 +126,7 @@ const AddNoteForm = ({
   const handleMemoSubmitClick = () => {
     if (!memo.siteName) {
       setOpenMessageModal(true)
-      setMessage(modalMessage().notification.memo.NO_PLACE_NAME)
+      setMessage({ ...modalMessage().notification.memo.NO_PLACE_NAME })
     } else {
       createDocsToFirebase(userId, sendMemoData)
     }

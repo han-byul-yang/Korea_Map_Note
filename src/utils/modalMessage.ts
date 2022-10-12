@@ -22,6 +22,7 @@ const modalMessage = () => {
     warning: {
       memo: {
         CLOSE_ADD_NOTE_FORM: { kind: 'warning', message: '작성을 그만 두시겠습니까?' },
+        DELETE_MEMO: { kind: 'warning', message: '메모를 삭제하시겠습니까?' },
       },
     },
   }

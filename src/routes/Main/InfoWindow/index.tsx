@@ -10,6 +10,7 @@ import {
   markPositionAtom,
   messageAtom,
   isOkChangeMarkAtom,
+  memoAtom,
 } from 'store/atom'
 import modalMessage from 'utils/modalMessage'
 import { getAddressByPositionApi } from 'services/api/searchKakaoApi'
@@ -32,6 +33,7 @@ const InfoWindow = ({ setOpenInfoWindow, isMapLoaded }: IInfoWindowProps) => {
   const setOpenReadNotes = useSetRecoilState(isOpenReadNotesAtom)
   const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
   const setIsOkChangeMark = useSetRecoilState(isOkChangeMarkAtom)
+  const setMemo = useSetRecoilState(memoAtom)
 
   const clickOutsideHandle = () => {
     setOpenInfoWindow(false)
@@ -56,24 +58,48 @@ const InfoWindow = ({ setOpenInfoWindow, isMapLoaded }: IInfoWindowProps) => {
     clickOutsideEvent()
   }, [clickOutsideEvent])
 
+  const addNoteMessageOkButtonHandle = () => {
+    setIsOkChangeMark(true)
+    setOpenMessageModal(false)
+    setMemo({ siteName: '', travelDate: '', text: '', picture: [], hashTagList: [] })
+    // setChangeMemoPlaceName(false)
+    // setFileImageList([])
+  }
+
   const handleAddNoteClick = () => {
     setOpenReadNotes(false)
     setOpenAddNoteForm(true)
-    /* if (openAddNoteForm) {
+    if (openAddNoteForm) {
       setOpenMessageModal(true)
-      setMessage(modalMessage().warning.memo.CLOSE_ADD_NOTE_FORM)
-    } */
+      setMessage({
+        ...modalMessage().warning.memo.CLOSE_ADD_NOTE_FORM,
+        warningMessageOkButtonHandle: addNoteMessageOkButtonHandle,
+      })
+    }
+  }
+
+  const readNoteMessageOkButtonHandle = () => {
     setIsOkChangeMark(true)
+    setOpenMessageModal(false)
+    setOpenReadNotes(true)
+    setOpenAddNoteForm(false)
+    setMemo({ siteName: '', travelDate: '', text: '', picture: [], hashTagList: [] })
+    // setChangeMemoPlaceName(false)
+    // setFileImageList([])
   }
 
   const handleReadNoteClick = () => {
-    setOpenAddNoteForm(false)
-    setOpenReadNotes(true)
-    /* if (openAddNoteForm) {
+    if (openAddNoteForm) {
       setOpenMessageModal(true)
-      setMessage(modalMessage().warning.memo.CLOSE_ADD_NOTE_FORM)
-    } */
-    setIsOkChangeMark(true)
+      setMessage({
+        ...modalMessage().warning.memo.CLOSE_ADD_NOTE_FORM,
+        warningMessageOkButtonHandle: readNoteMessageOkButtonHandle,
+      })
+    } else {
+      setOpenAddNoteForm(false)
+      setOpenReadNotes(true)
+      setIsOkChangeMark(true)
+    }
   }
 
   return (
