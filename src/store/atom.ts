@@ -3,6 +3,7 @@ import { atom } from 'recoil'
 import { IMarkPosition, IPosition } from 'types/markPositionType'
 import { IMemo } from 'types/memoType'
 import { IMessage } from 'types/messageType'
+import { ISearchPlacesResultInfo } from 'types/searchPlacesType'
 
 export const userIdAtom = atom({
   key: 'userId',
@@ -65,3 +66,13 @@ export const isOkChangeMarkAtom = atom({
   key: 'isOkChangeMark',
   default: false,
 })
+
+// export const tempUpdateAtom = atom({
+//   key: 'tempUpdate',
+//   default: false,
+// })
+
+export const tempAtom = atom<ISearchPlacesResultInfo[]>({
+  key: 'temp',
+  default: [],
+}) // 삭제해주기

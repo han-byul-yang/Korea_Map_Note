@@ -106,9 +106,17 @@ const KakaoMap = ({ setIsMapLoaded, isMapLoaded }: IKakaoMapProps) => {
       <Marker markImg={geolocationMarkImg} markPosition={markPosition.geolocation} isMapLoaded={isMapLoaded} />
       <Marker markImg={locationMarkImg} markPosition={markPosition.location} isMapLoaded={isMapLoaded} />
       <Marker markImg={searchMarkImg} markPosition={markPosition.searchPosition} isMapLoaded={isMapLoaded} />
-      {markPosition.memoPlacePosition.map((memoPosition: any, i: number) => (
-        <Marker key={i} markImg={memoPosition.image[0]} markPosition={memoPosition} isMapLoaded={isMapLoaded} />
-      ))}
+      {markPosition.memoPlacePosition.map((memoPosition: any, i: number) => {
+        const memoMarkerKey = `memoMarker-${i}`
+        return (
+          <Marker
+            key={memoMarkerKey}
+            markImg={memoPosition.image[0]}
+            markPosition={memoPosition}
+            isMapLoaded={isMapLoaded}
+          />
+        )
+      })}
     </Map>
   )
 }

@@ -4,7 +4,14 @@ import { useSetRecoilState } from 'recoil'
 
 import modalMessage from 'utils/modalMessage'
 import { getPlacesByKeywordApi } from 'services/api/searchKakaoApi'
-import { isOpenMessageModalAtom, mapLevelAtom, mapPositionAtom, markPositionAtom, messageAtom } from 'store/atom'
+import {
+  isOpenMessageModalAtom,
+  mapLevelAtom,
+  mapPositionAtom,
+  markPositionAtom,
+  messageAtom,
+  tempAtom,
+} from 'store/atom'
 import { ISearchPlacesResultInfo } from 'types/searchPlacesType'
 
 import { SearchIcon } from 'assets/svgs'
@@ -25,11 +32,15 @@ const DropDown = ({ searchInput, setSearchInput, showDropDown, setShowDropDown, 
   const setMessage = useSetRecoilState(messageAtom)
   const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
 
+  const setTemp = useSetRecoilState(tempAtom)
+
   const { isLoading, data: placesResultData } = useQuery(
     ['getPlacesByKeyword', searchInput],
     () => getPlacesByKeywordApi(searchInput, isMapLoaded),
     {
-      onSuccess: (res: ISearchPlacesResultInfo[]) => {},
+      onSuccess: (res: ISearchPlacesResultInfo[]) => {
+        setTemp(res)
+      },
       staleTime: 1000,
       cacheTime: 1000,
       // enabled: !!searchInput, // dropdown이 mount 될 때 query도 생성되니까 없어도 됨

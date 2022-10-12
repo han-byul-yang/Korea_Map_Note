@@ -44,7 +44,6 @@ const InfoWindow = ({ setOpenInfoWindow, isMapLoaded }: IInfoWindowProps) => {
     ['getAddressByPosition', markPosition.clickedPosition.latitude, markPosition.clickedPosition.longitude],
     () => getAddressByPositionApi(markPosition.clickedPosition, isMapLoaded),
     {
-      onSuccess: (res: ISearchAddressResultInfo[]) => {},
       staleTime: 1000,
       cacheTime: 1000 * 60 * 60,
       onError: () => {

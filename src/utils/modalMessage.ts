@@ -1,6 +1,9 @@
 const modalMessage = () => {
   const messages = {
     error: {
+      auth: {
+        NO_ACCOUNT: { kind: 'error', message: '일치하는 계정이 없습니다. 다시 확인해주세요.' },
+      },
       geolocation: {
         PERMISSION_DENIED: { kind: 'error', message: '위치정보 수집이 거부되었습니다.' },
         POSITION_UNAVAILABLE: { kind: 'error', message: '장소를 불러올 수 없습니다.' },

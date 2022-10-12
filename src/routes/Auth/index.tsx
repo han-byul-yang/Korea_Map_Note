@@ -1,7 +1,10 @@
-import { FormEvent, useEffect, useState } from 'react'
+import { FormEvent, useState } from 'react'
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
+import { useSetRecoilState } from 'recoil'
 
 import { firebaseAuthService } from 'utils/firebaseService/firebaseSetting'
+import modalMessage from 'utils/modalMessage'
+import { messageAtom, isOpenMessageModalAtom } from 'store/atom'
 
 import worldMap from 'assets/img/worldMap.jpg'
 import styles from './auth.module.scss'
@@ -9,6 +12,8 @@ import styles from './auth.module.scss'
 const Auth = () => {
   const [newAccount, setNewAccount] = useState(true)
   const [authData, setAuthData] = useState({ email: '', password: '' })
+  const setMessage = useSetRecoilState(messageAtom)
+  const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
 
   const handleAuthChange = (e: FormEvent<HTMLInputElement>) => {
     const { name, value } = e.currentTarget
@@ -28,7 +33,10 @@ const Auth = () => {
       if (newAccount) await createUserWithEmailAndPassword(firebaseAuthService, authData.email, authData.password)
       else await signInWithEmailAndPassword(firebaseAuthService, authData.email, authData.password)
     } catch (error) {
-      if (error instanceof Error) console.log(error.message)
+      if (error instanceof Error) {
+        setOpenMessageModal(true)
+        setMessage(modalMessage().error.auth.NO_ACCOUNT)
+      } // console.log(error.message) 메세지에 따른 모달 띄우기
     }
   }
 
