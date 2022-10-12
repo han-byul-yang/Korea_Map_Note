@@ -1,5 +1,9 @@
-import { IMemoDocs } from 'types/memoType'
+import { useState } from 'react'
 
+import { IMemoDocs } from 'types/memoType'
+import MemoSettingBox from 'routes/Main/ReadNotes/ReadNote/MemoSettingBox'
+
+import { MoreIcon } from 'assets/svgs'
 import styles from './readNote.module.scss'
 
 interface IReadNoteProps {
@@ -7,8 +11,18 @@ interface IReadNoteProps {
 }
 
 const ReadNote = ({ storedMemo }: IReadNoteProps) => {
+  const [openMemoSettingBox, setOpenMemoSettingBox] = useState(false)
+
+  const handleMoreButtonClick = () => {
+    setOpenMemoSettingBox(true)
+  }
+
   return (
     <li key={`${storedMemo.createAt}`} className={styles.readNoteCard}>
+      <button type='button' onClick={handleMoreButtonClick}>
+        <MoreIcon className={styles.moreIcon} />
+      </button>
+      {openMemoSettingBox && <MemoSettingBox setOpenMemoSettingBox={setOpenMemoSettingBox} />}
       <ul className={styles.imgBox}>
         {storedMemo.memo.picture.map((singlePicture) => (
           <img key={`${singlePicture}`} alt='memoSinglePicture' src={`${singlePicture}`} />
