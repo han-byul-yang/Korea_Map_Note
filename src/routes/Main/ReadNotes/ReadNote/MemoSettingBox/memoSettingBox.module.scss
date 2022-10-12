@@ -1,0 +1,26 @@
+@use '../../../../../styles/constants/colors';
+@use '../../../../../styles/constants/levels';
+
+.settingBox {
+  position: absolute;
+  top: 40px;
+  right: 5px;
+  z-index: levels.$MODAL;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  width: 100px;
+  height: 70px;
+  padding: 10px 20px;
+  font-size: 11px;
+  background: colors.$WHITE;
+  border-radius: 8px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 30%);
+
+  .settingButton {
+    &:hover {
+      color: colors.$FONT;
+    }
+  }
+}
