@@ -3,9 +3,17 @@ import { doc, deleteDoc } from 'firebase/firestore'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 
 import useClickOutside from 'hooks/useClickOutside'
+import { getDocsFromFirebase } from 'utils/firebaseService/firebaseDBService'
 import { firebaseDBService } from 'utils/firebaseService/firebaseSetting'
 import modalMessage from 'utils/modalMessage'
-import { isOpenAddNoteFormAtom, isOpenMessageModalAtom, isOpenReadNotesAtom, messageAtom, userIdAtom } from 'store/atom'
+import {
+  isOpenAddNoteFormAtom,
+  isOpenMessageModalAtom,
+  isOpenReadNotesAtom,
+  memoAtom,
+  messageAtom,
+  userIdAtom,
+} from 'store/atom'
 
 import styles from './memoSettingBox.module.scss'
 
@@ -20,6 +28,7 @@ const MemoSettingBox = ({ setOpenMemoSettingBox, docId }: IMemoSettingBoxProps) 
   const setOpenReadNotes = useSetRecoilState(isOpenReadNotesAtom)
   const setMessage = useSetRecoilState(messageAtom)
   const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
+  const setMemo = useSetRecoilState(memoAtom)
   const boxRef = useRef(null)
 
   const clickOutsideHandle = () => {
@@ -35,6 +44,9 @@ const MemoSettingBox = ({ setOpenMemoSettingBox, docId }: IMemoSettingBoxProps) 
   const handleModifyMemoClick = () => {
     setOpenAddNoteForm(true)
     setOpenReadNotes(false)
+    getDocsFromFirebase(userId).then((memoDocs) =>
+      setMemo(memoDocs.docs.filter((ele) => ele.id === docId)[0].data().data.memo)
+    )
   }
 
   const deleteMessageOkButtonHandle = async () => {
