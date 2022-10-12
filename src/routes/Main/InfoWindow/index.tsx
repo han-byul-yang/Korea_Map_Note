@@ -14,7 +14,6 @@ import {
 } from 'store/atom'
 import modalMessage from 'utils/modalMessage'
 import { getAddressByPositionApi } from 'services/api/searchKakaoApi'
-import { ISearchAddressResultInfo } from 'types/searchPlacesType'
 import PlaceInfoBox from './PlaceInfoBox'
 
 import { NotebookIcon, WriteIcon } from 'assets/svgs'
