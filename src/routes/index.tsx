@@ -12,19 +12,19 @@ import styles from './routes.module.scss'
 
 const App = () => {
   const [isLoggin, setIsLoggin] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  // const [isLoading, setIsLoading] = useState(false)
   const setUserId = useSetRecoilState(userIdAtom)
 
   useEffect(() => {
     onAuthStateChanged(firebaseAuthService, (user) => {
-      setIsLoading(true)
+      // setIsLoading(true)
       if (user) {
         setIsLoggin(true)
         setUserId(user.uid)
       } else {
         setIsLoggin(false)
       }
-      setIsLoading(false)
+      // setIsLoading(false)
     })
   })
 

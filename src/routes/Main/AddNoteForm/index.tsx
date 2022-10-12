@@ -1,11 +1,9 @@
-import { Dispatch, useEffect, useMemo, useState } from 'react'
+import { Dispatch, useEffect, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
-import { doc, updateDoc } from 'firebase/firestore'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 
 import useResize from 'hooks/useResize'
 import { createDocsToFirebase } from 'utils/firebaseService/firebaseDBService'
-import { firebaseDBService } from 'utils/firebaseService/firebaseSetting'
 import modalMessage from 'utils/modalMessage'
 import {
   isOpenAddNoteFormAtom,
@@ -126,7 +124,6 @@ const AddNoteForm = ({
       setMessage({ ...modalMessage().notification.memo.NO_PLACE_NAME })
     } else {
       await createDocsToFirebase(userId, sendMemoData)
-      // await updateDoc(doc(firebaseDBService, userId, docId), sendMemoData.memo)
     }
   }
 
