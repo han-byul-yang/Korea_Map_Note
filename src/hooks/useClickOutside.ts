@@ -1,9 +1,9 @@
 import { MutableRefObject } from 'react'
 
-const useClickOutside = (targetRef: MutableRefObject<HTMLDivElement | null>, clickOutsideTarget: () => void) => {
+const useClickOutside = (targetRef: MutableRefObject<HTMLDivElement | null>, clickOutsideHandle: () => void) => {
   const handleOutsideClick = (event: MouseEvent | TouchEvent) => {
     if (!targetRef.current || targetRef.current.contains(event.target as Node)) return
-    clickOutsideTarget()
+    clickOutsideHandle()
   }
 
   const clickOutsideEvent = () => {

@@ -33,10 +33,10 @@ const InfoWindow = ({ setOpenInfoWindow, isMapLoaded }: IInfoWindowProps) => {
   const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
   const setIsOkChangeMark = useSetRecoilState(isOkChangeMarkAtom)
 
-  const clickOutsideTarget = () => {
+  const clickOutsideHandle = () => {
     setOpenInfoWindow(false)
   }
-  const { clickOutsideEvent } = useClickOutside(containerRef, clickOutsideTarget)
+  const { clickOutsideEvent } = useClickOutside(containerRef, clickOutsideHandle)
 
   const { isLoading } = useQuery(
     ['getAddressByPosition', markPosition.clickedPosition.latitude, markPosition.clickedPosition.longitude],
@@ -69,10 +69,10 @@ const InfoWindow = ({ setOpenInfoWindow, isMapLoaded }: IInfoWindowProps) => {
   const handleReadNoteClick = () => {
     setOpenAddNoteForm(false)
     setOpenReadNotes(true)
-    if (openAddNoteForm) {
+    /* if (openAddNoteForm) {
       setOpenMessageModal(true)
       setMessage(modalMessage().warning.memo.CLOSE_ADD_NOTE_FORM)
-    }
+    } */
     setIsOkChangeMark(true)
   }
 
