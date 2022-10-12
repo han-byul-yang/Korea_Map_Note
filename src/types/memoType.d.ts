@@ -2,11 +2,11 @@ export interface IMemo {
   siteName: string
   travelDate: string
   text: string
-  picture: (string | null | ArrayBuffer)[]
+  picture: (string | undefined | null | ArrayBuffer)[]
   hashTagList: Array | null
 }
 
-export interface IMemoDocs {
+export interface IStoredMemoInfo {
   createAt: Date
   geolocation: {
     latitude: number
@@ -14,4 +14,9 @@ export interface IMemoDocs {
   }
   memo: IMemo
   writer: string
+}
+
+export interface IMemoDoc {
+  memoInfo: IStoredMemoInfo
+  docId: string
 }

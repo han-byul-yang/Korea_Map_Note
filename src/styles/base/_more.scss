@@ -35,10 +35,10 @@ textarea {
   font-size: 16px;
 }
 
-input,
+/* input,
 button {
-  // -webkit-appearance: none;
-}
+  -webkit-appearance: none;
+} */
 
 input::-webkit-contacts-auto-fill-button {
   position: absolute;
@@ -59,6 +59,7 @@ button {
   user-select: none;
   background-color: transparent;
   border: 0;
+  -webkit-appearance: none;
 
   &:disabled {
     cursor: not-allowed;

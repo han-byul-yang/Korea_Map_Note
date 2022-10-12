@@ -4,14 +4,14 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import useResize from 'hooks/useResize'
 import { isOpenReadNotesAtom, markPositionAtom, memoAtom, isOkChangeMarkAtom, userIdAtom } from 'store/atom'
 import { getDocsFromFirebase } from 'utils/firebaseService/firebaseDBService'
-import { IMemoDocs } from 'types/memoType'
+import { IMemoDoc } from 'types/memoType'
 import ReadNote from './ReadNote'
 
 import { XIcon, HamburgerCloseIcon } from 'assets/svgs'
 import styles from './readNotes.module.scss'
 
 const ReadNotes = () => {
-  const [storedMemoList, setStoredMemoList] = useState<IMemoDocs[]>([])
+  const [storedMemoDoc, setStoredMemoDoc] = useState<IMemoDoc[]>([])
   const userId = useRecoilValue(userIdAtom)
   const [openReadNotes, setOpenReadNotes] = useRecoilState(isOpenReadNotesAtom)
   const setMemo = useSetRecoilState(memoAtom)
@@ -27,13 +27,15 @@ const ReadNotes = () => {
   useEffect(() => {
     if (isOkChangeMark) {
       getDocsFromFirebase(userId).then((memoDocs) => {
-        setStoredMemoList(
+        setStoredMemoDoc(
           memoDocs.docs
-            .map((firebaseMemo) => firebaseMemo.data().data)
+            .map((firebaseMemo) => {
+              return { memoInfo: firebaseMemo.data().data, docId: firebaseMemo.id }
+            })
             .filter(
               (doc) =>
-                doc.geolocation?.latitude === markPosition.clickedPosition.latitude &&
-                doc.geolocation?.longitude === markPosition.clickedPosition.longitude
+                doc.memoInfo.geolocation?.latitude === markPosition.clickedPosition.latitude &&
+                doc.memoInfo.geolocation?.longitude === markPosition.clickedPosition.longitude
             )
         )
       })
@@ -62,10 +64,10 @@ const ReadNotes = () => {
         {isMobile && (
           <HamburgerCloseIcon className={styles.hamburgerCloseIcon} onClick={handleHamburgerCloseButtonClick} />
         )}
-        {storedMemoList.length !== 0 ? (
+        {storedMemoDoc.length !== 0 ? (
           <ul>
-            {storedMemoList.map((storedMemo) => (
-              <ReadNote key={`${storedMemo.createAt}`} storedMemo={storedMemo} />
+            {storedMemoDoc.map((storedMemo) => (
+              <ReadNote key={`${storedMemo.memoInfo.createAt}`} storedMemo={storedMemo} />
             ))}
           </ul>
         ) : (
