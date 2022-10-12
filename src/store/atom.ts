@@ -2,15 +2,16 @@ import { atom } from 'recoil'
 
 import { IMarkPosition, IPosition } from 'types/markPositionType'
 import { IMemo } from 'types/memoType'
+import { IMessage } from 'types/messageType'
 
 export const userIdAtom = atom({
   key: 'userId',
   default: '',
 })
 
-export const messageAtom = atom({
+export const messageAtom = atom<IMessage>({
   key: 'message',
-  default: { kind: '', message: '' },
+  default: { kind: '', message: '', warningMessageOkButtonHandle: () => {} },
 })
 
 export const mapPositionAtom = atom<IPosition>({

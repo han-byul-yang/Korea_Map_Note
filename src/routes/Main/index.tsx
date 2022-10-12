@@ -28,7 +28,7 @@ const Main = () => {
       <ReadNotes />
       {openMessageModal && (
         <ModalPortal>
-          <MessageModal setChangeMemoPlaceName={setChangeMemoPlaceName} setFileImageList={setFileImageList} />
+          <MessageModal />
         </ModalPortal>
       )}
     </>

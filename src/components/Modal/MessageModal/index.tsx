@@ -1,39 +1,15 @@
-import { Dispatch } from 'react'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 
-import { isOpenAddNoteFormAtom, isOpenMessageModalAtom, memoAtom, messageAtom } from 'store/atom'
+import { isOpenMessageModalAtom, messageAtom } from 'store/atom'
 
-import { ErrorIcon, NoticeIcon, WarningIcon, XIcon } from 'assets/svgs'
+import { ErrorIcon, NoticeIcon, WarningIcon } from 'assets/svgs'
 import styles from './messageModal.module.scss'
 
-interface IMessageModalProps {
-  setChangeMemoPlaceName: Dispatch<React.SetStateAction<boolean>>
-  setFileImageList: Dispatch<React.SetStateAction<File[]>>
-}
-
-const MessageModal = ({ setChangeMemoPlaceName, setFileImageList }: IMessageModalProps) => {
+const MessageModal = () => {
   const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
-  const setOpenAddNoteForm = useSetRecoilState(isOpenAddNoteFormAtom)
-  const setMemo = useSetRecoilState(memoAtom)
   const message = useRecoilValue(messageAtom)
 
-  const handleErrorOkButtonClick = () => {
-    setOpenMessageModal(false)
-  }
-
-  const handleWarningOkButtonClick = () => {
-    setOpenAddNoteForm(false)
-    setOpenMessageModal(false)
-    setMemo({ siteName: '', travelDate: '', text: '', picture: [], hashTagList: [] })
-    setChangeMemoPlaceName(false)
-    setFileImageList([])
-  }
-
-  const handleWarningCancelButtonClick = () => {
-    setOpenMessageModal(false)
-  }
-
-  const handleNotificationOkButtonClick = () => {
+  const handleMessageButtonClick = () => {
     setOpenMessageModal(false)
   }
 
@@ -45,21 +21,21 @@ const MessageModal = ({ setChangeMemoPlaceName, setFileImageList }: IMessageModa
 
   const messageModalButton = {
     ERROR: (
-      <button type='button' onClick={handleErrorOkButtonClick}>
+      <button type='button' onClick={handleMessageButtonClick}>
         확인
       </button>
     ),
     NOTIFICATION: (
-      <button type='button' onClick={handleNotificationOkButtonClick}>
+      <button type='button' onClick={handleMessageButtonClick}>
         확인했습니다
       </button>
     ),
     WARNING: (
       <div className={styles.buttonBox}>
-        <button type='button' onClick={handleWarningOkButtonClick}>
+        <button type='button' onClick={message.warningMessageOkButtonHandle}>
           예
         </button>
-        <button type='button' onClick={handleWarningCancelButtonClick}>
+        <button type='button' onClick={handleMessageButtonClick}>
           아니오
         </button>
       </div>
