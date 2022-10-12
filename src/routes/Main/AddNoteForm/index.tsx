@@ -1,9 +1,11 @@
 import { Dispatch, useEffect, useMemo, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
+import { doc, updateDoc } from 'firebase/firestore'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 
 import useResize from 'hooks/useResize'
 import { createDocsToFirebase } from 'utils/firebaseService/firebaseDBService'
+import { firebaseDBService } from 'utils/firebaseService/firebaseSetting'
 import modalMessage from 'utils/modalMessage'
 import {
   isOpenAddNoteFormAtom,
@@ -95,11 +97,6 @@ const AddNoteForm = ({
     setFileImageList([])
   }
 
-  const handleXButtonClick = () => {
-    setOpenMessageModal(true)
-    setMessage({ ...modalMessage().warning.memo.CLOSE_ADD_NOTE_FORM, warningMessageOkButtonHandle })
-  }
-
   const handleCloseButtonClick = () => {
     setOpenMessageModal(true)
     setMessage({ ...modalMessage().warning.memo.CLOSE_ADD_NOTE_FORM, warningMessageOkButtonHandle })
@@ -123,19 +120,20 @@ const AddNoteForm = ({
     },
   }
 
-  const handleMemoSubmitClick = () => {
+  const handleMemoSubmitClick = async () => {
     if (!memo.siteName) {
       setOpenMessageModal(true)
       setMessage({ ...modalMessage().notification.memo.NO_PLACE_NAME })
     } else {
-      createDocsToFirebase(userId, sendMemoData)
+      await createDocsToFirebase(userId, sendMemoData)
+      // await updateDoc(doc(firebaseDBService, userId, docId), sendMemoData.memo)
     }
   }
 
   return (
     <div className={openAddNoteForm ? styles.openContainer : styles.closeContainer}>
       <div className={styles.addNoteBox}>
-        {isMobile && <XIcon className={styles.xIcon} onClick={handleXButtonClick} />}
+        {isMobile && <XIcon className={styles.xIcon} onClick={handleCloseButtonClick} />}
         <Address addressResult={addressResult} />
         <PlaceName
           setChangeMemoPlaceName={setChangeMemoPlaceName}

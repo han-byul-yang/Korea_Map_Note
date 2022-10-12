@@ -1,11 +1,10 @@
 import { useState } from 'react'
 import { MapMarker } from 'react-kakao-maps-sdk'
-import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { useSetRecoilState } from 'recoil'
 
 import InfoWindow from 'routes/Main/InfoWindow'
-import { markPositionAtom, isOpenAddNoteFormAtom, isOpenMessageModalAtom, messageAtom } from 'store/atom'
+import { markPositionAtom } from 'store/atom'
 import { IPosition } from 'types/markPositionType'
-import modalMessage from 'utils/modalMessage'
 
 interface IMarker {
   markImg: any
@@ -16,9 +15,6 @@ interface IMarker {
 const Marker = ({ markImg, markPosition, isMapLoaded }: IMarker) => {
   const [openInfoWindow, setOpenInfoWindow] = useState(false)
   const setMarkPosition = useSetRecoilState(markPositionAtom)
-  const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
-  const setMessage = useSetRecoilState(messageAtom)
-  const openAddNoteForm = useRecoilValue(isOpenAddNoteFormAtom)
 
   const handleMapMarkerClick = () => {
     setOpenInfoWindow((prev) => !prev)
