@@ -38,9 +38,9 @@ const KakaoMap = ({ setIsMapLoaded, isMapLoaded }: IKakaoMapProps) => {
       setMarkPosition((prev) => {
         return { ...prev, geolocation: { latitude: position.coords.latitude!, longitude: position.coords.longitude! } }
       })
-      // setMapLevel(12)
+      setMapLevel(12)
     },
-    [setMapPosition, setMarkPosition]
+    [setMapLevel, setMapPosition, setMarkPosition]
   )
 
   const retrieveError = useCallback(
@@ -56,7 +56,7 @@ const KakaoMap = ({ setIsMapLoaded, isMapLoaded }: IKakaoMapProps) => {
     if (!navigator.geolocation) {
       setOpenMessageModal(true)
       setMessage(modalMessage().error.geolocation.NOT_SUPPOERTED)
-    } else navigator.geolocation.watchPosition(retrieveSuccess, retrieveError)
+    } else navigator.geolocation.getCurrentPosition(retrieveSuccess, retrieveError)
   }, [retrieveError, retrieveSuccess, setMessage, setOpenMessageModal])
 
   useEffect(() => {

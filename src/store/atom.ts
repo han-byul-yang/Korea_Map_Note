@@ -59,7 +59,7 @@ export const isOpenMessageModalAtom = atom({
 
 export const mapLevelAtom = atom({
   key: 'mapLevel',
-  default: 0,
+  default: 12,
 })
 
 export const isOkChangeMarkAtom = atom({
