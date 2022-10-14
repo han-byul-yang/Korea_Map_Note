@@ -37,6 +37,7 @@ const AddNoteForm = ({
   setFileImageList,
   fileImageList,
 }: IAddNoteFormProps) => {
+  const queryClient = useQueryClient()
   const userId = useRecoilValue(userIdAtom)
   const [openAddNoteForm, setOpenAddNoteForm] = useRecoilState(isOpenAddNoteFormAtom)
   const [memo, setMemo] = useRecoilState(memoAtom) // type 설정
@@ -44,11 +45,15 @@ const AddNoteForm = ({
   const setMessage = useSetRecoilState(messageAtom)
   const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
   const { size, isSize: isMobile } = useResize()
-  const [addressResult, setAddressResult] = useState<ISearchAddressResultInfo[] | undefined>([])
+  const [addressResult, setAddressResult] = useState<ISearchAddressResultInfo[] | undefined>(
+    queryClient.getQueryData([
+      'getAddressByPosition',
+      markPosition.clickedPosition.latitude,
+      markPosition.clickedPosition.longitude,
+    ])
+  )
   const [placeResult, setPlaceResult] = useState<ISearchPlacesResultInfo[] | undefined>([])
   const [isOkChangeMark, setIsOkChangeMark] = useRecoilState(isOkChangeMarkAtom)
-
-  const queryClient = useQueryClient()
 
   useEffect(() => {
     if (isOkChangeMark) {
@@ -128,7 +133,7 @@ const AddNoteForm = ({
   }
 
   return (
-    <div className={openAddNoteForm ? styles.openContainer : styles.closeContainer}>
+    <div className={styles.addNoteContainer}>
       <div className={styles.addNoteBox}>
         {isMobile && <XIcon className={styles.xIcon} onClick={handleCloseButtonClick} />}
         <Address addressResult={addressResult} />

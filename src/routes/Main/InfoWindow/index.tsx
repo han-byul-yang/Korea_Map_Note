@@ -1,8 +1,9 @@
-import { Dispatch, useEffect, useRef } from 'react'
+import { Dispatch, memo, useEffect, useRef } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 
 import useClickOutside from 'hooks/useClickOutside'
+import useResize from 'hooks/useResize'
 import {
   isOpenAddNoteFormAtom,
   isOpenMessageModalAtom,
@@ -33,6 +34,7 @@ const InfoWindow = ({ setOpenInfoWindow, isMapLoaded }: IInfoWindowProps) => {
   const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
   const setIsOkChangeMark = useSetRecoilState(isOkChangeMarkAtom)
   const setMemo = useSetRecoilState(memoAtom)
+  const { size, isSize: isMobile } = useResize()
 
   const clickOutsideHandle = () => {
     setOpenInfoWindow(false)
@@ -56,6 +58,11 @@ const InfoWindow = ({ setOpenInfoWindow, isMapLoaded }: IInfoWindowProps) => {
     clickOutsideEvent()
   }, [clickOutsideEvent])
 
+  useEffect(() => {
+    size.MOBILE.RESIZE()
+    size.MOBILE.SIZEEVENT()
+  }, [size.MOBILE])
+
   const addNoteMessageOkButtonHandle = () => {
     setIsOkChangeMark(true)
     setOpenMessageModal(false)
@@ -73,6 +80,9 @@ const InfoWindow = ({ setOpenInfoWindow, isMapLoaded }: IInfoWindowProps) => {
         ...modalMessage().warning.memo.CLOSE_ADD_NOTE_FORM,
         warningMessageOkButtonHandle: addNoteMessageOkButtonHandle,
       })
+    }
+    if (isMobile) {
+      setIsOkChangeMark(true)
     }
   }
 
@@ -118,4 +128,4 @@ const InfoWindow = ({ setOpenInfoWindow, isMapLoaded }: IInfoWindowProps) => {
   )
 }
 
-export default InfoWindow
+export default memo(InfoWindow)

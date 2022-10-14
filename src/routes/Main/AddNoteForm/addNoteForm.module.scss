@@ -1,12 +1,11 @@
 @use '../../../styles/constants/colors';
 
-@mixin container {
+.addNoteContainer {
   position: absolute;
   top: 0;
-  left: 0;
   z-index: 5;
   display: flex;
-  transition: left 0.5s ease;
+  animation: showAddNote 1s ease 0.1s 1 normal both;
 
   @media screen and (max-width: 425px) {
     display: flex;
@@ -19,17 +18,9 @@
   }
 }
 
-.openContainer {
-  @include container;
-}
-
-.closeContainer {
-  @include container;
-  left: -20vw;
-
-  @media screen and (max-width: 425px) {
-    display: none;
-  }
+@keyframes showAddNote {
+  from { left: -20vw; }
+  to { left: 0; }
 }
 
 .addNoteBox {

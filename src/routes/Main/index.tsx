@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useRecoilValue } from 'recoil'
 
-import { isOpenMessageModalAtom } from 'store/atom'
+import { isOpenAddNoteFormAtom, isOpenMessageModalAtom, isOpenReadNotesAtom } from 'store/atom'
 import MessageModal from 'components/Modal/MessageModal'
 import AddNoteForm from 'routes/Main/AddNoteForm'
 import ModalPortal from 'components/Modal/ModalPortal'
@@ -14,16 +14,20 @@ const Main = () => {
   const [changeMemoPlaceName, setChangeMemoPlaceName] = useState(false)
   const [fileImageList, setFileImageList] = useState<File[]>([])
   const openMessageModal = useRecoilValue(isOpenMessageModalAtom)
+  const isOpenAddNoteForm = useRecoilValue(isOpenAddNoteFormAtom)
+  const isOpenReadNote = useRecoilValue(isOpenReadNotesAtom)
 
   return (
     <>
       <SearchBar isMapLoaded={isMapLoaded} />
-      <AddNoteForm
-        setChangeMemoPlaceName={setChangeMemoPlaceName}
-        changeMemoPlaceName={changeMemoPlaceName}
-        setFileImageList={setFileImageList}
-        fileImageList={fileImageList}
-      />
+      {isOpenAddNoteForm && (
+        <AddNoteForm
+          setChangeMemoPlaceName={setChangeMemoPlaceName}
+          changeMemoPlaceName={changeMemoPlaceName}
+          setFileImageList={setFileImageList}
+          fileImageList={fileImageList}
+        />
+      )}
       <KakaoMap setIsMapLoaded={setIsMapLoaded} isMapLoaded={isMapLoaded} />
       <ReadNotes />
       {openMessageModal && (
