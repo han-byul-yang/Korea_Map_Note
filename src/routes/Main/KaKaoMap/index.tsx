@@ -1,5 +1,5 @@
 import { Dispatch, useCallback, useEffect } from 'react'
-import { Map } from 'react-kakao-maps-sdk'
+import { Map, ZoomControl } from 'react-kakao-maps-sdk'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 
 import {
@@ -38,9 +38,9 @@ const KakaoMap = ({ setIsMapLoaded, isMapLoaded }: IKakaoMapProps) => {
       setMarkPosition((prev) => {
         return { ...prev, geolocation: { latitude: position.coords.latitude!, longitude: position.coords.longitude! } }
       })
-      setMapLevel(12)
+      // setMapLevel(12)
     },
-    [setMapLevel, setMapPosition, setMarkPosition]
+    [setMapPosition, setMarkPosition]
   )
 
   const retrieveError = useCallback(
@@ -117,6 +117,7 @@ const KakaoMap = ({ setIsMapLoaded, isMapLoaded }: IKakaoMapProps) => {
           />
         )
       })}
+      <ZoomControl position={kakao.maps.ControlPosition.BOTTOMRIGHT} />
     </Map>
   )
 }
