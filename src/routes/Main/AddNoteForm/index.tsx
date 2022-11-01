@@ -1,20 +1,19 @@
 import { Dispatch, useEffect, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { doc, updateDoc } from 'firebase/firestore'
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import dayjs from 'dayjs'
 
 import useResize from 'hooks/useResize'
 import useResetMemo from 'hooks/useResetMemo'
 import { storeImagesToFirebase, createDocsToFirebase } from 'utils/firebaseService/firebaseDBService'
+import useOpenMessageModal from 'hooks/useOpenMessageModal'
 import { firebaseDBService } from 'utils/firebaseService/firebaseSetting'
 import modalMessage from 'utils/modalMessage'
 import {
   isOpenAddNoteFormAtom,
-  isOpenMessageModalAtom,
   markPositionAtom,
   memoAtom,
-  messageAtom,
   isOkChangeMarkAtom,
   userIdAtom,
   imageListAtom,
@@ -39,11 +38,10 @@ const AddNoteForm = ({ setChangeMemoPlaceName, changeMemoPlaceName }: IAddNoteFo
   const queryClient = useQueryClient()
   const userId = useRecoilValue(userIdAtom)
   const [openAddNoteForm, setOpenAddNoteForm] = useRecoilState(isOpenAddNoteFormAtom)
-  const [memo, setMemo] = useRecoilState(memoAtom) // type 설정
-  const [imageFiles, setImageFiles] = useRecoilState(imageListAtom)
+  const memo = useRecoilValue(memoAtom) // type 설정
+  const imageFiles = useRecoilValue(imageListAtom)
   const markPosition = useRecoilValue(markPositionAtom)
-  const setMessage = useSetRecoilState(messageAtom)
-  const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
+  const { openMessageModal, closeMessageModal } = useOpenMessageModal()
   const { size, isSize: isMobile } = useResize()
   const [addressResult, setAddressResult] = useState<ISearchAddressResultInfo[] | undefined>(
     queryClient.getQueryData([
@@ -94,14 +92,13 @@ const AddNoteForm = ({ setChangeMemoPlaceName, changeMemoPlaceName }: IAddNoteFo
   }, [size.MOBILE])
 
   const warningMessageOkButtonHandle = () => {
-    setOpenMessageModal(false)
+    closeMessageModal()
     setOpenAddNoteForm((prevState) => ({ ...prevState, isOpen: false }))
     resetMemoData()
   }
 
   const handleCloseButtonClick = () => {
-    setOpenMessageModal(true)
-    setMessage({ ...modalMessage().warning.memo.CLOSE_ADD_NOTE_FORM, warningMessageOkButtonHandle })
+    openMessageModal(modalMessage().warning.memo.CLOSE_ADD_NOTE_FORM, warningMessageOkButtonHandle)
   }
 
   const sendMemoData = {
@@ -126,34 +123,23 @@ const AddNoteForm = ({ setChangeMemoPlaceName, changeMemoPlaceName }: IAddNoteFo
     storeImagesToFirebase(imageFiles, userId, sendMemoData.createAt)
     setOpenAddNoteForm((prevState) => ({ ...prevState, isOpen: false }))
     resetMemoData()
-    setOpenMessageModal(true)
-    setMessage({ ...modalMessage().notification.memo.NOTE_UPDATED })
+    openMessageModal(modalMessage().notification.memo.NOTE_UPDATED)
   }
 
   const updateNoteMessageOkButtonHandle = () => {
     // await updateDoc(doc(firebaseDBService, userId), sendMemoData)
     setOpenAddNoteForm((prevState) => ({ ...prevState, type: 'add' }))
     resetMemoData()
-    setOpenMessageModal(true)
-    setMessage({ ...modalMessage().notification.memo.NOTE_UPDATED })
+    openMessageModal(modalMessage().notification.memo.NOTE_UPDATED)
   }
 
   const handleMemoSubmitClick = async () => {
     if (!memo.siteName) {
-      setOpenMessageModal(true)
-      setMessage({ ...modalMessage().notification.memo.NO_PLACE_NAME })
+      openMessageModal(modalMessage().notification.memo.NO_PLACE_NAME)
     } else if (openAddNoteForm.type === 'add') {
-      setOpenMessageModal(true)
-      setMessage({
-        ...modalMessage().warning.memo.ADD_NOTE_FORM,
-        warningMessageOkButtonHandle: addNoteMessageOkButtonHandle,
-      })
+      openMessageModal(modalMessage().warning.memo.ADD_NOTE_FORM, addNoteMessageOkButtonHandle)
     } else {
-      setOpenMessageModal(true)
-      setMessage({
-        ...modalMessage().warning.memo.UPDATE_NOTE_FORM,
-        warningMessageOkButtonHandle: updateNoteMessageOkButtonHandle,
-      })
+      openMessageModal(modalMessage().warning.memo.UPDATE_NOTE_FORM, updateNoteMessageOkButtonHandle)
     }
   }
 

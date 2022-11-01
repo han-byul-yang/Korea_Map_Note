@@ -3,17 +3,11 @@ import { doc, deleteDoc } from 'firebase/firestore'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 
 import useClickOutside from 'hooks/useClickOutside'
+import useOpenMessageModal from 'hooks/useOpenMessageModal'
 import { getDocsFromFirebase } from 'utils/firebaseService/firebaseDBService'
 import { firebaseDBService } from 'utils/firebaseService/firebaseSetting'
 import modalMessage from 'utils/modalMessage'
-import {
-  isOpenAddNoteFormAtom,
-  isOpenMessageModalAtom,
-  isOpenReadNotesAtom,
-  memoAtom,
-  messageAtom,
-  userIdAtom,
-} from 'store/atom'
+import { isOpenAddNoteFormAtom, isOpenReadNotesAtom, memoAtom, userIdAtom } from 'store/atom'
 
 import styles from './memoSettingBox.module.scss'
 
@@ -26,9 +20,8 @@ const MemoSettingBox = ({ setOpenMemoSettingBox, docId }: IMemoSettingBoxProps) 
   const userId = useRecoilValue(userIdAtom)
   const setOpenAddNoteForm = useSetRecoilState(isOpenAddNoteFormAtom)
   const setOpenReadNotes = useSetRecoilState(isOpenReadNotesAtom)
-  const setMessage = useSetRecoilState(messageAtom)
-  const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
   const setMemo = useSetRecoilState(memoAtom)
+  const { openMessageModal, closeMessageModal } = useOpenMessageModal()
   const boxRef = useRef(null)
 
   const clickOutsideHandle = () => {
@@ -51,15 +44,11 @@ const MemoSettingBox = ({ setOpenMemoSettingBox, docId }: IMemoSettingBoxProps) 
 
   const deleteMessageOkButtonHandle = async () => {
     await deleteDoc(doc(firebaseDBService, userId, docId))
-    setOpenMessageModal(false)
+    closeMessageModal()
   }
 
   const handleDeleteMemoClick = () => {
-    setOpenMessageModal(true)
-    setMessage({
-      ...modalMessage().warning.memo.DELETE_MEMO,
-      warningMessageOkButtonHandle: deleteMessageOkButtonHandle,
-    })
+    openMessageModal(modalMessage().warning.memo.DELETE_MEMO, deleteMessageOkButtonHandle)
   }
 
   return (

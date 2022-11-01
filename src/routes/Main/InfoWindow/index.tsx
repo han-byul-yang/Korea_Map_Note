@@ -5,16 +5,8 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import useClickOutside from 'hooks/useClickOutside'
 import useResize from 'hooks/useResize'
 import useResetMemo from 'hooks/useResetMemo'
-import {
-  isOpenAddNoteFormAtom,
-  isOpenMessageModalAtom,
-  isOpenReadNotesAtom,
-  markPositionAtom,
-  messageAtom,
-  isOkChangeMarkAtom,
-  memoAtom,
-  imageListAtom,
-} from 'store/atom'
+import { isOpenAddNoteFormAtom, isOpenReadNotesAtom, markPositionAtom, isOkChangeMarkAtom } from 'store/atom'
+import useOpenMessageModal from 'hooks/useOpenMessageModal'
 import modalMessage from 'utils/modalMessage'
 import { getAddressByPositionApi } from 'services/api/searchKakaoApi'
 import PlaceInfoBox from './PlaceInfoBox'
@@ -30,14 +22,11 @@ interface IInfoWindowProps {
 const InfoWindow = ({ setOpenInfoWindow, isMapLoaded }: IInfoWindowProps) => {
   const containerRef = useRef(null)
   const markPosition = useRecoilValue(markPositionAtom)
-  const setMessage = useSetRecoilState(messageAtom)
   const [openAddNoteForm, setOpenAddNoteForm] = useRecoilState(isOpenAddNoteFormAtom)
   const setOpenReadNotes = useSetRecoilState(isOpenReadNotesAtom)
-  const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
   const setIsOkChangeMark = useSetRecoilState(isOkChangeMarkAtom)
-  const setMemo = useSetRecoilState(memoAtom)
-  const setImageFiles = useSetRecoilState(imageListAtom)
   const { size, isSize: isMobile } = useResize()
+  const { openMessageModal, closeMessageModal } = useOpenMessageModal()
   const resetMemoData = useResetMemo()
 
   const clickOutsideHandle = () => {
@@ -52,8 +41,7 @@ const InfoWindow = ({ setOpenInfoWindow, isMapLoaded }: IInfoWindowProps) => {
       staleTime: 1000,
       cacheTime: 1000 * 60 * 60,
       onError: () => {
-        setOpenMessageModal(true)
-        setMessage(modalMessage().error.api.SOMETHING_WRONG)
+        openMessageModal(modalMessage().error.api.SOMETHING_WRONG)
       },
     }
   )
@@ -69,7 +57,7 @@ const InfoWindow = ({ setOpenInfoWindow, isMapLoaded }: IInfoWindowProps) => {
 
   const addNoteMessageOkButtonHandle = () => {
     setIsOkChangeMark(true)
-    setOpenMessageModal(false)
+    closeMessageModal()
     resetMemoData()
   }
 
@@ -77,11 +65,7 @@ const InfoWindow = ({ setOpenInfoWindow, isMapLoaded }: IInfoWindowProps) => {
     setOpenReadNotes(false)
     setOpenAddNoteForm((prevState) => ({ ...prevState, isOpen: true }))
     if (openAddNoteForm.isOpen) {
-      setOpenMessageModal(true)
-      setMessage({
-        ...modalMessage().warning.memo.CLOSE_ADD_NOTE_FORM,
-        warningMessageOkButtonHandle: addNoteMessageOkButtonHandle,
-      })
+      openMessageModal(modalMessage().warning.memo.CLOSE_ADD_NOTE_FORM, addNoteMessageOkButtonHandle)
     }
     if (isMobile) {
       setIsOkChangeMark(true)
@@ -90,7 +74,7 @@ const InfoWindow = ({ setOpenInfoWindow, isMapLoaded }: IInfoWindowProps) => {
 
   const readNoteMessageOkButtonHandle = () => {
     setIsOkChangeMark(true)
-    setOpenMessageModal(false)
+    closeMessageModal()
     setOpenReadNotes(true)
     setOpenAddNoteForm((prevState) => ({ ...prevState, isOpen: false }))
     resetMemoData()
@@ -98,11 +82,7 @@ const InfoWindow = ({ setOpenInfoWindow, isMapLoaded }: IInfoWindowProps) => {
 
   const handleReadNoteClick = () => {
     if (openAddNoteForm.isOpen) {
-      setOpenMessageModal(true)
-      setMessage({
-        ...modalMessage().warning.memo.CLOSE_ADD_NOTE_FORM,
-        warningMessageOkButtonHandle: readNoteMessageOkButtonHandle,
-      })
+      openMessageModal(modalMessage().warning.memo.CLOSE_ADD_NOTE_FORM, readNoteMessageOkButtonHandle)
     } else {
       setOpenAddNoteForm((prevState) => ({ ...prevState, isOpen: false }))
       setOpenReadNotes(true)

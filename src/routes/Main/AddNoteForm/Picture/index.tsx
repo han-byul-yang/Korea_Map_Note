@@ -1,7 +1,8 @@
 import { Fragment } from 'react'
-import { useRecoilState, useSetRecoilState } from 'recoil'
+import { useRecoilState } from 'recoil'
 
-import { imageListAtom, isOpenMessageModalAtom, messageAtom } from 'store/atom'
+import { imageListAtom } from 'store/atom'
+import useOpenMessageModal from 'hooks/useOpenMessageModal'
 import modalMessage from 'utils/modalMessage'
 
 import { ImageIcon } from 'assets/svgs'
@@ -9,8 +10,7 @@ import styles from './picture.module.scss'
 
 const Picture = () => {
   const [imageFiles, setImageFiles] = useRecoilState(imageListAtom)
-  const setMessage = useSetRecoilState(messageAtom)
-  const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
+  const { openMessageModal } = useOpenMessageModal()
 
   const handleImageChange = (e: any) => {
     const { files } = e.target
@@ -19,15 +19,13 @@ const Picture = () => {
     // eslint-disable-next-line no-plusplus
     for (let i = 0; i < files.length; i++) {
       if (imageFileNames.includes(files[i].name)) {
-        setOpenMessageModal(true)
-        setMessage(modalMessage().error.memo.No_SAME_IMAGE)
+        openMessageModal(modalMessage().error.memo.No_SAME_IMAGE)
         return
       }
     }
 
     if ([...files, ...imageFiles].length > 4) {
-      setOpenMessageModal(true)
-      setMessage(modalMessage().error.memo.LIMIT_IMAGE_NUMBER)
+      openMessageModal(modalMessage().error.memo.LIMIT_IMAGE_NUMBER)
       return
     }
     setImageFiles((prevFile) => [...files, ...prevFile])

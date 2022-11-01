@@ -2,16 +2,10 @@ import React, { Dispatch } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useSetRecoilState } from 'recoil'
 
+import useOpenMessageModal from 'hooks/useOpenMessageModal'
 import modalMessage from 'utils/modalMessage'
 import { getPlacesByKeywordApi } from 'services/api/searchKakaoApi'
-import {
-  isOpenMessageModalAtom,
-  mapLevelAtom,
-  mapPositionAtom,
-  markPositionAtom,
-  messageAtom,
-  tempAtom,
-} from 'store/atom'
+import { mapLevelAtom, mapPositionAtom, markPositionAtom, tempAtom } from 'store/atom'
 import { ISearchPlacesResultInfo } from 'types/searchPlacesType'
 
 import { SearchIcon } from 'assets/svgs'
@@ -29,8 +23,7 @@ const DropDown = ({ searchInput, setSearchInput, showDropDown, setShowDropDown, 
   const setMarkPosition = useSetRecoilState(markPositionAtom)
   const setMapPosition = useSetRecoilState(mapPositionAtom)
   const setMapLevel = useSetRecoilState(mapLevelAtom)
-  const setMessage = useSetRecoilState(messageAtom)
-  const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
+  const { openMessageModal } = useOpenMessageModal()
 
   const setTemp = useSetRecoilState(tempAtom)
 
@@ -46,8 +39,7 @@ const DropDown = ({ searchInput, setSearchInput, showDropDown, setShowDropDown, 
       // enabled: !!searchInput, // dropdown이 mount 될 때 query도 생성되니까 없어도 됨
       keepPreviousData: true,
       onError: () => {
-        setOpenMessageModal(true)
-        setMessage(modalMessage().error.api.SOMETHING_WRONG)
+        openMessageModal(modalMessage().error.api.SOMETHING_WRONG)
       },
     }
   )
@@ -89,3 +81,4 @@ export default React.memo(DropDown)
 // suspense 이용, tanstack-query의 isFetching 이용 차이
 // suspense 는 한 번에 데이터 fetching, 하지만 여기는 부모 자식 관계가 없어(data fetching 행위가 한 번만 이루어짐) 여기서는 필요하지 않을 듯
 // 또 컴포넌트를 data 받아오는 행위에 상관없이 render 시작(suspense)
+// setTemp 삭제
