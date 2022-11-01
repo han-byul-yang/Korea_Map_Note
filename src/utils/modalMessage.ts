@@ -21,12 +21,15 @@ const modalMessage = () => {
     notification: {
       memo: {
         NO_PLACE_NAME: { kind: 'notification', message: '장소 이름 입력은 필수입니다.' },
+        NOTE_UPDATED: { kind: 'notification', message: '메모가 성공적으로 저장되었습니다' },
       },
     },
     warning: {
       memo: {
         CLOSE_ADD_NOTE_FORM: { kind: 'warning', message: '작성을 그만 두시겠습니까?' },
         DELETE_MEMO: { kind: 'warning', message: '메모를 삭제하시겠습니까?' },
+        ADD_NOTE_FORM: { kind: 'warning', message: '메모를 추가 하시겠습니까?' },
+        UPDATE_NOTE_FORM: { kind: 'warning', message: '메모를 업데이트 하시겠습니까?' },
       },
     },
   }

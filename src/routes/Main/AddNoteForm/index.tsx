@@ -120,16 +120,41 @@ const AddNoteForm = ({ setChangeMemoPlaceName, changeMemoPlaceName }: IAddNoteFo
     },
   }
 
+  const addNoteMessageOkButtonHandle = () => {
+    createDocsToFirebase(userId, sendMemoData.createAt, sendMemoData)
+    storeImagesToFirebase(imageFiles, userId, sendMemoData.createAt)
+    setOpenAddNoteForm((prevState) => ({ ...prevState, isOpen: false }))
+    setMemo({ siteName: '', travelDate: { startDate: new Date(), endDate: null }, text: '', hashTagList: [] })
+    setImageFiles([])
+    setOpenMessageModal(true)
+    setMessage({ ...modalMessage().notification.memo.NOTE_UPDATED })
+  }
+
+  const updateNoteMessageOkButtonHandle = () => {
+    // await updateDoc(doc(firebaseDBService, userId), sendMemoData)
+    setOpenAddNoteForm((prevState) => ({ ...prevState, type: 'add' }))
+    setMemo({ siteName: '', travelDate: { startDate: new Date(), endDate: null }, text: '', hashTagList: [] })
+    setImageFiles([])
+    setOpenMessageModal(true)
+    setMessage({ ...modalMessage().notification.memo.NOTE_UPDATED })
+  }
+
   const handleMemoSubmitClick = async () => {
     if (!memo.siteName) {
       setOpenMessageModal(true)
       setMessage({ ...modalMessage().notification.memo.NO_PLACE_NAME })
     } else if (openAddNoteForm.type === 'add') {
-      createDocsToFirebase(userId, sendMemoData.createAt, sendMemoData)
-      storeImagesToFirebase(imageFiles, userId, sendMemoData.createAt)
+      setOpenMessageModal(true)
+      setMessage({
+        ...modalMessage().warning.memo.ADD_NOTE_FORM,
+        warningMessageOkButtonHandle: addNoteMessageOkButtonHandle,
+      })
     } else {
-      // await updateDoc(doc(firebaseDBService, userId), sendMemoData)
-      setOpenAddNoteForm((prevState) => ({ ...prevState, type: 'add' }))
+      setOpenMessageModal(true)
+      setMessage({
+        ...modalMessage().warning.memo.UPDATE_NOTE_FORM,
+        warningMessageOkButtonHandle: updateNoteMessageOkButtonHandle,
+      })
     }
   }
 
