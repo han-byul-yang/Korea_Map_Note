@@ -83,8 +83,3 @@ export const tempAtom = atom<ISearchPlacesResultInfo[]>({
   key: 'temp',
   default: [],
 }) // 삭제해주기
-
-export const whetherAddOrEditAtom = atom({
-  key: 'whetherAddOrEdit',
-  default: 'add',
-})

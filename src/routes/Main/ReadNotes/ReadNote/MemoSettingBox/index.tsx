@@ -42,7 +42,7 @@ const MemoSettingBox = ({ setOpenMemoSettingBox, docId }: IMemoSettingBoxProps) 
   }, [clickOutsideEvent])
 
   const handleModifyMemoClick = () => {
-    setOpenAddNoteForm(true)
+    setOpenAddNoteForm({ type: 'edit', isOpen: true })
     setOpenReadNotes(false)
     getDocsFromFirebase(userId).then((memoDocs) =>
       setMemo(memoDocs.docs.filter((ele) => ele.id === docId)[0].data().data.memo)

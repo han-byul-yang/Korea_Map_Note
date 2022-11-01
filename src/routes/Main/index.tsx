@@ -18,7 +18,7 @@ const Main = () => {
   return (
     <>
       <SearchBar isMapLoaded={isMapLoaded} />
-      {isOpenAddNoteForm && (
+      {isOpenAddNoteForm.isOpen && (
         <AddNoteForm setChangeMemoPlaceName={setChangeMemoPlaceName} changeMemoPlaceName={changeMemoPlaceName} />
       )}
       <KakaoMap setIsMapLoaded={setIsMapLoaded} isMapLoaded={isMapLoaded} />

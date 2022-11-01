@@ -1,9 +1,12 @@
 import { Dispatch, useEffect, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
+import { doc, updateDoc } from 'firebase/firestore'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import dayjs from 'dayjs'
 
 import useResize from 'hooks/useResize'
-import { createDocsToFirebase } from 'utils/firebaseService/firebaseDBService'
+import { storeImagesToFirebase, createDocsToFirebase } from 'utils/firebaseService/firebaseDBService'
+import { firebaseDBService } from 'utils/firebaseService/firebaseSetting'
 import modalMessage from 'utils/modalMessage'
 import {
   isOpenAddNoteFormAtom,
@@ -13,6 +16,7 @@ import {
   messageAtom,
   isOkChangeMarkAtom,
   userIdAtom,
+  imageListAtom,
 } from 'store/atom'
 import { ISearchAddressResultInfo, ISearchPlacesResultInfo } from 'types/searchPlacesType'
 import Address from './Address'
@@ -27,20 +31,14 @@ import styles from './addNoteForm.module.scss'
 interface IAddNoteFormProps {
   setChangeMemoPlaceName: Dispatch<React.SetStateAction<boolean>>
   changeMemoPlaceName: boolean
-  setFileImageList: Dispatch<React.SetStateAction<File[]>>
-  fileImageList: File[]
 }
 
-const AddNoteForm = ({
-  setChangeMemoPlaceName,
-  changeMemoPlaceName,
-  setFileImageList,
-  fileImageList,
-}: IAddNoteFormProps) => {
+const AddNoteForm = ({ setChangeMemoPlaceName, changeMemoPlaceName }: IAddNoteFormProps) => {
   const queryClient = useQueryClient()
   const userId = useRecoilValue(userIdAtom)
   const [openAddNoteForm, setOpenAddNoteForm] = useRecoilState(isOpenAddNoteFormAtom)
   const [memo, setMemo] = useRecoilState(memoAtom) // type 설정
+  const [imageFiles, setImageFiles] = useRecoilState(imageListAtom)
   const markPosition = useRecoilValue(markPositionAtom)
   const setMessage = useSetRecoilState(messageAtom)
   const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
@@ -94,10 +92,9 @@ const AddNoteForm = ({
 
   const warningMessageOkButtonHandle = () => {
     setOpenMessageModal(false)
-    setOpenAddNoteForm(false)
-    setMemo({ siteName: '', travelDate: '', text: '', picture: [], hashTagList: [] })
-    setChangeMemoPlaceName(false)
-    setFileImageList([])
+    setOpenAddNoteForm((prevState) => ({ ...prevState, isOpen: false }))
+    setMemo({ siteName: '', travelDate: '', text: '', hashTagList: [] })
+    setImageFiles([])
   }
 
   const handleCloseButtonClick = () => {
@@ -107,7 +104,7 @@ const AddNoteForm = ({
 
   const sendMemoData = {
     writer: userId,
-    createAt: new Date(),
+    createAt: dayjs(new Date()).valueOf(),
     geolocation: {
       latitude: markPosition.clickedPosition.latitude,
       longitude: markPosition.clickedPosition.longitude,
@@ -118,7 +115,6 @@ const AddNoteForm = ({
         : (placeResult && placeResult.length !== 0 && placeResult[0].place_name) || memo.siteName,
       travelDate: memo.travelDate,
       text: memo.text,
-      picture: memo.picture,
       hashTagList: memo.hashTagList,
     },
   }
@@ -127,8 +123,12 @@ const AddNoteForm = ({
     if (!memo.siteName) {
       setOpenMessageModal(true)
       setMessage({ ...modalMessage().notification.memo.NO_PLACE_NAME })
+    } else if (openAddNoteForm.type === 'add') {
+      createDocsToFirebase(userId, sendMemoData.createAt, sendMemoData)
+      storeImagesToFirebase(imageFiles, userId, sendMemoData.createAt)
     } else {
-      await createDocsToFirebase(userId, sendMemoData)
+      await updateDoc(doc(firebaseDBService, userId), sendMemoData)
+      setOpenAddNoteForm((prevState) => ({ ...prevState, type: 'add' }))
     }
   }
 
@@ -144,13 +144,13 @@ const AddNoteForm = ({
         />
         {/* <VisitedDate /> */}
         <DescriptionText />
-        <Picture setFileImageList={setFileImageList} fileImageList={fileImageList} />
+        <Picture />
         <HashTag />
         <button type='button' onClick={handleMemoSubmitClick}>
-          메모 저장
+          {openAddNoteForm.type === 'add' ? '메모 저장' : '메모 수정'}
         </button>
       </div>
-      {!isMobile && openAddNoteForm && (
+      {!isMobile && openAddNoteForm.isOpen && (
         <button className={openAddNoteForm && styles.closeButton} type='button' onClick={handleCloseButtonClick}>
           <XIcon className={styles.arrowIcon} />
         </button>

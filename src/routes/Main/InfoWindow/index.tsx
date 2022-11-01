@@ -12,6 +12,7 @@ import {
   messageAtom,
   isOkChangeMarkAtom,
   memoAtom,
+  imageListAtom,
 } from 'store/atom'
 import modalMessage from 'utils/modalMessage'
 import { getAddressByPositionApi } from 'services/api/searchKakaoApi'
@@ -34,6 +35,7 @@ const InfoWindow = ({ setOpenInfoWindow, isMapLoaded }: IInfoWindowProps) => {
   const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
   const setIsOkChangeMark = useSetRecoilState(isOkChangeMarkAtom)
   const setMemo = useSetRecoilState(memoAtom)
+  const setImageFiles = useSetRecoilState(imageListAtom)
   const { size, isSize: isMobile } = useResize()
 
   const clickOutsideHandle = () => {
@@ -66,15 +68,14 @@ const InfoWindow = ({ setOpenInfoWindow, isMapLoaded }: IInfoWindowProps) => {
   const addNoteMessageOkButtonHandle = () => {
     setIsOkChangeMark(true)
     setOpenMessageModal(false)
-    setMemo({ siteName: '', travelDate: '', text: '', picture: [], hashTagList: [] })
-    // setChangeMemoPlaceName(false)
-    // setFileImageList([])
+    setMemo({ siteName: '', travelDate: '', text: '', hashTagList: [] })
+    setImageFiles([])
   }
 
   const handleAddNoteClick = () => {
     setOpenReadNotes(false)
-    setOpenAddNoteForm(true)
-    if (openAddNoteForm) {
+    setOpenAddNoteForm((prevState) => ({ ...prevState, isOpen: true }))
+    if (openAddNoteForm.isOpen) {
       setOpenMessageModal(true)
       setMessage({
         ...modalMessage().warning.memo.CLOSE_ADD_NOTE_FORM,
@@ -90,21 +91,20 @@ const InfoWindow = ({ setOpenInfoWindow, isMapLoaded }: IInfoWindowProps) => {
     setIsOkChangeMark(true)
     setOpenMessageModal(false)
     setOpenReadNotes(true)
-    setOpenAddNoteForm(false)
-    setMemo({ siteName: '', travelDate: '', text: '', picture: [], hashTagList: [] })
-    // setChangeMemoPlaceName(false)
-    // setFileImageList([])
+    setOpenAddNoteForm((prevState) => ({ ...prevState, isOpen: false }))
+    setMemo({ siteName: '', travelDate: '', text: '', hashTagList: [] })
+    setImageFiles([])
   }
 
   const handleReadNoteClick = () => {
-    if (openAddNoteForm) {
+    if (openAddNoteForm.isOpen) {
       setOpenMessageModal(true)
       setMessage({
         ...modalMessage().warning.memo.CLOSE_ADD_NOTE_FORM,
         warningMessageOkButtonHandle: readNoteMessageOkButtonHandle,
       })
     } else {
-      setOpenAddNoteForm(false)
+      setOpenAddNoteForm((prevState) => ({ ...prevState, isOpen: false }))
       setOpenReadNotes(true)
       setIsOkChangeMark(true)
     }
