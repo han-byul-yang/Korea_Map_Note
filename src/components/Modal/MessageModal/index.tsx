@@ -6,11 +6,11 @@ import { ErrorIcon, NoticeIcon, WarningIcon } from 'assets/svgs'
 import styles from './messageModal.module.scss'
 
 const MessageModal = () => {
-  const setOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
+  const setIsOpenMessageModal = useSetRecoilState(isOpenMessageModalAtom)
   const message = useRecoilValue(messageAtom)
 
   const handleMessageButtonClick = () => {
-    setOpenMessageModal(false)
+    setIsOpenMessageModal(false)
   }
 
   const modalIcon = {
@@ -46,7 +46,6 @@ const MessageModal = () => {
     <>
       <div className={styles.background} />
       <div className={styles.modalBox}>
-        {/* <XIcon className={styles.xIcon} onClick={handleModalButtonClick} /> */}
         <div className={styles.typeBox}>
           {modalIcon}
           {message.kind.toUpperCase()}

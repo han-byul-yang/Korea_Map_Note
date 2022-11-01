@@ -18,8 +18,8 @@ interface IMemoSettingBoxProps {
 
 const MemoSettingBox = ({ setOpenMemoSettingBox, docId }: IMemoSettingBoxProps) => {
   const userId = useRecoilValue(userIdAtom)
-  const setOpenAddNoteForm = useSetRecoilState(isOpenAddNoteFormAtom)
-  const setOpenReadNotes = useSetRecoilState(isOpenReadNotesAtom)
+  const setIsOpenAddNoteForm = useSetRecoilState(isOpenAddNoteFormAtom)
+  const setIsOpenReadNotes = useSetRecoilState(isOpenReadNotesAtom)
   const setMemo = useSetRecoilState(memoAtom)
   const { openMessageModal, closeMessageModal } = useOpenMessageModal()
   const boxRef = useRef(null)
@@ -35,8 +35,8 @@ const MemoSettingBox = ({ setOpenMemoSettingBox, docId }: IMemoSettingBoxProps) 
   }, [clickOutsideEvent])
 
   const handleModifyMemoClick = () => {
-    setOpenAddNoteForm({ type: 'edit', isOpen: true })
-    setOpenReadNotes(false)
+    setIsOpenAddNoteForm({ type: 'edit', isOpen: true })
+    setIsOpenReadNotes(false)
     getDocsFromFirebase(userId).then((memoDocs) =>
       setMemo(memoDocs.docs.filter((ele) => ele.id === docId)[0].data().data.memo)
     )

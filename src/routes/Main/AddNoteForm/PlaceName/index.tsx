@@ -5,15 +5,15 @@ import { memoAtom } from 'store/atom'
 import { ISearchPlacesResultInfo } from 'types/searchPlacesType'
 
 interface IPlaceNameProps {
-  setChangeMemoPlaceName: Dispatch<React.SetStateAction<boolean>>
-  changeMemoPlaceName: boolean
+  setIsChangeMemoPlaceName: Dispatch<React.SetStateAction<boolean>>
+  isChangeMemoPlaceName: boolean
   placeResult: ISearchPlacesResultInfo[] | undefined
 }
-const PlaceName = ({ setChangeMemoPlaceName, changeMemoPlaceName, placeResult }: IPlaceNameProps) => {
+const PlaceName = ({ setIsChangeMemoPlaceName, isChangeMemoPlaceName, placeResult }: IPlaceNameProps) => {
   const [memo, setMemo] = useRecoilState(memoAtom) // type 설정
 
   const handleChangePlaceNameClick = () => {
-    setChangeMemoPlaceName(true)
+    setIsChangeMemoPlaceName(true)
     setMemo((prev) => ({
       ...prev,
       siteName: placeResult![0].place_name,
@@ -29,13 +29,13 @@ const PlaceName = ({ setChangeMemoPlaceName, changeMemoPlaceName, placeResult }:
       이 장소의 이름은?
       {placeResult && placeResult.length !== 0 ? (
         <>
-          {changeMemoPlaceName ? (
+          {isChangeMemoPlaceName ? (
             <input type='text' name='siteName' value={memo.siteName} onChange={handlePlaceNameChange} />
           ) : (
             <span>{placeResult && placeResult.length !== 0 && placeResult[0].place_name}</span>
           )}
           <button type='button' onClick={handleChangePlaceNameClick}>
-            {changeMemoPlaceName ? '되돌리기' : '이름 수정'}
+            {isChangeMemoPlaceName ? '되돌리기' : '이름 수정'}
           </button>
         </>
       ) : (

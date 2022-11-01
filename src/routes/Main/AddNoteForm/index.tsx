@@ -10,14 +10,7 @@ import { storeImagesToFirebase, createDocsToFirebase } from 'utils/firebaseServi
 import useOpenMessageModal from 'hooks/useOpenMessageModal'
 import { firebaseDBService } from 'utils/firebaseService/firebaseSetting'
 import modalMessage from 'utils/modalMessage'
-import {
-  isOpenAddNoteFormAtom,
-  markPositionAtom,
-  memoAtom,
-  isOkChangeMarkAtom,
-  userIdAtom,
-  imageListAtom,
-} from 'store/atom'
+import { isOpenAddNoteFormAtom, markPositionAtom, memoAtom, userIdAtom, imageListAtom } from 'store/atom'
 import { ISearchAddressResultInfo, ISearchPlacesResultInfo } from 'types/searchPlacesType'
 import Address from './Address'
 import PlaceName from './PlaceName'
@@ -30,11 +23,11 @@ import { XIcon } from 'assets/svgs'
 import styles from './addNoteForm.module.scss'
 
 interface IAddNoteFormProps {
-  setChangeMemoPlaceName: Dispatch<React.SetStateAction<boolean>>
-  changeMemoPlaceName: boolean
+  setIsChangeMemoPlaceName: Dispatch<React.SetStateAction<boolean>>
+  isChangeMemoPlaceName: boolean
 }
 
-const AddNoteForm = ({ setChangeMemoPlaceName, changeMemoPlaceName }: IAddNoteFormProps) => {
+const AddNoteForm = ({ setIsChangeMemoPlaceName, isChangeMemoPlaceName }: IAddNoteFormProps) => {
   const queryClient = useQueryClient()
   const userId = useRecoilValue(userIdAtom)
   const [openAddNoteForm, setOpenAddNoteForm] = useRecoilState(isOpenAddNoteFormAtom)
@@ -51,11 +44,10 @@ const AddNoteForm = ({ setChangeMemoPlaceName, changeMemoPlaceName }: IAddNoteFo
     ])
   )
   const [placeResult, setPlaceResult] = useState<ISearchPlacesResultInfo[] | undefined>([])
-  const [isOkChangeMark, setIsOkChangeMark] = useRecoilState(isOkChangeMarkAtom)
   const resetMemoData = useResetMemo()
 
   useEffect(() => {
-    if (isOkChangeMark) {
+    if (openAddNoteForm.isOpen) {
       setAddressResult(
         queryClient.getQueryData([
           'getAddressByPosition',
@@ -76,14 +68,12 @@ const AddNoteForm = ({ setChangeMemoPlaceName, changeMemoPlaceName }: IAddNoteFo
             Number(place.y) === markPosition.clickedPosition.latitude
         )
       )
-      setIsOkChangeMark(false)
     }
   }, [
     markPosition.clickedPosition.latitude,
     markPosition.clickedPosition.longitude,
-    isOkChangeMark,
+    openAddNoteForm.isOpen,
     queryClient,
-    setIsOkChangeMark,
   ])
 
   useEffect(() => {
@@ -109,7 +99,7 @@ const AddNoteForm = ({ setChangeMemoPlaceName, changeMemoPlaceName }: IAddNoteFo
       longitude: markPosition.clickedPosition.longitude,
     },
     memo: {
-      siteName: changeMemoPlaceName
+      siteName: isChangeMemoPlaceName
         ? memo.siteName
         : (placeResult && placeResult.length !== 0 && placeResult[0].place_name) || memo.siteName,
       travelDate: memo.travelDate,
@@ -124,6 +114,7 @@ const AddNoteForm = ({ setChangeMemoPlaceName, changeMemoPlaceName }: IAddNoteFo
     setOpenAddNoteForm((prevState) => ({ ...prevState, isOpen: false }))
     resetMemoData()
     openMessageModal(modalMessage().notification.memo.NOTE_UPDATED)
+    // setIsChangeMemoPlaceName(false)
   }
 
   const updateNoteMessageOkButtonHandle = () => {
@@ -131,6 +122,7 @@ const AddNoteForm = ({ setChangeMemoPlaceName, changeMemoPlaceName }: IAddNoteFo
     setOpenAddNoteForm((prevState) => ({ ...prevState, type: 'add' }))
     resetMemoData()
     openMessageModal(modalMessage().notification.memo.NOTE_UPDATED)
+    // setIsChangeMemoPlaceName(false)
   }
 
   const handleMemoSubmitClick = async () => {
@@ -149,8 +141,8 @@ const AddNoteForm = ({ setChangeMemoPlaceName, changeMemoPlaceName }: IAddNoteFo
         {isMobile && <XIcon className={styles.xIcon} onClick={handleCloseButtonClick} />}
         <Address addressResult={addressResult} />
         <PlaceName
-          setChangeMemoPlaceName={setChangeMemoPlaceName}
-          changeMemoPlaceName={changeMemoPlaceName}
+          setIsChangeMemoPlaceName={setIsChangeMemoPlaceName}
+          isChangeMemoPlaceName={isChangeMemoPlaceName}
           placeResult={placeResult}
         />
         <TravelDate />

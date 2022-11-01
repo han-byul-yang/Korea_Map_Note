@@ -5,7 +5,7 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import useClickOutside from 'hooks/useClickOutside'
 import useResize from 'hooks/useResize'
 import useResetMemo from 'hooks/useResetMemo'
-import { isOpenAddNoteFormAtom, isOpenReadNotesAtom, markPositionAtom, isOkChangeMarkAtom } from 'store/atom'
+import { isOpenAddNoteFormAtom, isOpenReadNotesAtom, markPositionAtom } from 'store/atom'
 import useOpenMessageModal from 'hooks/useOpenMessageModal'
 import modalMessage from 'utils/modalMessage'
 import { getAddressByPositionApi } from 'services/api/searchKakaoApi'
@@ -22,9 +22,9 @@ interface IInfoWindowProps {
 const InfoWindow = ({ setOpenInfoWindow, isMapLoaded }: IInfoWindowProps) => {
   const containerRef = useRef(null)
   const markPosition = useRecoilValue(markPositionAtom)
-  const [openAddNoteForm, setOpenAddNoteForm] = useRecoilState(isOpenAddNoteFormAtom)
-  const setOpenReadNotes = useSetRecoilState(isOpenReadNotesAtom)
-  const setIsOkChangeMark = useSetRecoilState(isOkChangeMarkAtom)
+  const [isOpenAddNoteForm, setIsOpenAddNoteForm] = useRecoilState(isOpenAddNoteFormAtom)
+  const setIsOpenReadNotes = useSetRecoilState(isOpenReadNotesAtom)
+  // const setIsOkChangeMark = useSetRecoilState(isOkChangeMarkAtom)
   const { size, isSize: isMobile } = useResize()
   const { openMessageModal, closeMessageModal } = useOpenMessageModal()
   const resetMemoData = useResetMemo()
@@ -56,37 +56,37 @@ const InfoWindow = ({ setOpenInfoWindow, isMapLoaded }: IInfoWindowProps) => {
   }, [size.MOBILE])
 
   const addNoteMessageOkButtonHandle = () => {
-    setIsOkChangeMark(true)
+    // setIsOkChangeMark(true)
     closeMessageModal()
     resetMemoData()
   }
 
   const handleAddNoteClick = () => {
-    setOpenReadNotes(false)
-    setOpenAddNoteForm((prevState) => ({ ...prevState, isOpen: true }))
-    if (openAddNoteForm.isOpen) {
+    setIsOpenReadNotes(false)
+    setIsOpenAddNoteForm((prevState) => ({ ...prevState, isOpen: true }))
+    if (isOpenAddNoteForm.isOpen) {
       openMessageModal(modalMessage().warning.memo.CLOSE_ADD_NOTE_FORM, addNoteMessageOkButtonHandle)
     }
-    if (isMobile) {
+    /* if (isMobile) {
       setIsOkChangeMark(true)
-    }
+    } */
   }
 
   const readNoteMessageOkButtonHandle = () => {
-    setIsOkChangeMark(true)
+    // setIsOkChangeMark(true)
     closeMessageModal()
-    setOpenReadNotes(true)
-    setOpenAddNoteForm((prevState) => ({ ...prevState, isOpen: false }))
+    setIsOpenReadNotes(true)
+    setIsOpenAddNoteForm((prevState) => ({ ...prevState, isOpen: false }))
     resetMemoData()
   }
 
   const handleReadNoteClick = () => {
-    if (openAddNoteForm.isOpen) {
+    if (isOpenAddNoteForm.isOpen) {
       openMessageModal(modalMessage().warning.memo.CLOSE_ADD_NOTE_FORM, readNoteMessageOkButtonHandle)
     } else {
-      setOpenAddNoteForm((prevState) => ({ ...prevState, isOpen: false }))
-      setOpenReadNotes(true)
-      setIsOkChangeMark(true)
+      setIsOpenAddNoteForm((prevState) => ({ ...prevState, isOpen: false }))
+      setIsOpenReadNotes(true)
+      // setIsOkChangeMark(true)
     }
   }
 

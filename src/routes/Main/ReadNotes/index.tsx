@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 
 import useResize from 'hooks/useResize'
-import { isOpenReadNotesAtom, markPositionAtom, memoAtom, isOkChangeMarkAtom, userIdAtom } from 'store/atom'
+import { isOpenReadNotesAtom, markPositionAtom, memoAtom, userIdAtom } from 'store/atom'
 import { getDocsFromFirebase } from 'utils/firebaseService/firebaseDBService'
 import { IMemoDoc } from 'types/memoType'
 import ReadNote from './ReadNote'
@@ -13,10 +13,10 @@ import styles from './readNotes.module.scss'
 const ReadNotes = () => {
   const [storedMemoDoc, setStoredMemoDoc] = useState<IMemoDoc[]>([])
   const userId = useRecoilValue(userIdAtom)
-  const [openReadNotes, setOpenReadNotes] = useRecoilState(isOpenReadNotesAtom)
+  const [isOpenReadNotes, setIsOpenReadNotes] = useRecoilState(isOpenReadNotesAtom)
   const setMemo = useSetRecoilState(memoAtom)
   const markPosition = useRecoilValue(markPositionAtom)
-  const [isOkChangeMark, setIsOkChangeMark] = useRecoilState(isOkChangeMarkAtom)
+  // const [isOkChangeMark, setIsOkChangeMark] = useRecoilState(isOkChangeMarkAtom)
   const { size, isSize: isMobile } = useResize()
 
   useEffect(() => {
@@ -25,7 +25,7 @@ const ReadNotes = () => {
   }, [size.MOBILE])
 
   useEffect(() => {
-    if (isOkChangeMark) {
+    if (isOpenReadNotes) {
       getDocsFromFirebase(userId).then((memoDocs) => {
         setStoredMemoDoc(
           [...memoDocs.docs]
@@ -41,26 +41,19 @@ const ReadNotes = () => {
         )
       })
     }
-    setIsOkChangeMark(false)
-  }, [
-    markPosition.clickedPosition.latitude,
-    markPosition.clickedPosition.longitude,
-    isOkChangeMark,
-    setIsOkChangeMark,
-    userId,
-  ])
+  }, [markPosition.clickedPosition.latitude, markPosition.clickedPosition.longitude, isOpenReadNotes, userId])
 
   const handleCloseButtonClick = () => {
-    setOpenReadNotes(false)
+    setIsOpenReadNotes(false)
     setMemo((prevMemo) => ({ ...prevMemo, siteName: '' }))
   }
 
   const handleHamburgerCloseButtonClick = () => {
-    setOpenReadNotes(false)
+    setIsOpenReadNotes(false)
   }
 
   return (
-    <div className={openReadNotes ? styles.openContainer : styles.closeContainer}>
+    <div className={isOpenReadNotes ? styles.openContainer : styles.closeContainer}>
       <div className={styles.readNotesBox}>
         {isMobile && (
           <HamburgerCloseIcon className={styles.hamburgerCloseIcon} onClick={handleHamburgerCloseButtonClick} />
@@ -75,8 +68,8 @@ const ReadNotes = () => {
           <p>저장된 추억이 없습니다</p>
         )}
       </div>
-      {!isMobile && openReadNotes && (
-        <button className={openReadNotes && styles.closeButton} type='button' onClick={handleCloseButtonClick}>
+      {!isMobile && isOpenReadNotes && (
+        <button className={isOpenReadNotes && styles.closeButton} type='button' onClick={handleCloseButtonClick}>
           <XIcon className={styles.arrowIcon} />
         </button>
       )}
