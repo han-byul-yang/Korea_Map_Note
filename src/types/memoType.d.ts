@@ -1,13 +1,12 @@
 export interface IMemo {
   siteName: string
-  travelDate: string
+  travelDate: { startDate: Date | null | firestore.Timestamp; endDate: Date | null | firestore.Timestamp }
   text: string
-  picture: (string | undefined | null | ArrayBuffer)[]
   hashTagList: Array | null
 }
 
 export interface IStoredMemoInfo {
-  createAt: Date
+  createAt: number
   geolocation: {
     latitude: number
     longitude: number

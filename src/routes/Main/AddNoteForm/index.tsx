@@ -24,6 +24,7 @@ import PlaceName from './PlaceName'
 import DescriptionText from './DescriptionText'
 import HashTag from './HashTag'
 import Picture from './Picture'
+import TravelDate from './TravelDate'
 
 import { XIcon } from 'assets/svgs'
 import styles from './addNoteForm.module.scss'
@@ -93,7 +94,7 @@ const AddNoteForm = ({ setChangeMemoPlaceName, changeMemoPlaceName }: IAddNoteFo
   const warningMessageOkButtonHandle = () => {
     setOpenMessageModal(false)
     setOpenAddNoteForm((prevState) => ({ ...prevState, isOpen: false }))
-    setMemo({ siteName: '', travelDate: '', text: '', hashTagList: [] })
+    setMemo({ siteName: '', travelDate: { startDate: new Date(), endDate: null }, text: '', hashTagList: [] })
     setImageFiles([])
   }
 
@@ -127,7 +128,7 @@ const AddNoteForm = ({ setChangeMemoPlaceName, changeMemoPlaceName }: IAddNoteFo
       createDocsToFirebase(userId, sendMemoData.createAt, sendMemoData)
       storeImagesToFirebase(imageFiles, userId, sendMemoData.createAt)
     } else {
-      await updateDoc(doc(firebaseDBService, userId), sendMemoData)
+      // await updateDoc(doc(firebaseDBService, userId), sendMemoData)
       setOpenAddNoteForm((prevState) => ({ ...prevState, type: 'add' }))
     }
   }
@@ -142,7 +143,7 @@ const AddNoteForm = ({ setChangeMemoPlaceName, changeMemoPlaceName }: IAddNoteFo
           changeMemoPlaceName={changeMemoPlaceName}
           placeResult={placeResult}
         />
-        {/* <VisitedDate /> */}
+        <TravelDate />
         <DescriptionText />
         <Picture />
         <HashTag />

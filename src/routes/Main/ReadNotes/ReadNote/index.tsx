@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useRecoilValue } from 'recoil'
+import dayjs from 'dayjs'
 
 import { getImagesFromFirebase } from 'utils/firebaseService/firebaseDBService'
 import { IMemoDoc } from 'types/memoType'
@@ -41,7 +42,15 @@ const ReadNote = ({ storedMemo }: IReadNoteProps) => {
         </ul>
       )}
       <p>{siteName} 에서..</p>
-      <p>{travelDate}</p>
+      {!travelDate.endDate ? (
+        <p>{dayjs(travelDate.startDate?.toDate()).format('YYYY.MM.DD')}</p>
+      ) : (
+        <p>
+          {dayjs(travelDate.startDate?.toDate()).format('YYYY.MM.DD')} -
+          {dayjs(travelDate.endDate?.toDate()).format('YYYY.MM.DD')}
+        </p>
+      )}
+
       <ul>
         {hashTagList.map((hashTag: string) => (
           <li key={hashTag}>{hashTag}</li>

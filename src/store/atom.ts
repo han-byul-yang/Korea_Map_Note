@@ -35,7 +35,7 @@ export const memoAtom = atom<IMemo>({
   key: 'memo',
   default: {
     siteName: '',
-    travelDate: '',
+    travelDate: { startDate: new Date(), endDate: null },
     text: '',
     hashTagList: [],
   },
