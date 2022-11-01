@@ -15,6 +15,7 @@ const modalMessage = () => {
       },
       memo: {
         LIMIT_IMAGE_NUMBER: { kind: 'error', message: '이미지 개수가 4개를 초과할 수 없습니다.' },
+        No_SAME_IMAGE: { kind: 'error', message: '중복된 이미지를 사용할 수 없습니다.' },
       },
     },
     notification: {
