@@ -4,6 +4,7 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 
 import useClickOutside from 'hooks/useClickOutside'
 import useResize from 'hooks/useResize'
+import useResetMemo from 'hooks/useResetMemo'
 import {
   isOpenAddNoteFormAtom,
   isOpenMessageModalAtom,
@@ -37,6 +38,7 @@ const InfoWindow = ({ setOpenInfoWindow, isMapLoaded }: IInfoWindowProps) => {
   const setMemo = useSetRecoilState(memoAtom)
   const setImageFiles = useSetRecoilState(imageListAtom)
   const { size, isSize: isMobile } = useResize()
+  const resetMemoData = useResetMemo()
 
   const clickOutsideHandle = () => {
     setOpenInfoWindow(false)
@@ -68,8 +70,7 @@ const InfoWindow = ({ setOpenInfoWindow, isMapLoaded }: IInfoWindowProps) => {
   const addNoteMessageOkButtonHandle = () => {
     setIsOkChangeMark(true)
     setOpenMessageModal(false)
-    setMemo({ siteName: '', travelDate: '', text: '', hashTagList: [] })
-    setImageFiles([])
+    resetMemoData()
   }
 
   const handleAddNoteClick = () => {
@@ -92,8 +93,7 @@ const InfoWindow = ({ setOpenInfoWindow, isMapLoaded }: IInfoWindowProps) => {
     setOpenMessageModal(false)
     setOpenReadNotes(true)
     setOpenAddNoteForm((prevState) => ({ ...prevState, isOpen: false }))
-    setMemo({ siteName: '', travelDate: '', text: '', hashTagList: [] })
-    setImageFiles([])
+    resetMemoData()
   }
 
   const handleReadNoteClick = () => {

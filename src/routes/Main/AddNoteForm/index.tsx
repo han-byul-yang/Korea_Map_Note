@@ -5,6 +5,7 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import dayjs from 'dayjs'
 
 import useResize from 'hooks/useResize'
+import useResetMemo from 'hooks/useResetMemo'
 import { storeImagesToFirebase, createDocsToFirebase } from 'utils/firebaseService/firebaseDBService'
 import { firebaseDBService } from 'utils/firebaseService/firebaseSetting'
 import modalMessage from 'utils/modalMessage'
@@ -53,6 +54,7 @@ const AddNoteForm = ({ setChangeMemoPlaceName, changeMemoPlaceName }: IAddNoteFo
   )
   const [placeResult, setPlaceResult] = useState<ISearchPlacesResultInfo[] | undefined>([])
   const [isOkChangeMark, setIsOkChangeMark] = useRecoilState(isOkChangeMarkAtom)
+  const resetMemoData = useResetMemo()
 
   useEffect(() => {
     if (isOkChangeMark) {
@@ -94,8 +96,7 @@ const AddNoteForm = ({ setChangeMemoPlaceName, changeMemoPlaceName }: IAddNoteFo
   const warningMessageOkButtonHandle = () => {
     setOpenMessageModal(false)
     setOpenAddNoteForm((prevState) => ({ ...prevState, isOpen: false }))
-    setMemo({ siteName: '', travelDate: { startDate: new Date(), endDate: null }, text: '', hashTagList: [] })
-    setImageFiles([])
+    resetMemoData()
   }
 
   const handleCloseButtonClick = () => {
@@ -124,8 +125,7 @@ const AddNoteForm = ({ setChangeMemoPlaceName, changeMemoPlaceName }: IAddNoteFo
     createDocsToFirebase(userId, sendMemoData.createAt, sendMemoData)
     storeImagesToFirebase(imageFiles, userId, sendMemoData.createAt)
     setOpenAddNoteForm((prevState) => ({ ...prevState, isOpen: false }))
-    setMemo({ siteName: '', travelDate: { startDate: new Date(), endDate: null }, text: '', hashTagList: [] })
-    setImageFiles([])
+    resetMemoData()
     setOpenMessageModal(true)
     setMessage({ ...modalMessage().notification.memo.NOTE_UPDATED })
   }
@@ -133,8 +133,7 @@ const AddNoteForm = ({ setChangeMemoPlaceName, changeMemoPlaceName }: IAddNoteFo
   const updateNoteMessageOkButtonHandle = () => {
     // await updateDoc(doc(firebaseDBService, userId), sendMemoData)
     setOpenAddNoteForm((prevState) => ({ ...prevState, type: 'add' }))
-    setMemo({ siteName: '', travelDate: { startDate: new Date(), endDate: null }, text: '', hashTagList: [] })
-    setImageFiles([])
+    resetMemoData()
     setOpenMessageModal(true)
     setMessage({ ...modalMessage().notification.memo.NOTE_UPDATED })
   }
