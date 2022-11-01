@@ -28,7 +28,8 @@ const ReadNotes = () => {
     if (isOkChangeMark) {
       getDocsFromFirebase(userId).then((memoDocs) => {
         setStoredMemoDoc(
-          memoDocs.docs
+          [...memoDocs.docs]
+            .reverse()
             .map((firebaseMemo) => {
               return { memoInfo: firebaseMemo.data().data, docId: firebaseMemo.id }
             })
@@ -66,7 +67,7 @@ const ReadNotes = () => {
         )}
         {storedMemoDoc.length !== 0 ? (
           <ul>
-            {storedMemoDoc.map((storedMemo) => (
+            {storedMemoDoc.reverse().map((storedMemo) => (
               <ReadNote key={`${storedMemo.memoInfo.createAt}`} storedMemo={storedMemo} />
             ))}
           </ul>
