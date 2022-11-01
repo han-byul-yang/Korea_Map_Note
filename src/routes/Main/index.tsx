@@ -12,21 +12,14 @@ import ReadNotes from './ReadNotes'
 const Main = () => {
   const [isMapLoaded, setIsMapLoaded] = useState(false)
   const [changeMemoPlaceName, setChangeMemoPlaceName] = useState(false)
-  const [fileImageList, setFileImageList] = useState<File[]>([])
   const openMessageModal = useRecoilValue(isOpenMessageModalAtom)
   const isOpenAddNoteForm = useRecoilValue(isOpenAddNoteFormAtom)
-  const isOpenReadNote = useRecoilValue(isOpenReadNotesAtom)
 
   return (
     <>
       <SearchBar isMapLoaded={isMapLoaded} />
       {isOpenAddNoteForm && (
-        <AddNoteForm
-          setChangeMemoPlaceName={setChangeMemoPlaceName}
-          changeMemoPlaceName={changeMemoPlaceName}
-          setFileImageList={setFileImageList}
-          fileImageList={fileImageList}
-        />
+        <AddNoteForm setChangeMemoPlaceName={setChangeMemoPlaceName} changeMemoPlaceName={changeMemoPlaceName} />
       )}
       <KakaoMap setIsMapLoaded={setIsMapLoaded} isMapLoaded={isMapLoaded} />
       <ReadNotes />

@@ -37,14 +37,21 @@ export const memoAtom = atom<IMemo>({
     siteName: '',
     travelDate: '',
     text: '',
-    picture: [],
     hashTagList: [],
   },
 })
 
+export const imageListAtom = atom<File[]>({
+  key: 'imageList',
+  default: [],
+})
+
 export const isOpenAddNoteFormAtom = atom({
   key: 'isOpenAddNoteFormAtom',
-  default: false,
+  default: {
+    type: 'add',
+    isOpen: false,
+  },
 }) // context api 사용 or props로 넘겨주기
 
 export const isOpenReadNotesAtom = atom({
@@ -64,7 +71,7 @@ export const mapLevelAtom = atom({
 
 export const isOkChangeMarkAtom = atom({
   key: 'isOkChangeMark',
-  default: false,
+  default: true,
 })
 
 // export const tempUpdateAtom = atom({
@@ -76,3 +83,8 @@ export const tempAtom = atom<ISearchPlacesResultInfo[]>({
   key: 'temp',
   default: [],
 }) // 삭제해주기
+
+export const whetherAddOrEditAtom = atom({
+  key: 'whetherAddOrEdit',
+  default: 'add',
+})

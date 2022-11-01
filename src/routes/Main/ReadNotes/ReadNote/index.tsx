@@ -1,6 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useRecoilValue } from 'recoil'
 
+import { getImagesFromFirebase } from 'utils/firebaseService/firebaseDBService'
 import { IMemoDoc } from 'types/memoType'
+import { userIdAtom } from 'store/atom'
 import MemoSettingBox from 'routes/Main/ReadNotes/ReadNote/MemoSettingBox'
 
 import { MoreIcon } from 'assets/svgs'
@@ -11,12 +14,18 @@ interface IReadNoteProps {
 }
 
 const ReadNote = ({ storedMemo }: IReadNoteProps) => {
+  const [pictureList, setPictureList] = useState<(string | undefined | null | ArrayBuffer)[]>([])
   const [openMemoSettingBox, setOpenMemoSettingBox] = useState(false)
-  const { picture, siteName, travelDate, hashTagList, text } = storedMemo.memoInfo.memo
+  const userId = useRecoilValue(userIdAtom)
+  const { siteName, travelDate, hashTagList, text } = storedMemo.memoInfo.memo
 
   const handleMoreButtonClick = () => {
     setOpenMemoSettingBox(true)
   }
+
+  useEffect(() => {
+    getImagesFromFirebase(userId, storedMemo.memoInfo.createAt).then((url) => setPictureList(url))
+  }, [storedMemo.memoInfo.createAt, userId])
 
   return (
     <li key={`${storedMemo.memoInfo.createAt}`} className={styles.readNoteCard}>
@@ -24,11 +33,13 @@ const ReadNote = ({ storedMemo }: IReadNoteProps) => {
         <MoreIcon className={styles.moreIcon} />
       </button>
       {openMemoSettingBox && <MemoSettingBox setOpenMemoSettingBox={setOpenMemoSettingBox} docId={storedMemo.docId} />}
-      <ul className={styles.imgBox}>
-        {picture.map((singlePicture) => (
-          <img key={`${singlePicture}`} alt='memoSinglePicture' src={`${singlePicture}`} />
-        ))}
-      </ul>
+      {pictureList.length !== 0 && (
+        <ul className={styles.imgBox}>
+          {pictureList.map((singlePicture) => (
+            <img key={`${singlePicture}`} alt='memoSinglePicture' src={`${singlePicture}`} />
+          ))}
+        </ul>
+      )}
       <p>{siteName} 에서..</p>
       <p>{travelDate}</p>
       <ul>
