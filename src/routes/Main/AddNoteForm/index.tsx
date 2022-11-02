@@ -10,7 +10,14 @@ import { storeImagesToFirebase, createDocsToFirebase } from 'utils/firebaseServi
 import useOpenMessageModal from 'hooks/useOpenMessageModal'
 import { firebaseDBService } from 'utils/firebaseService/firebaseSetting'
 import modalMessage from 'utils/modalMessage'
-import { isOpenAddNoteFormAtom, markPositionAtom, memoAtom, userIdAtom, imageListAtom } from 'store/atom'
+import {
+  isOpenAddNoteFormAtom,
+  markPositionAtom,
+  memoAtom,
+  userIdAtom,
+  imageListAtom,
+  isOkChangeMarkAtom,
+} from 'store/atom'
 import { ISearchAddressResultInfo, ISearchPlacesResultInfo } from 'types/searchPlacesType'
 import Address from './Address'
 import PlaceName from './PlaceName'
@@ -30,9 +37,10 @@ interface IAddNoteFormProps {
 const AddNoteForm = ({ setIsChangeMemoPlaceName, isChangeMemoPlaceName }: IAddNoteFormProps) => {
   const queryClient = useQueryClient()
   const userId = useRecoilValue(userIdAtom)
-  const [openAddNoteForm, setOpenAddNoteForm] = useRecoilState(isOpenAddNoteFormAtom)
+  const [isOpenAddNoteForm, setIsOpenAddNoteForm] = useRecoilState(isOpenAddNoteFormAtom)
   const memo = useRecoilValue(memoAtom) // type 설정
   const imageFiles = useRecoilValue(imageListAtom)
+  const [isOkChangeMark, setIsOkChangeMark] = useRecoilState(isOkChangeMarkAtom)
   const markPosition = useRecoilValue(markPositionAtom)
   const { openMessageModal, closeMessageModal } = useOpenMessageModal()
   const { size, isSize: isMobile } = useResize()
@@ -47,7 +55,8 @@ const AddNoteForm = ({ setIsChangeMemoPlaceName, isChangeMemoPlaceName }: IAddNo
   const resetMemoData = useResetMemo()
 
   useEffect(() => {
-    if (openAddNoteForm.isOpen) {
+    console.log(isOkChangeMark)
+    if (isOkChangeMark) {
       setAddressResult(
         queryClient.getQueryData([
           'getAddressByPosition',
@@ -69,11 +78,13 @@ const AddNoteForm = ({ setIsChangeMemoPlaceName, isChangeMemoPlaceName }: IAddNo
         )
       )
     }
+    setIsOkChangeMark(false)
   }, [
+    isOkChangeMark,
     markPosition.clickedPosition.latitude,
     markPosition.clickedPosition.longitude,
-    openAddNoteForm.isOpen,
     queryClient,
+    setIsOkChangeMark,
   ])
 
   useEffect(() => {
@@ -83,7 +94,7 @@ const AddNoteForm = ({ setIsChangeMemoPlaceName, isChangeMemoPlaceName }: IAddNo
 
   const warningMessageOkButtonHandle = () => {
     closeMessageModal()
-    setOpenAddNoteForm((prevState) => ({ ...prevState, isOpen: false }))
+    setIsOpenAddNoteForm((prevState) => ({ ...prevState, isOpen: false }))
     resetMemoData()
   }
 
@@ -111,7 +122,7 @@ const AddNoteForm = ({ setIsChangeMemoPlaceName, isChangeMemoPlaceName }: IAddNo
   const addNoteMessageOkButtonHandle = () => {
     createDocsToFirebase(userId, sendMemoData.createAt, sendMemoData)
     storeImagesToFirebase(imageFiles, userId, sendMemoData.createAt)
-    setOpenAddNoteForm((prevState) => ({ ...prevState, isOpen: false }))
+    setIsOpenAddNoteForm((prevState) => ({ ...prevState, isOpen: false }))
     resetMemoData()
     openMessageModal(modalMessage().notification.memo.NOTE_UPDATED)
     // setIsChangeMemoPlaceName(false)
@@ -119,7 +130,7 @@ const AddNoteForm = ({ setIsChangeMemoPlaceName, isChangeMemoPlaceName }: IAddNo
 
   const updateNoteMessageOkButtonHandle = () => {
     // await updateDoc(doc(firebaseDBService, userId), sendMemoData)
-    setOpenAddNoteForm((prevState) => ({ ...prevState, type: 'add' }))
+    setIsOpenAddNoteForm((prevState) => ({ ...prevState, type: 'add' }))
     resetMemoData()
     openMessageModal(modalMessage().notification.memo.NOTE_UPDATED)
     // setIsChangeMemoPlaceName(false)
@@ -128,7 +139,7 @@ const AddNoteForm = ({ setIsChangeMemoPlaceName, isChangeMemoPlaceName }: IAddNo
   const handleMemoSubmitClick = async () => {
     if (!memo.siteName) {
       openMessageModal(modalMessage().notification.memo.NO_PLACE_NAME)
-    } else if (openAddNoteForm.type === 'add') {
+    } else if (isOpenAddNoteForm.type === 'add') {
       openMessageModal(modalMessage().warning.memo.ADD_NOTE_FORM, addNoteMessageOkButtonHandle)
     } else {
       openMessageModal(modalMessage().warning.memo.UPDATE_NOTE_FORM, updateNoteMessageOkButtonHandle)
@@ -150,11 +161,11 @@ const AddNoteForm = ({ setIsChangeMemoPlaceName, isChangeMemoPlaceName }: IAddNo
         <Picture />
         <HashTag />
         <button type='button' onClick={handleMemoSubmitClick}>
-          {openAddNoteForm.type === 'add' ? '메모 저장' : '메모 수정'}
+          {isOpenAddNoteForm.type === 'add' ? '메모 저장' : '메모 수정'}
         </button>
       </div>
-      {!isMobile && openAddNoteForm.isOpen && (
-        <button className={openAddNoteForm && styles.closeButton} type='button' onClick={handleCloseButtonClick}>
+      {!isMobile && isOpenAddNoteForm.isOpen && (
+        <button className={isOpenAddNoteForm && styles.closeButton} type='button' onClick={handleCloseButtonClick}>
           <XIcon className={styles.arrowIcon} />
         </button>
       )}

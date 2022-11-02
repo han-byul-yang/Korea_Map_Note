@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 
 import useResize from 'hooks/useResize'
-import { isOpenReadNotesAtom, markPositionAtom, memoAtom, userIdAtom } from 'store/atom'
+import { isOkChangeMarkAtom, isOpenReadNotesAtom, markPositionAtom, memoAtom, userIdAtom } from 'store/atom'
 import { getDocsFromFirebase } from 'utils/firebaseService/firebaseDBService'
 import { IMemoDoc } from 'types/memoType'
 import ReadNote from './ReadNote'
@@ -16,7 +16,7 @@ const ReadNotes = () => {
   const [isOpenReadNotes, setIsOpenReadNotes] = useRecoilState(isOpenReadNotesAtom)
   const setMemo = useSetRecoilState(memoAtom)
   const markPosition = useRecoilValue(markPositionAtom)
-  // const [isOkChangeMark, setIsOkChangeMark] = useRecoilState(isOkChangeMarkAtom)
+  const [isOkChangeMark, setIsOkChangeMark] = useRecoilState(isOkChangeMarkAtom)
   const { size, isSize: isMobile } = useResize()
 
   useEffect(() => {
@@ -25,7 +25,7 @@ const ReadNotes = () => {
   }, [size.MOBILE])
 
   useEffect(() => {
-    if (isOpenReadNotes) {
+    if (isOkChangeMark) {
       getDocsFromFirebase(userId).then((memoDocs) => {
         setStoredMemoDoc(
           [...memoDocs.docs]
@@ -41,7 +41,15 @@ const ReadNotes = () => {
         )
       })
     }
-  }, [markPosition.clickedPosition.latitude, markPosition.clickedPosition.longitude, isOpenReadNotes, userId])
+    setIsOkChangeMark(false)
+  }, [
+    markPosition.clickedPosition.latitude,
+    markPosition.clickedPosition.longitude,
+    isOpenReadNotes,
+    userId,
+    isOkChangeMark,
+    setIsOkChangeMark,
+  ])
 
   const handleCloseButtonClick = () => {
     setIsOpenReadNotes(false)

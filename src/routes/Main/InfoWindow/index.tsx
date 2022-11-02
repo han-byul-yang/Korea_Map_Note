@@ -3,9 +3,8 @@ import { useQuery } from '@tanstack/react-query'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 
 import useClickOutside from 'hooks/useClickOutside'
-import useResize from 'hooks/useResize'
 import useResetMemo from 'hooks/useResetMemo'
-import { isOpenAddNoteFormAtom, isOpenReadNotesAtom, markPositionAtom } from 'store/atom'
+import { isOkChangeMarkAtom, isOpenAddNoteFormAtom, isOpenReadNotesAtom, markPositionAtom } from 'store/atom'
 import useOpenMessageModal from 'hooks/useOpenMessageModal'
 import modalMessage from 'utils/modalMessage'
 import { getAddressByPositionApi } from 'services/api/searchKakaoApi'
@@ -24,8 +23,7 @@ const InfoWindow = ({ setOpenInfoWindow, isMapLoaded }: IInfoWindowProps) => {
   const markPosition = useRecoilValue(markPositionAtom)
   const [isOpenAddNoteForm, setIsOpenAddNoteForm] = useRecoilState(isOpenAddNoteFormAtom)
   const setIsOpenReadNotes = useSetRecoilState(isOpenReadNotesAtom)
-  // const setIsOkChangeMark = useSetRecoilState(isOkChangeMarkAtom)
-  const { size, isSize: isMobile } = useResize()
+  const setIsOkChangeMark = useSetRecoilState(isOkChangeMarkAtom)
   const { openMessageModal, closeMessageModal } = useOpenMessageModal()
   const resetMemoData = useResetMemo()
 
@@ -50,13 +48,8 @@ const InfoWindow = ({ setOpenInfoWindow, isMapLoaded }: IInfoWindowProps) => {
     clickOutsideEvent()
   }, [clickOutsideEvent])
 
-  useEffect(() => {
-    size.MOBILE.RESIZE()
-    size.MOBILE.SIZEEVENT()
-  }, [size.MOBILE])
-
   const addNoteMessageOkButtonHandle = () => {
-    // setIsOkChangeMark(true)
+    setIsOkChangeMark(true)
     closeMessageModal()
     resetMemoData()
   }
@@ -64,16 +57,16 @@ const InfoWindow = ({ setOpenInfoWindow, isMapLoaded }: IInfoWindowProps) => {
   const handleAddNoteClick = () => {
     setIsOpenReadNotes(false)
     setIsOpenAddNoteForm((prevState) => ({ ...prevState, isOpen: true }))
+    if (!isOpenAddNoteForm.isOpen) {
+      setIsOkChangeMark(true)
+    }
     if (isOpenAddNoteForm.isOpen) {
       openMessageModal(modalMessage().warning.memo.CLOSE_ADD_NOTE_FORM, addNoteMessageOkButtonHandle)
     }
-    /* if (isMobile) {
-      setIsOkChangeMark(true)
-    } */
   }
 
   const readNoteMessageOkButtonHandle = () => {
-    // setIsOkChangeMark(true)
+    setIsOkChangeMark(true)
     closeMessageModal()
     setIsOpenReadNotes(true)
     setIsOpenAddNoteForm((prevState) => ({ ...prevState, isOpen: false }))
@@ -86,7 +79,7 @@ const InfoWindow = ({ setOpenInfoWindow, isMapLoaded }: IInfoWindowProps) => {
     } else {
       setIsOpenAddNoteForm((prevState) => ({ ...prevState, isOpen: false }))
       setIsOpenReadNotes(true)
-      // setIsOkChangeMark(true)
+      setIsOkChangeMark(true)
     }
   }
 
