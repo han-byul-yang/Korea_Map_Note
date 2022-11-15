@@ -55,7 +55,6 @@ const AddNoteForm = ({ setIsChangeMemoPlaceName, isChangeMemoPlaceName }: IAddNo
   const resetMemoData = useResetMemo()
 
   useEffect(() => {
-    console.log(isOkChangeMark)
     if (isOkChangeMark) {
       setAddressResult(
         queryClient.getQueryData([
@@ -119,10 +118,9 @@ const AddNoteForm = ({ setIsChangeMemoPlaceName, isChangeMemoPlaceName }: IAddNo
     },
   }
 
-  const addNoteMessageOkButtonHandle = () => {
-    createDocsToFirebase(userId, sendMemoData.createAt, sendMemoData)
+  const addNoteMessageOkButtonHandle = async () => {
+    await createDocsToFirebase(userId, sendMemoData.createAt, sendMemoData)
     storeImagesToFirebase(imageFiles, userId, sendMemoData.createAt)
-    setIsOpenAddNoteForm((prevState) => ({ ...prevState, isOpen: false }))
     resetMemoData()
     openMessageModal(modalMessage().notification.memo.NOTE_UPDATED)
     // setIsChangeMemoPlaceName(false)
@@ -137,7 +135,7 @@ const AddNoteForm = ({ setIsChangeMemoPlaceName, isChangeMemoPlaceName }: IAddNo
   }
 
   const handleMemoSubmitClick = async () => {
-    if (!memo.siteName) {
+    if (!memo.siteName && !(placeResult && placeResult.length !== 0)) {
       openMessageModal(modalMessage().notification.memo.NO_PLACE_NAME)
     } else if (isOpenAddNoteForm.type === 'add') {
       openMessageModal(modalMessage().warning.memo.ADD_NOTE_FORM, addNoteMessageOkButtonHandle)
