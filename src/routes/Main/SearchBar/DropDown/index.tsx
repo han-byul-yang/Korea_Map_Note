@@ -5,7 +5,7 @@ import { useSetRecoilState } from 'recoil'
 import useOpenMessageModal from 'hooks/useOpenMessageModal'
 import modalMessage from 'utils/modalMessage'
 import { getPlacesByKeywordApi } from 'services/api/searchKakaoApi'
-import { mapLevelAtom, mapPositionAtom, markPositionAtom, tempAtom } from 'store/atom'
+import { isDeleteSearchMarkerAtom, mapLevelAtom, mapPositionAtom, markPositionAtom, tempAtom } from 'store/atom'
 import { ISearchPlacesResultInfo } from 'types/searchPlacesType'
 
 import { SearchIcon } from 'assets/svgs'
@@ -23,6 +23,7 @@ const DropDown = ({ searchInput, setSearchInput, showDropDown, setShowDropDown, 
   const setMarkPosition = useSetRecoilState(markPositionAtom)
   const setMapPosition = useSetRecoilState(mapPositionAtom)
   const setMapLevel = useSetRecoilState(mapLevelAtom)
+  const setIsDeleteSearchMarker = useSetRecoilState(isDeleteSearchMarkerAtom)
   const { openMessageModal } = useOpenMessageModal()
 
   const setTemp = useSetRecoilState(tempAtom)
@@ -55,6 +56,7 @@ const DropDown = ({ searchInput, setSearchInput, showDropDown, setShowDropDown, 
       return { ...prev, searchPosition: { latitude: Number(resultPlace.y), longitude: Number(resultPlace.x) } }
     })
     setMapLevel(4)
+    setIsDeleteSearchMarker(false)
     setShowDropDown(false)
   }
 

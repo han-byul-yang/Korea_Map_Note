@@ -1,18 +1,20 @@
-import { Dispatch, useCallback, useEffect } from 'react'
+import { Dispatch, useCallback, useEffect, useMemo, useState } from 'react'
 import { Map, ZoomControl } from 'react-kakao-maps-sdk'
 import { useRecoilState, useRecoilValue } from 'recoil'
 
 import useOpenMessageModal from 'hooks/useOpenMessageModal'
-import { mapLevelAtom, mapPositionAtom, markPositionAtom, userIdAtom } from 'store/atom'
+import { isDeleteSearchMarkerAtom, mapLevelAtom, mapPositionAtom, markPositionAtom, userIdAtom } from 'store/atom'
 import { IGeolocationPosition, IGeolocationError } from 'types/geolocationType'
 import modalMessage from 'utils/modalMessage'
-import { getDocsFromFirebase } from 'utils/firebaseService/firebaseDBService'
+import { getDocsFromFirebase, getImagesFromFirebase } from 'utils/firebaseService/firebaseDBService'
+import { firebaseDBService } from 'utils/firebaseService/firebaseSetting'
 import Marker from './Marker'
 
 import geolocationMarkImg from 'assets/img/geolocationMark.png'
 import locationMarkImg from 'assets/img/locationMark.png'
 import searchMarkImg from 'assets/img/searchMark.png'
-import memoMarkImg from 'assets/img/memoMark.png'
+import memoMarkNoImg from 'assets/img/memoMark.png'
+import { collection, doc, onSnapshot, query } from 'firebase/firestore'
 
 interface IKakaoMapProps {
   setIsMapLoaded: Dispatch<React.SetStateAction<boolean>>
@@ -20,10 +22,12 @@ interface IKakaoMapProps {
 }
 
 const KakaoMap = ({ setIsMapLoaded, isMapLoaded }: IKakaoMapProps) => {
+  const [markImageList, setMarkImageList] = useState<File[] | string[]>([])
   const userId = useRecoilValue(userIdAtom)
   const [mapPosition, setMapPosition] = useRecoilState(mapPositionAtom)
   const [markPosition, setMarkPosition] = useRecoilState(markPositionAtom)
   const [mapLevel, setMapLevel] = useRecoilState(mapLevelAtom)
+  const isDeleteSearchMarker = useRecoilValue(isDeleteSearchMarkerAtom)
   const { openMessageModal } = useOpenMessageModal()
 
   const retrieveSuccess = useCallback(
@@ -52,25 +56,47 @@ const KakaoMap = ({ setIsMapLoaded, isMapLoaded }: IKakaoMapProps) => {
   }, [openMessageModal, retrieveError, retrieveSuccess])
 
   useEffect(() => {
+    const q = query(collection(firebaseDBService, userId))
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      querySnapshot.forEach((doces) => {
+        console.log(doces)
+      })
+      console.log('Current cities in CA: ')
+    })
+    unsubscribe()
+  }, [userId])
+
+  useEffect(() => {
     getDocsFromFirebase(userId).then((memoDocs) =>
       setMarkPosition((prevPosition) => {
         return {
           ...prevPosition,
-          memoPlacePosition: memoDocs.docs.map((doc) => {
+          memoPlacePosition: memoDocs.docs.map((docs) => {
             const {
               geolocation: { latitude, longitude },
-              memo: { picture },
-            } = doc.data().data
+            } = docs.data().data
             return {
               latitude,
               longitude,
-              image: picture,
             }
           }),
         }
       })
     )
   }, [setMarkPosition, userId])
+
+  // useEffect(() => {
+  //   setMarkImageList(
+  //     markPosition.memoPlacePosition.map((position: any) => getImagesFromFirebase(userId, position.createAt))
+  //   )
+  // }, [markPosition.memoPlacePosition, userId])
+
+  const callMarkImage = useCallback(
+    (position: any) => {
+      // getImagesFromFirebase(userId, position.createAt).then((url) => setMarkImageList(url))
+    },
+    [userId]
+  )
 
   const handleMapPositionClick = (_t: kakao.maps.Map, mouseEvent: kakao.maps.event.MouseEvent) => {
     setMarkPosition((prev) => {
@@ -80,6 +106,23 @@ const KakaoMap = ({ setIsMapLoaded, isMapLoaded }: IKakaoMapProps) => {
       }
     })
   }
+
+  const markPositionList = useMemo(
+    () =>
+      markPosition.memoPlacePosition.map((memoPosition: any, iMarker: number) => {
+        const memoMarkerKey = `memoMarker-${iMarker}`
+        // callMarkImage(memoPosition)
+        return (
+          <Marker
+            key={memoMarkerKey}
+            markImg={markImageList[0] || memoMarkNoImg}
+            markPosition={memoPosition}
+            isMapLoaded={isMapLoaded}
+          />
+        )
+      }),
+    [isMapLoaded, markImageList, markPosition.memoPlacePosition]
+  )
 
   return (
     <Map
@@ -97,11 +140,18 @@ const KakaoMap = ({ setIsMapLoaded, isMapLoaded }: IKakaoMapProps) => {
     >
       <Marker markImg={geolocationMarkImg} markPosition={markPosition.geolocation} isMapLoaded={isMapLoaded} />
       <Marker markImg={locationMarkImg} markPosition={markPosition.location} isMapLoaded={isMapLoaded} />
-      <Marker markImg={searchMarkImg} markPosition={markPosition.searchPosition} isMapLoaded={isMapLoaded} />
-      {markPosition.memoPlacePosition.map((memoPosition: any, i: number) => {
-        const memoMarkerKey = `memoMarker-${i}`
+      {!isDeleteSearchMarker && (
+        <Marker markImg={searchMarkImg} markPosition={markPosition.searchPosition} isMapLoaded={isMapLoaded} />
+      )}
+      {markPosition.memoPlacePosition.map((memoPosition: any, iMarker: number) => {
+        const memoMarkerKey = `memoMarker-${iMarker}`
         return (
-          <Marker key={memoMarkerKey} markImg={memoMarkImg} markPosition={memoPosition} isMapLoaded={isMapLoaded} />
+          <Marker
+            key={memoMarkerKey}
+            markImg={markImageList[0] || memoMarkNoImg}
+            markPosition={memoPosition}
+            isMapLoaded={isMapLoaded}
+          />
         )
       })}
       <ZoomControl position={kakao.maps.ControlPosition.BOTTOMRIGHT} />
