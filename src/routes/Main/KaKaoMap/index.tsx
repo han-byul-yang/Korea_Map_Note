@@ -138,11 +138,6 @@ const KakaoMap = ({ setIsMapLoaded, isMapLoaded }: IKakaoMapProps) => {
       onClick={handleMapPositionClick}
       onCreate={() => setIsMapLoaded(true)}
     >
-      <Marker markImg={geolocationMarkImg} markPosition={markPosition.geolocation} isMapLoaded={isMapLoaded} />
-      <Marker markImg={locationMarkImg} markPosition={markPosition.location} isMapLoaded={isMapLoaded} />
-      {!isDeleteSearchMarker && (
-        <Marker markImg={searchMarkImg} markPosition={markPosition.searchPosition} isMapLoaded={isMapLoaded} />
-      )}
       {markPosition.memoPlacePosition.map((memoPosition: any, iMarker: number) => {
         const memoMarkerKey = `memoMarker-${iMarker}`
         return (
@@ -154,6 +149,11 @@ const KakaoMap = ({ setIsMapLoaded, isMapLoaded }: IKakaoMapProps) => {
           />
         )
       })}
+      <Marker markImg={geolocationMarkImg} markPosition={markPosition.geolocation} isMapLoaded={isMapLoaded} />
+      {!isDeleteSearchMarker && (
+        <Marker markImg={searchMarkImg} markPosition={markPosition.searchPosition} isMapLoaded={isMapLoaded} />
+      )}
+      <Marker markImg={locationMarkImg} markPosition={markPosition.location} isMapLoaded={isMapLoaded} />
       <ZoomControl position={kakao.maps.ControlPosition.BOTTOMRIGHT} />
     </Map>
   )
