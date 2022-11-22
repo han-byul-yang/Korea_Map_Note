@@ -34,8 +34,10 @@ export const getImagesFromFirebase = async (userId: string, createAt: number) =>
   return Promise.all(data)
 }
 
-export const snapShotFirebaseData = (document: Query<DocumentData>, snapShotHandler: Promise<void> | (() => void)) => {
-  const snapShotEvent = onSnapshot(document, () => snapShotHandler)
-
+export const snapShotFirebaseData = (
+  document: Query<DocumentData>,
+  snapShotHandler: () => Promise<void> | Promise<void>
+) => {
+  const snapShotEvent = onSnapshot(document, snapShotHandler)
   return snapShotEvent
 }

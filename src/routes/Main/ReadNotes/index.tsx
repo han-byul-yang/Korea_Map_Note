@@ -49,7 +49,7 @@ const ReadNotes = () => {
       })
       .finally(() => setIsMemoDocLoading(false))
 
-    const snapShotEvent = snapShotFirebaseData(document, snapShotHandler)
+    const snapShotEvent = snapShotFirebaseData(document, () => snapShotHandler)
 
     setIsOkChangeMark(false)
     return () => {
@@ -85,7 +85,7 @@ const ReadNotes = () => {
         ) : storedMemoDoc.length !== 0 ? (
           <ul>
             {storedMemoDoc.reverse().map((storedMemo) => (
-              <ReadNote key={`${storedMemo.memoInfo.createAt}`} storedMemo={storedMemo} />
+              <ReadNote key={`${storedMemo.memoInfo.memo.createAt}`} storedMemo={storedMemo} />
             ))}
           </ul>
         ) : (

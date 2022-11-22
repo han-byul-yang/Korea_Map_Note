@@ -6,7 +6,11 @@ import useOpenMessageModal from 'hooks/useOpenMessageModal'
 import { isDeleteSearchMarkerAtom, mapLevelAtom, mapPositionAtom, markPositionAtom, userIdAtom } from 'store/atom'
 import { IGeolocationPosition, IGeolocationError } from 'types/geolocationType'
 import modalMessage from 'utils/modalMessage'
-import { getDocsFromFirebase, getImagesFromFirebase } from 'utils/firebaseService/firebaseDBService'
+import {
+  getDocsFromFirebase,
+  getImagesFromFirebase,
+  snapShotFirebaseData,
+} from 'utils/firebaseService/firebaseDBService'
 import { firebaseDBService } from 'utils/firebaseService/firebaseSetting'
 import Marker from './Marker'
 
@@ -14,7 +18,7 @@ import geolocationMarkImg from 'assets/img/geolocationMark.png'
 import locationMarkImg from 'assets/img/locationMark.png'
 import searchMarkImg from 'assets/img/searchMark.png'
 import memoMarkNoImg from 'assets/img/memoMark.png'
-import { collection, onSnapshot, query } from 'firebase/firestore'
+import { collection, DocumentData, onSnapshot, Query, query } from 'firebase/firestore'
 
 interface IKakaoMapProps {
   setIsMapLoaded: Dispatch<React.SetStateAction<boolean>>
@@ -56,8 +60,8 @@ const KakaoMap = ({ setIsMapLoaded, isMapLoaded }: IKakaoMapProps) => {
   }, [openMessageModal, retrieveError, retrieveSuccess])
 
   useEffect(() => {
-    const q = query(collection(firebaseDBService, userId))
-    const unsubscribe = onSnapshot(q, () => {
+    const document = query(collection(firebaseDBService, userId))
+    const snapShotHandler = () =>
       getDocsFromFirebase(userId).then((memoDocs) =>
         setMarkPosition((prevPosition) => {
           return {
@@ -74,9 +78,10 @@ const KakaoMap = ({ setIsMapLoaded, isMapLoaded }: IKakaoMapProps) => {
           }
         })
       )
-    })
+    const snapShotEvent = snapShotFirebaseData(document, snapShotHandler)
+
     return () => {
-      unsubscribe()
+      snapShotEvent()
     }
   }, [setMarkPosition, userId])
 
