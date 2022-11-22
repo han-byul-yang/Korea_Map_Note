@@ -14,7 +14,7 @@ import geolocationMarkImg from 'assets/img/geolocationMark.png'
 import locationMarkImg from 'assets/img/locationMark.png'
 import searchMarkImg from 'assets/img/searchMark.png'
 import memoMarkNoImg from 'assets/img/memoMark.png'
-import { collection, doc, onSnapshot, query } from 'firebase/firestore'
+import { collection, onSnapshot, query } from 'firebase/firestore'
 
 interface IKakaoMapProps {
   setIsMapLoaded: Dispatch<React.SetStateAction<boolean>>
@@ -57,32 +57,27 @@ const KakaoMap = ({ setIsMapLoaded, isMapLoaded }: IKakaoMapProps) => {
 
   useEffect(() => {
     const q = query(collection(firebaseDBService, userId))
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      querySnapshot.forEach((doces) => {
-        console.log(doces)
-      })
-      console.log('Current cities in CA: ')
+    const unsubscribe = onSnapshot(q, () => {
+      getDocsFromFirebase(userId).then((memoDocs) =>
+        setMarkPosition((prevPosition) => {
+          return {
+            ...prevPosition,
+            memoPlacePosition: memoDocs.docs.map((docs) => {
+              const {
+                geolocation: { latitude, longitude },
+              } = docs.data().data
+              return {
+                latitude,
+                longitude,
+              }
+            }),
+          }
+        })
+      )
     })
-    unsubscribe()
-  }, [userId])
-
-  useEffect(() => {
-    getDocsFromFirebase(userId).then((memoDocs) =>
-      setMarkPosition((prevPosition) => {
-        return {
-          ...prevPosition,
-          memoPlacePosition: memoDocs.docs.map((docs) => {
-            const {
-              geolocation: { latitude, longitude },
-            } = docs.data().data
-            return {
-              latitude,
-              longitude,
-            }
-          }),
-        }
-      })
-    )
+    return () => {
+      unsubscribe()
+    }
   }, [setMarkPosition, userId])
 
   // useEffect(() => {
