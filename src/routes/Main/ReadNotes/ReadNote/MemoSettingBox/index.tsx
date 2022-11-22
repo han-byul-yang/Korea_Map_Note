@@ -1,26 +1,37 @@
 import { Dispatch, useEffect, useRef } from 'react'
 import { doc, deleteDoc } from 'firebase/firestore'
-import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 
 import useClickOutside from 'hooks/useClickOutside'
 import useOpenMessageModal from 'hooks/useOpenMessageModal'
 import { getDocsFromFirebase } from 'utils/firebaseService/firebaseDBService'
 import { firebaseDBService } from 'utils/firebaseService/firebaseSetting'
 import modalMessage from 'utils/modalMessage'
-import { isOpenAddNoteFormAtom, isOpenReadNotesAtom, memoAtom, userIdAtom } from 'store/atom'
+import {
+  imageListAtom,
+  isOkChangeMarkAtom,
+  isOpenAddNoteFormAtom,
+  isOpenReadNotesAtom,
+  memoAtom,
+  userIdAtom,
+} from 'store/atom'
+import { IMemoDoc, IStoredMemoInfo } from 'types/memoType'
 
 import styles from './memoSettingBox.module.scss'
 
 interface IMemoSettingBoxProps {
   setOpenMemoSettingBox: Dispatch<React.SetStateAction<boolean>>
-  docId: string
+  storedMemo: IMemoDoc
+  pictureList: File[] | string[]
 }
 
-const MemoSettingBox = ({ setOpenMemoSettingBox, docId }: IMemoSettingBoxProps) => {
+const MemoSettingBox = ({ setOpenMemoSettingBox, storedMemo, pictureList }: IMemoSettingBoxProps) => {
   const userId = useRecoilValue(userIdAtom)
   const setIsOpenAddNoteForm = useSetRecoilState(isOpenAddNoteFormAtom)
   const setIsOpenReadNotes = useSetRecoilState(isOpenReadNotesAtom)
   const setMemo = useSetRecoilState(memoAtom)
+  const setIsOkChangeMark = useSetRecoilState(isOkChangeMarkAtom)
+  const [imageFiles, setImageFiles] = useRecoilState(imageListAtom)
   const { openMessageModal, closeMessageModal } = useOpenMessageModal()
   const boxRef = useRef(null)
 
@@ -37,13 +48,22 @@ const MemoSettingBox = ({ setOpenMemoSettingBox, docId }: IMemoSettingBoxProps) 
   const handleModifyMemoClick = () => {
     setIsOpenAddNoteForm({ type: 'edit', isOpen: true })
     setIsOpenReadNotes(false)
-    getDocsFromFirebase(userId).then((memoDocs) =>
+    /* getDocsFromFirebase(userId).then((memoDocs) =>
       setMemo(memoDocs.docs.filter((ele) => ele.id === docId)[0].data().data.memo)
-    )
+    ) */
+    setMemo({
+      ...storedMemo.memoInfo.memo,
+      travelDate: {
+        startDate: storedMemo.memoInfo.memo.travelDate.startDate.toDate(),
+        endDate: storedMemo.memoInfo.memo.travelDate.endDate.toDate(),
+      },
+    })
+    // setImageFiles(pictureList)
   }
 
   const deleteMessageOkButtonHandle = async () => {
-    await deleteDoc(doc(firebaseDBService, userId, docId))
+    await deleteDoc(doc(firebaseDBService, userId, `${storedMemo.docId}`))
+    setIsOkChangeMark(true)
     closeMessageModal()
   }
 

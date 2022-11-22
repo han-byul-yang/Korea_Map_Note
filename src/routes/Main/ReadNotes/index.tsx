@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { collection, query } from 'firebase/firestore'
 
 import useResize from 'hooks/useResize'
 import { isOkChangeMarkAtom, isOpenReadNotesAtom, markPositionAtom, memoAtom, userIdAtom } from 'store/atom'
-import { getDocsFromFirebase } from 'utils/firebaseService/firebaseDBService'
+import { getDocsFromFirebase, snapShotFirebaseData } from 'utils/firebaseService/firebaseDBService'
+import { firebaseDBService } from 'utils/firebaseService/firebaseSetting'
 import { IMemoDoc } from 'types/memoType'
 import ReadNote from './ReadNote'
 
@@ -12,6 +14,7 @@ import styles from './readNotes.module.scss'
 
 const ReadNotes = () => {
   const [storedMemoDoc, setStoredMemoDoc] = useState<IMemoDoc[]>([])
+  const [isMemoDocLoading, setIsMemoDocLoading] = useState(false)
   const userId = useRecoilValue(userIdAtom)
   const [isOpenReadNotes, setIsOpenReadNotes] = useRecoilState(isOpenReadNotesAtom)
   const setMemo = useSetRecoilState(memoAtom)
@@ -25,23 +28,33 @@ const ReadNotes = () => {
   }, [size.MOBILE])
 
   useEffect(() => {
-    if (isOkChangeMark) {
-      getDocsFromFirebase(userId).then((memoDocs) => {
-        setStoredMemoDoc(
-          [...memoDocs.docs]
-            .reverse()
-            .map((firebaseMemo) => {
-              return { memoInfo: firebaseMemo.data().data, docId: firebaseMemo.id }
-            })
-            .filter(
-              (doc) =>
-                doc.memoInfo.geolocation?.latitude === markPosition.clickedPosition.latitude &&
-                doc.memoInfo.geolocation?.longitude === markPosition.clickedPosition.longitude
-            )
-        )
+    const document = query(collection(firebaseDBService, userId))
+    const snapShotHandler = getDocsFromFirebase(userId)
+      .then((memoDocs) => {
+        if (isOkChangeMark) {
+          setIsMemoDocLoading(true)
+          setStoredMemoDoc(
+            [...memoDocs.docs]
+              .reverse()
+              .map((firebaseMemo) => {
+                return { memoInfo: firebaseMemo.data().data, docId: firebaseMemo.id }
+              })
+              .filter(
+                (doc) =>
+                  doc.memoInfo.geolocation?.latitude === markPosition.clickedPosition.latitude &&
+                  doc.memoInfo.geolocation?.longitude === markPosition.clickedPosition.longitude
+              )
+          )
+        }
       })
-    }
+      .finally(() => setIsMemoDocLoading(false))
+
+    const snapShotEvent = snapShotFirebaseData(document, snapShotHandler)
+
     setIsOkChangeMark(false)
+    return () => {
+      snapShotEvent()
+    }
   }, [
     markPosition.clickedPosition.latitude,
     markPosition.clickedPosition.longitude,
@@ -66,7 +79,10 @@ const ReadNotes = () => {
         {isMobile && (
           <HamburgerCloseIcon className={styles.hamburgerCloseIcon} onClick={handleHamburgerCloseButtonClick} />
         )}
-        {storedMemoDoc.length !== 0 ? (
+        {/* eslint-disable-next-line no-nested-ternary */}
+        {isMemoDocLoading ? (
+          <div>loading memo...</div>
+        ) : storedMemoDoc.length !== 0 ? (
           <ul>
             {storedMemoDoc.reverse().map((storedMemo) => (
               <ReadNote key={`${storedMemo.memoInfo.createAt}`} storedMemo={storedMemo} />
