@@ -4,7 +4,7 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 
 import useClickOutside from 'hooks/useClickOutside'
 import useOpenMessageModal from 'hooks/useOpenMessageModal'
-import { getDocsFromFirebase } from 'utils/firebaseService/firebaseDBService'
+import { getDocsFromFirebase, getImagesBlobFromFirebase } from 'utils/firebaseService/firebaseDBService'
 import { firebaseDBService } from 'utils/firebaseService/firebaseSetting'
 import modalMessage from 'utils/modalMessage'
 import {
@@ -18,6 +18,7 @@ import {
 import { IMemoDoc, IStoredMemoInfo } from 'types/memoType'
 
 import styles from './memoSettingBox.module.scss'
+import dayjs from 'dayjs'
 
 interface IMemoSettingBoxProps {
   setOpenMemoSettingBox: Dispatch<React.SetStateAction<boolean>>
@@ -48,17 +49,27 @@ const MemoSettingBox = ({ setOpenMemoSettingBox, storedMemo, pictureList }: IMem
   const handleModifyMemoClick = () => {
     setIsOpenAddNoteForm({ type: 'edit', isOpen: true })
     setIsOpenReadNotes(false)
-    /* getDocsFromFirebase(userId).then((memoDocs) =>
-      setMemo(memoDocs.docs.filter((ele) => ele.id === docId)[0].data().data.memo)
-    ) */
+    getDocsFromFirebase(userId).then((memoDocs) => {
+      setMemo(memoDocs.docs.filter((ele) => ele.id === storedMemo.docId)[0].data().data.memo)
+    })
+    // setMemo({
+    //   ...storedMemo.memoInfo.memo,
+    //   travelDate: {
+    //     startDate: storedMemo.memoInfo.memo.travelDate.startDate?.toDate(),
+    //     endDate: storedMemo.memoInfo.memo.travelDate.endDate?.toDate(),
+    //   },
+    // })
     setMemo({
       ...storedMemo.memoInfo.memo,
       travelDate: {
-        startDate: storedMemo.memoInfo.memo.travelDate.startDate.toDate(),
-        endDate: storedMemo.memoInfo.memo.travelDate.endDate.toDate(),
+        startDate: new Date(),
+        endDate: null,
       },
     })
-    // setImageFiles(pictureList)
+    getImagesBlobFromFirebase(userId, storedMemo.memoInfo.memo.createAt).then((dataList) => {
+      const fileList = dataList.map((data: { url: Blob; name: string }) => new File([data.url], data.name))
+      setImageFiles(fileList)
+    })
   }
 
   const deleteMessageOkButtonHandle = async () => {

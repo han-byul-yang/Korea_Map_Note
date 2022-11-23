@@ -1,5 +1,5 @@
 import { query, collection, getDocs, doc, setDoc, onSnapshot, Query, DocumentData } from 'firebase/firestore'
-import { getDownloadURL, listAll, ref, uploadBytes } from 'firebase/storage'
+import { getBlob, getDownloadURL, listAll, ref, uploadBytes } from 'firebase/storage'
 
 import { IStoredMemoInfo } from 'types/memoType'
 import { firebaseDBService, firebaseStorageService } from './firebaseSetting'
@@ -22,21 +22,33 @@ export const storeImagesToFirebase = (imageFileUrl: File[], userId: string, crea
   })
 }
 
-export const getImagesFromFirebase = async (userId: string, createAt: number) => {
+export const getImagesUrlFromFirebase = async (userId: string, createAt: number) => {
   const storageRef = ref(firebaseStorageService, `${userId}/${createAt}`)
 
   const storage = await listAll(storageRef)
-  const data = storage.items.map((item) => {
+  const dataList = storage.items.map((item) => {
     const url = getDownloadURL(ref(firebaseStorageService, `${userId}/${createAt}/${item.name}`))
     return url
   })
 
-  return Promise.all(data)
+  return Promise.all(dataList)
+}
+
+export const getImagesBlobFromFirebase = async (userId: string, createAt: number) => {
+  const storageRef = ref(firebaseStorageService, `${userId}/${createAt}`)
+
+  const storage = await listAll(storageRef)
+  const dataList = storage.items.map(async (item) => {
+    const url = await getBlob(ref(firebaseStorageService, `${userId}/${createAt}/${item.name}`))
+    return { url, name: item.name }
+  })
+
+  return Promise.all(dataList)
 }
 
 export const snapShotFirebaseData = (
   document: Query<DocumentData>,
-  snapShotHandler: () => Promise<void> | Promise<void>
+  snapShotHandler: () => Promise<void> | Promise<void> | void
 ) => {
   const snapShotEvent = onSnapshot(document, snapShotHandler)
   return snapShotEvent
