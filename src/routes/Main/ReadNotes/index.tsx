@@ -6,6 +6,7 @@ import useResize from 'hooks/useResize'
 import { isOkChangeMarkAtom, isOpenReadNotesAtom, markPositionAtom, memoAtom, userIdAtom } from 'store/atom'
 import { getDocsFromFirebase, snapShotFirebaseData } from 'utils/firebaseService/firebaseDBService'
 import { firebaseDBService } from 'utils/firebaseService/firebaseSetting'
+import { getMarkPositionDocsFromFirebaseHandler } from 'utils/getDataFromFirebaseHandle'
 import { IMemoDoc } from 'types/memoType'
 import ReadNote from './ReadNote'
 
@@ -33,18 +34,7 @@ const ReadNotes = () => {
       .then((memoDocs) => {
         if (isOkChangeMark) {
           setIsMemoDocLoading(true)
-          setStoredMemoDoc(
-            [...memoDocs.docs]
-              .reverse()
-              .map((firebaseMemo) => {
-                return { memoInfo: firebaseMemo.data().data, docId: firebaseMemo.id }
-              })
-              .filter(
-                (doc) =>
-                  doc.memoInfo.geolocation?.latitude === markPosition.clickedPosition.latitude &&
-                  doc.memoInfo.geolocation?.longitude === markPosition.clickedPosition.longitude
-              )
-          )
+          setStoredMemoDoc(getMarkPositionDocsFromFirebaseHandler(memoDocs, markPosition))
         }
       })
       .finally(() => setIsMemoDocLoading(false))
@@ -55,14 +45,7 @@ const ReadNotes = () => {
     return () => {
       snapShotEvent()
     }
-  }, [
-    markPosition.clickedPosition.latitude,
-    markPosition.clickedPosition.longitude,
-    isOpenReadNotes,
-    userId,
-    isOkChangeMark,
-    setIsOkChangeMark,
-  ])
+  }, [isOkChangeMark, markPosition, setIsOkChangeMark, userId])
 
   const handleCloseButtonClick = () => {
     setIsOpenReadNotes(false)
