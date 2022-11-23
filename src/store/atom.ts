@@ -26,7 +26,7 @@ export const markPositionAtom = atom<IMarkPosition>({
     geolocation: { latitude: 0, longitude: 0 },
     location: { latitude: 0, longitude: 0 },
     searchPosition: { latitude: 0, longitude: 0 },
-    memoPlacePosition: [{ latitude: 0, longitude: 0, createAt: '' }],
+    memoPlacePosition: [{ latitude: 0, longitude: 0, createAt: '', siteName: '' }],
     clickedPosition: { latitude: 0, longitude: 0 },
   },
 })
@@ -34,6 +34,7 @@ export const markPositionAtom = atom<IMarkPosition>({
 export const memoAtom = atom<IMemo>({
   key: 'memo',
   default: {
+    createAt: 0,
     siteName: '',
     travelDate: { startDate: new Date(), endDate: null },
     text: '',
@@ -76,6 +77,11 @@ export const isOkChangeMarkAtom = atom({
 
 export const isDeleteSearchMarkerAtom = atom({
   key: 'isDeleteSearchMarker',
+  default: false,
+})
+
+export const isEditMemoPlaceNameAtom = atom({
+  key: 'isEditMemoPlaceName',
   default: false,
 })
 

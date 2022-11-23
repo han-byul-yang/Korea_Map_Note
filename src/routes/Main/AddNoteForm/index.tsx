@@ -17,6 +17,7 @@ import {
   userIdAtom,
   imageListAtom,
   isOkChangeMarkAtom,
+  isEditMemoPlaceNameAtom,
 } from 'store/atom'
 import { ISearchAddressResultInfo, ISearchPlacesResultInfo } from 'types/searchPlacesType'
 import Address from './Address'
@@ -29,12 +30,7 @@ import TravelDate from './TravelDate'
 import { XIcon } from 'assets/svgs'
 import styles from './addNoteForm.module.scss'
 
-interface IAddNoteFormProps {
-  setIsChangeMemoPlaceName: Dispatch<React.SetStateAction<boolean>>
-  isChangeMemoPlaceName: boolean
-}
-
-const AddNoteForm = ({ setIsChangeMemoPlaceName, isChangeMemoPlaceName }: IAddNoteFormProps) => {
+const AddNoteForm = () => {
   const queryClient = useQueryClient()
   const userId = useRecoilValue(userIdAtom)
   const [isOpenAddNoteForm, setIsOpenAddNoteForm] = useRecoilState(isOpenAddNoteFormAtom)
@@ -52,6 +48,7 @@ const AddNoteForm = ({ setIsChangeMemoPlaceName, isChangeMemoPlaceName }: IAddNo
     ])
   )
   const [placeResult, setPlaceResult] = useState<ISearchPlacesResultInfo[] | undefined>([])
+  const isEditMemoPlaceName = useRecoilValue(isEditMemoPlaceNameAtom)
   const resetMemoData = useResetMemo()
 
   useEffect(() => {
@@ -103,13 +100,13 @@ const AddNoteForm = ({ setIsChangeMemoPlaceName, isChangeMemoPlaceName }: IAddNo
 
   const sendMemoData = {
     writer: userId,
-    createAt: dayjs(new Date()).valueOf(),
     geolocation: {
       latitude: markPosition.clickedPosition.latitude,
       longitude: markPosition.clickedPosition.longitude,
     },
     memo: {
-      siteName: isChangeMemoPlaceName
+      createAt: isOpenAddNoteForm.type === 'add' ? dayjs(new Date()).valueOf() : memo.createAt,
+      siteName: isEditMemoPlaceName
         ? memo.siteName
         : (placeResult && placeResult.length !== 0 && placeResult[0].place_name) || memo.siteName,
       travelDate: memo.travelDate,
@@ -119,15 +116,18 @@ const AddNoteForm = ({ setIsChangeMemoPlaceName, isChangeMemoPlaceName }: IAddNo
   }
 
   const addNoteMessageOkButtonHandle = async () => {
-    await createDocsToFirebase(userId, sendMemoData.createAt, sendMemoData)
-    storeImagesToFirebase(imageFiles, userId, sendMemoData.createAt)
+    await createDocsToFirebase(userId, sendMemoData.memo.createAt, sendMemoData)
+    storeImagesToFirebase(imageFiles, userId, sendMemoData.memo.createAt)
     resetMemoData()
     openMessageModal(modalMessage().notification.memo.NOTE_UPDATED)
     // setIsChangeMemoPlaceName(false)
   }
 
-  const updateNoteMessageOkButtonHandle = () => {
-    // await updateDoc(doc(firebaseDBService, userId), sendMemoData)
+  const updateNoteMessageOkButtonHandle = async () => {
+    console.log(memo.createAt, dayjs(new Date()).valueOf())
+    await updateDoc(doc(firebaseDBService, userId, `${memo.createAt}`), sendMemoData).then(() =>
+      console.log('updateed')
+    )
     setIsOpenAddNoteForm((prevState) => ({ ...prevState, type: 'add' }))
     resetMemoData()
     openMessageModal(modalMessage().notification.memo.NOTE_UPDATED)
@@ -149,11 +149,7 @@ const AddNoteForm = ({ setIsChangeMemoPlaceName, isChangeMemoPlaceName }: IAddNo
       <div className={styles.addNoteBox}>
         {isMobile && <XIcon className={styles.xIcon} onClick={handleCloseButtonClick} />}
         <Address addressResult={addressResult} />
-        <PlaceName
-          setIsChangeMemoPlaceName={setIsChangeMemoPlaceName}
-          isChangeMemoPlaceName={isChangeMemoPlaceName}
-          placeResult={placeResult}
-        />
+        <PlaceName placeResult={placeResult} />
         <TravelDate />
         <DescriptionText />
         <Picture />

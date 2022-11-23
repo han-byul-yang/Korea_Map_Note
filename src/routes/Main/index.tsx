@@ -11,19 +11,13 @@ import ReadNotes from './ReadNotes'
 
 const Main = () => {
   const [isMapLoaded, setIsMapLoaded] = useState(false)
-  const [isChangeMemoPlaceName, setIsChangeMemoPlaceName] = useState(false)
   const isOpenMessageModal = useRecoilValue(isOpenMessageModalAtom)
   const isOpenAddNoteForm = useRecoilValue(isOpenAddNoteFormAtom)
 
   return (
     <>
       <SearchBar isMapLoaded={isMapLoaded} />
-      {isOpenAddNoteForm.isOpen && (
-        <AddNoteForm
-          setIsChangeMemoPlaceName={setIsChangeMemoPlaceName}
-          isChangeMemoPlaceName={isChangeMemoPlaceName}
-        />
-      )}
+      {isOpenAddNoteForm.isOpen && <AddNoteForm />}
       <KakaoMap setIsMapLoaded={setIsMapLoaded} isMapLoaded={isMapLoaded} />
       <ReadNotes />
       {isOpenMessageModal && (
