@@ -2,7 +2,13 @@ const modalMessage = () => {
   const messages = {
     error: {
       auth: {
-        NO_ACCOUNT: { kind: 'error', message: '일치하는 계정이 없습니다. 다시 확인해주세요.' },
+        INVALID_EMAIL: { message: '이메일 형식에 맞지 않습니다.' },
+        INVALID_PASSWORD: { message: '최소 한 개 이상의 문자와 숫자로 8자 이상 입력해주세요.' },
+        'auth/email-already-in-use': { kind: 'error', message: '같은 이메일의 계정이 있습니다.' },
+        'auth/user-not-found': { kind: 'error', message: '일치하는 계정이 없습니다.' },
+        'auth/user-disabled': { kind: 'error', message: '이메일이 일치하지 않습니다.' },
+        'auth/wrong-password': { kind: 'error', message: '비밀번호가 일치하지 않습니다.' },
+        'auth/something-went-wrong': { kind: 'error', message: '로그인 과정에서 오류가 발생하였습니다.' },
       },
       geolocation: {
         PERMISSION_DENIED: { kind: 'error', message: '위치정보 수집이 거부되었습니다.' },
@@ -10,7 +16,7 @@ const modalMessage = () => {
         NOT_SUPPOERTED: { kind: 'error', message: '해당 브라우저에서 api가 지원되지 않습니다.' },
       },
       api: {
-        NO_NETWORK: { kind: 'error', message: '네트워크 연결을 확인해주세요' },
+        NO_NETWORK: { kind: 'error', message: '네트워크 연결을 확인해주세요.' },
         SOMETHING_WRONG: { kind: 'error', message: '데이터를 불러오는 중 오류 발생했습니다.' },
       },
       memo: {
@@ -21,7 +27,7 @@ const modalMessage = () => {
     notification: {
       memo: {
         NO_PLACE_NAME: { kind: 'notification', message: '장소 이름 입력은 필수입니다.' },
-        NOTE_UPDATED: { kind: 'notification', message: '메모가 성공적으로 저장되었습니다' },
+        NOTE_UPDATED: { kind: 'notification', message: '메모가 성공적으로 저장되었습니다.' },
       },
     },
     warning: {
