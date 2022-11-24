@@ -1,6 +1,6 @@
 import { Dispatch, useEffect, useRef } from 'react'
 import { doc, deleteDoc } from 'firebase/firestore'
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
 
 import useClickOutside from 'hooks/useClickOutside'
 import useOpenMessageModal from 'hooks/useOpenMessageModal'
@@ -15,24 +15,22 @@ import {
   memoAtom,
   userIdAtom,
 } from 'store/atom'
-import { IMemoDoc, IStoredMemoInfo } from 'types/memoType'
+import { IMemoDoc } from 'types/memoType'
 
 import styles from './memoSettingBox.module.scss'
-import dayjs from 'dayjs'
 
 interface IMemoSettingBoxProps {
   setOpenMemoSettingBox: Dispatch<React.SetStateAction<boolean>>
   storedMemo: IMemoDoc
-  pictureList: File[] | string[]
 }
 
-const MemoSettingBox = ({ setOpenMemoSettingBox, storedMemo, pictureList }: IMemoSettingBoxProps) => {
+const MemoSettingBox = ({ setOpenMemoSettingBox, storedMemo }: IMemoSettingBoxProps) => {
   const userId = useRecoilValue(userIdAtom)
   const setIsOpenAddNoteForm = useSetRecoilState(isOpenAddNoteFormAtom)
   const setIsOpenReadNotes = useSetRecoilState(isOpenReadNotesAtom)
   const setMemo = useSetRecoilState(memoAtom)
   const setIsOkChangeMark = useSetRecoilState(isOkChangeMarkAtom)
-  const [imageFiles, setImageFiles] = useRecoilState(imageListAtom)
+  const setImageFiles = useSetRecoilState(imageListAtom)
   const { openMessageModal, closeMessageModal } = useOpenMessageModal()
   const boxRef = useRef(null)
 

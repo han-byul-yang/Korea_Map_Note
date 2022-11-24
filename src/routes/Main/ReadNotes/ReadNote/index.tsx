@@ -1,10 +1,10 @@
-import { Dispatch, Suspense, useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useEffect, useState } from 'react'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import dayjs from 'dayjs'
 
 import { getImagesUrlFromFirebase } from 'utils/firebaseService/firebaseDBService'
 import { IMemoDoc } from 'types/memoType'
-import { userIdAtom } from 'store/atom'
+import { pictureUpdateSnapShotAtom, userIdAtom } from 'store/atom'
 import MemoSettingBox from 'routes/Main/ReadNotes/ReadNote/MemoSettingBox'
 
 import { MoreIcon } from 'assets/svgs'
@@ -17,6 +17,7 @@ interface IReadNoteProps {
 const ReadNote = ({ storedMemo }: IReadNoteProps) => {
   const [pictureList, setPictureList] = useState<File[] | string[]>([])
   const [openMemoSettingBox, setOpenMemoSettingBox] = useState(false)
+  const pictureUpdateSnapShot = useRecoilValue(pictureUpdateSnapShotAtom)
   const userId = useRecoilValue(userIdAtom)
   const { createAt, siteName, travelDate, hashTagList, text } = storedMemo.memoInfo.memo
 
@@ -26,20 +27,18 @@ const ReadNote = ({ storedMemo }: IReadNoteProps) => {
 
   useEffect(() => {
     getImagesUrlFromFirebase(userId, createAt).then((url) => setPictureList(url))
-  }, [createAt, userId])
+
+    pictureUpdateSnapShot?.on('state_changed', null, null, () => {
+      getImagesUrlFromFirebase(userId, createAt).then((url) => setPictureList(url))
+    })
+  }, [createAt, pictureUpdateSnapShot, userId])
 
   return (
     <li key={`${createAt}`} className={styles.readNoteCard}>
       <button type='button' onClick={handleMoreButtonClick}>
         <MoreIcon className={styles.moreIcon} />
       </button>
-      {openMemoSettingBox && (
-        <MemoSettingBox
-          setOpenMemoSettingBox={setOpenMemoSettingBox}
-          storedMemo={storedMemo}
-          pictureList={pictureList}
-        />
-      )}
+      {openMemoSettingBox && <MemoSettingBox setOpenMemoSettingBox={setOpenMemoSettingBox} storedMemo={storedMemo} />}
       {pictureList.length !== 0 && (
         <ul className={styles.imgBox}>
           {pictureList.map((singlePicture) => (

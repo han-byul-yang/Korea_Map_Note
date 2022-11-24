@@ -1,12 +1,16 @@
-import { Dispatch, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { doc, updateDoc } from 'firebase/firestore'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import dayjs from 'dayjs'
 
 import useResize from 'hooks/useResize'
 import useResetMemo from 'hooks/useResetMemo'
-import { storeImagesToFirebase, createDocsToFirebase } from 'utils/firebaseService/firebaseDBService'
+import {
+  addImagesToFirebase,
+  createDocsToFirebase,
+  updateImagesToFirebase,
+} from 'utils/firebaseService/firebaseDBService'
 import useOpenMessageModal from 'hooks/useOpenMessageModal'
 import { firebaseDBService } from 'utils/firebaseService/firebaseSetting'
 import modalMessage from 'utils/modalMessage'
@@ -18,6 +22,7 @@ import {
   imageListAtom,
   isOkChangeMarkAtom,
   isEditMemoPlaceNameAtom,
+  pictureUpdateSnapShotAtom,
 } from 'store/atom'
 import { ISearchAddressResultInfo, ISearchPlacesResultInfo } from 'types/searchPlacesType'
 import Address from './Address'
@@ -49,7 +54,13 @@ const AddNoteForm = () => {
   )
   const [placeResult, setPlaceResult] = useState<ISearchPlacesResultInfo[] | undefined>([])
   const isEditMemoPlaceName = useRecoilValue(isEditMemoPlaceNameAtom)
+  const setPictureUpdateSnapShot = useSetRecoilState(pictureUpdateSnapShotAtom)
   const resetMemoData = useResetMemo()
+
+  useEffect(() => {
+    size.MOBILE.RESIZE()
+    size.MOBILE.SIZEEVENT()
+  }, [size.MOBILE])
 
   useEffect(() => {
     if (isOkChangeMark) {
@@ -83,11 +94,6 @@ const AddNoteForm = () => {
     setIsOkChangeMark,
   ])
 
-  useEffect(() => {
-    size.MOBILE.RESIZE()
-    size.MOBILE.SIZEEVENT()
-  }, [size.MOBILE])
-
   const warningMessageOkButtonHandle = () => {
     closeMessageModal()
     setIsOpenAddNoteForm((prevState) => ({ ...prevState, isOpen: false }))
@@ -117,21 +123,16 @@ const AddNoteForm = () => {
 
   const addNoteMessageOkButtonHandle = async () => {
     await createDocsToFirebase(userId, sendMemoData.memo.createAt, sendMemoData)
-    storeImagesToFirebase(imageFiles, userId, sendMemoData.memo.createAt)
+    setPictureUpdateSnapShot(addImagesToFirebase(imageFiles, userId, sendMemoData.memo.createAt))
     resetMemoData()
     openMessageModal(modalMessage().notification.memo.NOTE_UPDATED)
-    // setIsChangeMemoPlaceName(false)
   }
 
   const updateNoteMessageOkButtonHandle = async () => {
-    console.log(memo.createAt, dayjs(new Date()).valueOf())
-    await updateDoc(doc(firebaseDBService, userId, `${memo.createAt}`), sendMemoData).then(() =>
-      console.log('updateed')
-    )
-    setIsOpenAddNoteForm((prevState) => ({ ...prevState, type: 'add' }))
+    await updateDoc(doc(firebaseDBService, userId, `${memo.createAt}`), sendMemoData)
+    setPictureUpdateSnapShot(updateImagesToFirebase(imageFiles, userId, sendMemoData.memo.createAt))
     resetMemoData()
     openMessageModal(modalMessage().notification.memo.NOTE_UPDATED)
-    // setIsChangeMemoPlaceName(false)
   }
 
   const handleMemoSubmitClick = async () => {

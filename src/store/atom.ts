@@ -1,3 +1,4 @@
+import { UploadTask } from 'firebase/storage'
 import { atom } from 'recoil'
 
 import { IMarkPosition, IPosition } from 'types/markPositionType'
@@ -83,6 +84,11 @@ export const isDeleteSearchMarkerAtom = atom({
 export const isEditMemoPlaceNameAtom = atom({
   key: 'isEditMemoPlaceName',
   default: false,
+})
+
+export const pictureUpdateSnapShotAtom = atom<UploadTask | undefined>({
+  key: 'pictureUpdateSnapShot',
+  default: undefined,
 })
 
 export const tempAtom = atom<ISearchPlacesResultInfo[]>({
