@@ -1,0 +1,19 @@
+@use '../../../../styles/constants/colors';
+
+.hashTag {
+  input[type='radio'] {
+    width: 25px;
+    height: 25px;
+    margin-right: 5px;
+    border-radius: 50%;
+    appearance: none;
+
+    &:checked {
+      border: 3px solid colors.$FONT;
+    }
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
