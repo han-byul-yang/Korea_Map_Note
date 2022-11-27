@@ -4,6 +4,8 @@ import { useRecoilState } from 'recoil'
 import { isEditMemoPlaceNameAtom, memoAtom } from 'store/atom'
 import { ISearchPlacesResultInfo } from 'types/searchPlacesType'
 
+import styles from './placeName.module.scss'
+
 interface IPlaceNameProps {
   placeResult: ISearchPlacesResultInfo[] | undefined
 }
@@ -24,8 +26,8 @@ const PlaceName = ({ placeResult }: IPlaceNameProps) => {
   }
 
   return (
-    <label>
-      이 장소의 이름은?
+    <label className={styles.placeName}>
+      <p>장소 이름</p>
       {placeResult && placeResult.length !== 0 ? (
         <>
           {isEditMemoPlaceName ? (

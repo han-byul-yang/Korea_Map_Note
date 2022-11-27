@@ -1,0 +1,14 @@
+@use '../../../../styles/constants/colors';
+
+.placeName {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  width: 100%;
+  padding-bottom: 3px;
+  border-bottom: 1px solid colors.$GRAY_800;
+
+  p {
+    margin-right: 10px;
+  }
+}
