@@ -1,0 +1,23 @@
+@use '../../../../styles/constants/colors';
+
+.address {
+  padding: 10px 0 5px;
+  border-bottom: 1px solid colors.$GRAY_800;
+
+  .addressTitle {
+    font-size: 18px;
+  }
+
+  .loactionIcon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .locationAddress {
+    padding: 10px 0;
+
+    p {
+      font-size: 14px;
+    }
+  }
+}
