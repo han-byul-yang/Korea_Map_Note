@@ -5,8 +5,8 @@ import { FirebaseError } from 'firebase/app'
 
 import useOpenMessageModal from 'hooks/useOpenMessageModal'
 import { firebaseAuthService } from 'utils/firebaseService/firebaseSetting'
-import modalMessage from 'utils/modalMessage'
 import { isOpenMessageModalAtom } from 'store/atom'
+import modalMessage from 'constants/modalMessage'
 import { errorMessages } from 'constants/errorMessages'
 import ModalPortal from 'components/Modal/ModalPortal'
 import MessageModal from 'components/Modal/MessageModal'
@@ -55,28 +55,28 @@ const Auth = () => {
       if (error instanceof Error) {
         switch (error.message) {
           case errorMessages.INVALID_EMAIL:
-            setErrorText((prevText) => ({ ...prevText, email: modalMessage().error.auth.INVALID_EMAIL.message }))
+            setErrorText((prevText) => ({ ...prevText, email: modalMessage.error.auth.INVALID_EMAIL.message }))
             break
           case errorMessages.INVALID_PASSWORD:
             setErrorText((prevText) => ({
               ...prevText,
-              password: modalMessage().error.auth.INVALID_PASSWORD.message,
+              password: modalMessage.error.auth.INVALID_PASSWORD.message,
             }))
             break
           case errorMessages['auth/email-already-in-use']:
-            openMessageModal(modalMessage().error.auth['auth/email-already-in-use'])
+            openMessageModal(modalMessage.error.auth['auth/email-already-in-use'])
             break
           case errorMessages['auth/user-disabled']:
-            openMessageModal(modalMessage().error.auth['auth/user-disabled'])
+            openMessageModal(modalMessage.error.auth['auth/user-disabled'])
             break
           case errorMessages['auth/user-not-found']:
-            openMessageModal(modalMessage().error.auth['auth/user-not-found'])
+            openMessageModal(modalMessage.error.auth['auth/user-not-found'])
             break
           case errorMessages['auth/wrong-password']:
-            openMessageModal(modalMessage().error.auth['auth/wrong-password'])
+            openMessageModal(modalMessage.error.auth['auth/wrong-password'])
             break
           default:
-            openMessageModal(modalMessage().error.auth['auth/something-went-wrong'])
+            openMessageModal(modalMessage.error.auth['auth/something-went-wrong'])
         }
       }
     }

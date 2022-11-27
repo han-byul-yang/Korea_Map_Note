@@ -6,10 +6,10 @@ import { collection, query } from 'firebase/firestore'
 import useOpenMessageModal from 'hooks/useOpenMessageModal'
 import { isDeleteSearchMarkerAtom, mapLevelAtom, mapPositionAtom, markPositionAtom, userIdAtom } from 'store/atom'
 import { IGeolocationPosition, IGeolocationError } from 'types/geolocationType'
-import modalMessage from 'utils/modalMessage'
 import { getDocsFromFirebase, snapShotFirebaseData } from 'utils/firebaseService/firebaseDBService'
 import { firebaseDBService } from 'utils/firebaseService/firebaseSetting'
-import { getMemoPositionFromFirebaseHandler } from 'utils/getDataFromFirebaseHandle'
+import { getMemoPositionFromFirebaseHandler } from 'utils/getDataFromFirebaseHandler'
+import modalMessage from 'constants/modalMessage'
 import Marker from './Marker'
 
 import geolocationMarkImg from 'assets/img/geolocationMark.png'
@@ -42,15 +42,15 @@ const KakaoMap = ({ setIsMapLoaded, isMapLoaded }: IKakaoMapProps) => {
 
   const retrieveError = useCallback(
     (error: IGeolocationError) => {
-      if (error.code === 1) openMessageModal(modalMessage().error.geolocation.PERMISSION_DENIED)
-      if (error.code === 2) openMessageModal(modalMessage().error.geolocation.POSITION_UNAVAILABLE)
+      if (error.code === 1) openMessageModal(modalMessage.error.geolocation.PERMISSION_DENIED)
+      if (error.code === 2) openMessageModal(modalMessage.error.geolocation.POSITION_UNAVAILABLE)
     },
     [openMessageModal]
   )
 
   useEffect(() => {
     if (!navigator.geolocation) {
-      openMessageModal(modalMessage().error.geolocation.NOT_SUPPOERTED)
+      openMessageModal(modalMessage.error.geolocation.NOT_SUPPOERTED)
     } else navigator.geolocation.getCurrentPosition(retrieveSuccess, retrieveError)
   }, [openMessageModal, retrieveError, retrieveSuccess])
 
@@ -61,6 +61,7 @@ const KakaoMap = ({ setIsMapLoaded, isMapLoaded }: IKakaoMapProps) => {
         setMarkPosition((prevMarkPosition) => getMemoPositionFromFirebaseHandler(memoDocs, prevMarkPosition))
       )
     }
+
     const snapShotEvent = snapShotFirebaseData(document, snapShotHandler)
 
     return () => {

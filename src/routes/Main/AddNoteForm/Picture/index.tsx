@@ -1,9 +1,8 @@
-import { Fragment } from 'react'
 import { useRecoilState } from 'recoil'
 
 import { imageListAtom } from 'store/atom'
 import useOpenMessageModal from 'hooks/useOpenMessageModal'
-import modalMessage from 'utils/modalMessage'
+import modalMessage from 'constants/modalMessage'
 
 import { ImageIcon, TrashCanIcon } from 'assets/svgs'
 import styles from './picture.module.scss'
@@ -19,13 +18,13 @@ const Picture = () => {
     // eslint-disable-next-line no-plusplus
     for (let i = 0; i < files.length; i++) {
       if (imageFileNames.includes(files[i].name)) {
-        openMessageModal(modalMessage().error.memo.No_SAME_IMAGE)
+        openMessageModal(modalMessage.error.memo.No_SAME_IMAGE)
         return
       }
     }
 
     if ([...files, ...imageFiles].length > 4) {
-      openMessageModal(modalMessage().error.memo.LIMIT_IMAGE_NUMBER)
+      openMessageModal(modalMessage.error.memo.LIMIT_IMAGE_NUMBER)
       return
     }
     setImageFiles((prevFile) => [...files, ...prevFile])

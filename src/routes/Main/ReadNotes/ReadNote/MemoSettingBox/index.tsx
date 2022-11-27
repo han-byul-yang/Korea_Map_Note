@@ -8,7 +8,7 @@ import {
   getDocsFromFirebase,
   getImagesBlobFromFirebase,
 } from 'utils/firebaseService/firebaseDBService'
-import modalMessage from 'utils/modalMessage'
+import modalMessage from 'constants/modalMessage'
 import {
   imageListAtom,
   isOkChangeMarkAtom,
@@ -79,7 +79,7 @@ const MemoSettingBox = ({ setOpenMemoSettingBox, storedMemo }: IMemoSettingBoxPr
   }
 
   const handleDeleteMemoClick = () => {
-    openMessageModal(modalMessage().warning.memo.DELETE_MEMO, deleteMessageOkButtonHandle)
+    openMessageModal(modalMessage.warning.memo.DELETE_MEMO, deleteMessageOkButtonHandle)
   }
 
   return (
