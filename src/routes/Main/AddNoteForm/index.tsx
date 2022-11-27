@@ -143,12 +143,14 @@ const AddNoteForm = () => {
     <div className={styles.addNoteContainer}>
       <div className={styles.addNoteBox}>
         {isMobile && <XIcon className={styles.xIcon} onClick={handleCloseButtonClick} />}
-        <PlaceName placeResult={placeResultData} />
-        <DescriptionText />
-        <HashTag />
-        <Address addressResult={addressResultData} />
-        <TravelDate />
-        <Picture />
+        <div className={styles.addNote}>
+          <PlaceName placeResult={placeResultData} />
+          <DescriptionText />
+          <HashTag />
+          <Address addressResult={addressResultData} />
+          <TravelDate />
+          <Picture />
+        </div>
         <button className={styles.submitButton} type='button' onClick={handleMemoSubmitClick}>
           {isOpenAddNoteForm.type === 'add' ? '메모 저장' : '메모 수정'}
         </button>

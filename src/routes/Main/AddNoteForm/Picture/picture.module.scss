@@ -5,6 +5,10 @@
   margin: 10px 0;
   color: colors.$FONT;
 
+  @media screen and (max-width: 425px) {
+    margin-bottom: 40px;
+  }
+
   .prevShowImage {
     position: relative;
     width: 70px;
