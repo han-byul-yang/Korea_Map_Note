@@ -6,7 +6,7 @@ import useResize from 'hooks/useResize'
 import { isOkChangeMarkAtom, isOpenReadNotesAtom, markPositionAtom, memoAtom, userIdAtom } from 'store/atom'
 import { getDocsFromFirebase, snapShotFirebaseData } from 'utils/firebaseService/firebaseDBService'
 import { firebaseDBService } from 'utils/firebaseService/firebaseSetting'
-import { getMarkPositionDocsFromFirebaseHandler } from 'utils/getDataFromFirebaseHandle'
+import { getMarkPositionDocsFromFirebaseHandler } from 'utils/getDataFromFirebaseHandler'
 import { IMemoDoc } from 'types/memoType'
 import ReadNote from './ReadNote'
 
@@ -72,7 +72,7 @@ const ReadNotes = () => {
             ))}
           </ul>
         ) : (
-          <p>저장된 추억이 없습니다</p>
+          <p className={styles.noMemoMessage}>저장된 추억이 없습니다</p>
         )}
       </div>
       {!isMobile && isOpenReadNotes && (
