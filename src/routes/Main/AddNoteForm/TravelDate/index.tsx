@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react'
-import { useRecoilState } from 'recoil'
+import { useSetRecoilState } from 'recoil'
 import ReactDatePicker from 'react-datepicker'
 
 import { memoAtom } from 'store/atom'
@@ -7,10 +6,9 @@ import { CustomDateButton } from './CustomDateButton'
 
 import 'react-datepicker/dist/react-datepicker.css'
 import styles from './travelDate.module.scss'
-import dayjs from 'dayjs'
 
 const TravelDate = () => {
-  const [memo, setMemo] = useRecoilState(memoAtom)
+  const setMemo = useSetRecoilState(memoAtom)
 
   const handleDateChange = (dates: [Date | null, Date | null]) => {
     const [start, end] = dates
