@@ -1,18 +1,17 @@
-import { useEffect, useState } from 'react'
-import { useQueryClient } from '@tanstack/react-query'
+import { useEffect, useMemo, useState } from 'react'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import dayjs from 'dayjs'
 
 import useResize from 'hooks/useResize'
 import useResetMemo from 'hooks/useResetMemo'
+import useGetKakaoQueryData from 'hooks/query/useGetKaKaoQueryData'
+import useOpenMessageModal from 'hooks/useOpenMessageModal'
 import {
   addImagesToFirebase,
   createDocsToFirebase,
   updateDocsToFirebase,
   updateImagesToFirebase,
 } from 'utils/firebaseService/firebaseDBService'
-import useOpenMessageModal from 'hooks/useOpenMessageModal'
-import modalMessage from 'utils/modalMessage'
 import {
   isOpenAddNoteFormAtom,
   markPositionAtom,
@@ -24,6 +23,7 @@ import {
   pictureUpdateSnapShotAtom,
 } from 'store/atom'
 import { ISearchAddressResultInfo, ISearchPlacesResultInfo } from 'types/searchPlacesType'
+import modalMessage from 'constants/modalMessage'
 import Address from './Address'
 import PlaceName from './PlaceName'
 import DescriptionText from './DescriptionText'
@@ -35,7 +35,6 @@ import { XIcon } from 'assets/svgs'
 import styles from './addNoteForm.module.scss'
 
 const AddNoteForm = () => {
-  const queryClient = useQueryClient()
   const userId = useRecoilValue(userIdAtom)
   const [isOpenAddNoteForm, setIsOpenAddNoteForm] = useRecoilState(isOpenAddNoteFormAtom)
   const memo = useRecoilValue(memoAtom) // type 설정
@@ -44,14 +43,11 @@ const AddNoteForm = () => {
   const markPosition = useRecoilValue(markPositionAtom)
   const { openMessageModal, closeMessageModal } = useOpenMessageModal()
   const { size, isSize: isMobile } = useResize()
-  const [addressResult, setAddressResult] = useState<ISearchAddressResultInfo[] | undefined>(
-    queryClient.getQueryData([
-      'getAddressByPosition',
-      markPosition.clickedPosition.latitude,
-      markPosition.clickedPosition.longitude,
-    ])
+  const { getAddressResultData, getPlaceResultData } = useGetKakaoQueryData()
+  const [addressResultData, setAddressResultData] = useState<ISearchAddressResultInfo[] | undefined>(
+    getAddressResultData(markPosition)
   )
-  const [placeResult, setPlaceResult] = useState<ISearchPlacesResultInfo[] | undefined>([])
+  const [placeResultData, setPlaceResultData] = useState<ISearchPlacesResultInfo[] | undefined>([])
   const isEditMemoPlaceName = useRecoilValue(isEditMemoPlaceNameAtom)
   const setPictureUpdateSnapShot = useSetRecoilState(pictureUpdateSnapShotAtom)
   const resetMemoData = useResetMemo()
@@ -63,35 +59,11 @@ const AddNoteForm = () => {
 
   useEffect(() => {
     if (isOkChangeMark) {
-      setAddressResult(
-        queryClient.getQueryData([
-          'getAddressByPosition',
-          markPosition.clickedPosition.latitude,
-          markPosition.clickedPosition.longitude,
-        ])
-      )
-      const placesResultsData: ISearchPlacesResultInfo[] | undefined = queryClient.getQueryData(
-        ['getPlacesByKeyword'],
-        {
-          exact: false,
-        }
-      )
-      setPlaceResult(
-        placesResultsData?.filter(
-          (place) =>
-            Number(place.x) === markPosition.clickedPosition.longitude &&
-            Number(place.y) === markPosition.clickedPosition.latitude
-        )
-      )
+      setAddressResultData(getAddressResultData(markPosition))
+      setPlaceResultData(getPlaceResultData(markPosition))
     }
     setIsOkChangeMark(false)
-  }, [
-    isOkChangeMark,
-    markPosition.clickedPosition.latitude,
-    markPosition.clickedPosition.longitude,
-    queryClient,
-    setIsOkChangeMark,
-  ])
+  }, [getAddressResultData, getPlaceResultData, isOkChangeMark, markPosition, setIsOkChangeMark])
 
   const warningMessageOkButtonHandle = () => {
     closeMessageModal()
@@ -100,34 +72,49 @@ const AddNoteForm = () => {
   }
 
   const handleCloseButtonClick = () => {
-    openMessageModal(modalMessage().warning.memo.CLOSE_ADD_NOTE_FORM, warningMessageOkButtonHandle)
+    openMessageModal(modalMessage.warning.memo.CLOSE_ADD_NOTE_FORM, warningMessageOkButtonHandle)
   }
 
-  const sendMemoData = {
-    writer: userId,
-    geolocation: {
-      latitude: markPosition.clickedPosition.latitude,
-      longitude: markPosition.clickedPosition.longitude,
-    },
-    memo: {
-      createAt: isOpenAddNoteForm.type === 'add' ? dayjs(new Date()).valueOf() : memo.createAt,
-      siteName: isEditMemoPlaceName
-        ? memo.siteName
-        : (placeResult && placeResult.length !== 0 && placeResult[0].place_name) || memo.siteName,
-      travelDate: memo.travelDate,
-      text: memo.text,
-      hashTagList: memo.hashTagList,
-    },
-  }
+  const sendMemoData = useMemo(
+    () => ({
+      writer: userId,
+      geolocation: {
+        latitude: markPosition.clickedPosition.latitude,
+        longitude: markPosition.clickedPosition.longitude,
+      },
+      memo: {
+        createAt: isOpenAddNoteForm.type === 'add' ? dayjs(new Date()).valueOf() : memo.createAt,
+        siteName: isEditMemoPlaceName
+          ? memo.siteName
+          : (placeResultData && placeResultData.length !== 0 && placeResultData[0].place_name) || memo.siteName,
+        travelDate: memo.travelDate,
+        text: memo.text,
+        hashTagList: memo.hashTagList,
+      },
+    }),
+    [
+      isEditMemoPlaceName,
+      isOpenAddNoteForm.type,
+      markPosition.clickedPosition.latitude,
+      markPosition.clickedPosition.longitude,
+      memo.createAt,
+      memo.hashTagList,
+      memo.siteName,
+      memo.text,
+      memo.travelDate,
+      placeResultData,
+      userId,
+    ]
+  )
 
   const addNoteMessageOkButtonHandle = () => {
     try {
       createDocsToFirebase(userId, sendMemoData.memo.createAt, sendMemoData)
       setPictureUpdateSnapShot(addImagesToFirebase(imageFiles, userId, sendMemoData.memo.createAt))
       resetMemoData()
-      openMessageModal(modalMessage().notification.memo.NOTE_UPDATED)
+      openMessageModal(modalMessage.notification.memo.NOTE_UPDATED)
     } catch {
-      openMessageModal(modalMessage().error.memo.CREATE)
+      openMessageModal(modalMessage.error.memo.CREATE)
     }
   }
 
@@ -136,19 +123,19 @@ const AddNoteForm = () => {
       updateDocsToFirebase(userId, memo.createAt, sendMemoData)
       setPictureUpdateSnapShot(updateImagesToFirebase(imageFiles, userId, sendMemoData.memo.createAt))
       resetMemoData()
-      openMessageModal(modalMessage().notification.memo.NOTE_UPDATED)
+      openMessageModal(modalMessage.notification.memo.NOTE_UPDATED)
     } catch {
-      openMessageModal(modalMessage().error.memo.UPDATE)
+      openMessageModal(modalMessage.error.memo.UPDATE)
     }
   }
 
   const handleMemoSubmitClick = async () => {
-    if (!memo.siteName && !(placeResult && placeResult.length !== 0)) {
-      openMessageModal(modalMessage().notification.memo.NO_PLACE_NAME)
+    if (!memo.siteName && !(placeResultData && placeResultData.length !== 0)) {
+      openMessageModal(modalMessage.notification.memo.NO_PLACE_NAME)
     } else if (isOpenAddNoteForm.type === 'add') {
-      openMessageModal(modalMessage().warning.memo.ADD_NOTE_FORM, addNoteMessageOkButtonHandle)
+      openMessageModal(modalMessage.warning.memo.ADD_NOTE_FORM, addNoteMessageOkButtonHandle)
     } else {
-      openMessageModal(modalMessage().warning.memo.UPDATE_NOTE_FORM, updateNoteMessageOkButtonHandle)
+      openMessageModal(modalMessage.warning.memo.UPDATE_NOTE_FORM, updateNoteMessageOkButtonHandle)
     }
   }
 
@@ -156,10 +143,10 @@ const AddNoteForm = () => {
     <div className={styles.addNoteContainer}>
       <div className={styles.addNoteBox}>
         {isMobile && <XIcon className={styles.xIcon} onClick={handleCloseButtonClick} />}
-        <PlaceName placeResult={placeResult} />
+        <PlaceName placeResult={placeResultData} />
         <DescriptionText />
         <HashTag />
-        <Address addressResult={addressResult} />
+        <Address addressResult={addressResultData} />
         <TravelDate />
         <Picture />
         <button className={styles.submitButton} type='button' onClick={handleMemoSubmitClick}>

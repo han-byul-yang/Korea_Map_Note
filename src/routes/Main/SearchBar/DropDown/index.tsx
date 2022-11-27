@@ -1,11 +1,8 @@
 import React, { Dispatch } from 'react'
-import { useQuery } from '@tanstack/react-query'
 import { useSetRecoilState } from 'recoil'
 
-import useOpenMessageModal from 'hooks/useOpenMessageModal'
-import modalMessage from 'utils/modalMessage'
-import { getPlacesByKeywordApi } from 'services/api/searchKakaoApi'
-import { isDeleteSearchMarkerAtom, mapLevelAtom, mapPositionAtom, markPositionAtom, tempAtom } from 'store/atom'
+import { useGetPlacesByKeywordApiQuery } from 'hooks/query/useGetKaKaoApiQuery'
+import { isDeleteSearchMarkerAtom, mapLevelAtom, mapPositionAtom, markPositionAtom } from 'store/atom'
 import { ISearchPlacesResultInfo } from 'types/searchPlacesType'
 
 import { SearchIcon } from 'assets/svgs'
@@ -24,26 +21,7 @@ const DropDown = ({ searchInput, setSearchInput, showDropDown, setShowDropDown, 
   const setMapPosition = useSetRecoilState(mapPositionAtom)
   const setMapLevel = useSetRecoilState(mapLevelAtom)
   const setIsDeleteSearchMarker = useSetRecoilState(isDeleteSearchMarkerAtom)
-  const { openMessageModal } = useOpenMessageModal()
-
-  const setTemp = useSetRecoilState(tempAtom)
-
-  const { isLoading, data: placesResultData } = useQuery(
-    ['getPlacesByKeyword', searchInput],
-    () => getPlacesByKeywordApi(searchInput, isMapLoaded),
-    {
-      onSuccess: (res: ISearchPlacesResultInfo[]) => {
-        setTemp(res)
-      },
-      staleTime: 1000,
-      cacheTime: 1000,
-      // enabled: !!searchInput, // dropdown이 mount 될 때 query도 생성되니까 없어도 됨
-      keepPreviousData: true,
-      onError: () => {
-        openMessageModal(modalMessage().error.api.SOMETHING_WRONG)
-      },
-    }
-  )
+  const { isLoading, data: placesResultData } = useGetPlacesByKeywordApiQuery(searchInput, isMapLoaded)
 
   if (isLoading) {
     return <div>loading...</div>

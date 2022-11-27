@@ -1,7 +1,7 @@
-import { useMemo } from 'react'
-import { useQueryClient } from '@tanstack/react-query'
+import { memo, useMemo } from 'react'
 import { useRecoilValue } from 'recoil'
 
+import useGetKakaoQueryData from 'hooks/query/useGetKaKaoQueryData'
 import { markPositionAtom } from 'store/atom'
 import { ISearchAddressResultInfo, ISearchPlacesResultInfo } from 'types/searchPlacesType'
 
@@ -13,19 +13,15 @@ interface IPlaceInfoBoxProps {
 
 const PlaceInfoBox = ({ isLoading }: IPlaceInfoBoxProps) => {
   const markPosition = useRecoilValue(markPositionAtom)
-  const queryClient = useQueryClient()
+  const { getAddressResultData, getPlaceResultData } = useGetKakaoQueryData()
 
-  const addressResultsData: ISearchAddressResultInfo[] | undefined = queryClient.getQueryData([
-    'getAddressByPosition',
-    markPosition.clickedPosition.latitude,
-    markPosition.clickedPosition.longitude,
-  ])
-  const placesResultsData: ISearchPlacesResultInfo[] | undefined = queryClient.getQueryData(['getPlacesByKeyword'], {
-    exact: false,
-  })
-  const placeResultData = useMemo(
-    () => placesResultsData?.filter((place) => Number(place.x) === markPosition.clickedPosition.longitude),
-    [markPosition.clickedPosition.longitude, placesResultsData]
+  const addressResultData: ISearchAddressResultInfo[] | undefined = useMemo(
+    () => getAddressResultData(markPosition),
+    [getAddressResultData, markPosition]
+  )
+  const placeResultData: ISearchPlacesResultInfo[] | undefined = useMemo(
+    () => getPlaceResultData(markPosition),
+    [getPlaceResultData, markPosition]
   )
 
   if (isLoading) {
@@ -43,12 +39,12 @@ const PlaceInfoBox = ({ isLoading }: IPlaceInfoBoxProps) => {
         </>
       ) : (
         <>
-          <p>기본 주소: {addressResultsData![0].address.address_name}</p>
-          <p>도로명 주소: {addressResultsData![0].road_address?.address_name}</p>
+          <p>기본 주소: {addressResultData![0].address.address_name}</p>
+          <p>도로명 주소: {addressResultData![0].road_address?.address_name}</p>
         </>
       )}
     </div>
   )
 }
 
-export default PlaceInfoBox
+export default memo(PlaceInfoBox)
