@@ -7,12 +7,23 @@
 @import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap');// font-family: 'Gowun Dodum', sans-serif;
 
 body,
-button,
-input,
-textarea {
+button {
   font-family: 'Gowun Dodum', sans-serif;
   font-feature-settings: 'tnum';
   color: colors.$FONT;
+}
+
+input,
+textarea {
+  font-family: 'Do Hyeon', serif;
+  font-feature-settings: 'tnum';
+  color: colors.$FONT;
+}
+
+input[type='search'],
+input[type='email'],
+input[type='password'] {
+  font-family: 'Gowun Dodum', sans-serif;
 }
 
 input[type='number'] {

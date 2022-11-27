@@ -24,6 +24,10 @@
   @include container;
   left: -20vw;
 
+  @media screen and (max-width: 1440px) {
+    left: -40vw;
+  }
+
   @media screen and (max-width: 425px) {
     bottom: -90vh;
     left: auto;
@@ -45,6 +49,10 @@
   &::-webkit-scrollbar-thumb {
     background: colors.$GRAY_800;
     border-radius: 8px;
+  }
+
+  @media screen and (max-width: 1440px) {
+    width: 40vw;
   }
 
   @media screen and (max-width: 425px) {

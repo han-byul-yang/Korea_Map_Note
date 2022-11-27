@@ -39,7 +39,7 @@ export const memoAtom = atom<IMemo>({
     siteName: '',
     travelDate: { startDate: new Date(), endDate: null },
     text: '',
-    hashTagList: [],
+    hashTagList: { color: '#f95959', list: [] },
   },
 })
 

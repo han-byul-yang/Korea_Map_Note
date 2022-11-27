@@ -1,12 +1,9 @@
 import { memo, useEffect, useState } from 'react'
 import { MapMarker } from 'react-kakao-maps-sdk'
-import { useSetRecoilState, useRecoilValue, useRecoilState } from 'recoil'
-import { collection, query } from 'firebase/firestore'
-import { getStorage, ref, uploadBytesResumable } from 'firebase/storage'
+import { useSetRecoilState, useRecoilValue } from 'recoil'
 
-import { getImagesUrlFromFirebase, snapShotFirebaseData } from 'utils/firebaseService/firebaseDBService'
-import { firebaseDBService, firebaseStorageService } from 'utils/firebaseService/firebaseSetting'
-import { isOpenAddNoteFormAtom, markPositionAtom, memoAtom, pictureUpdateSnapShotAtom, userIdAtom } from 'store/atom'
+import { getImagesUrlFromFirebase } from 'utils/firebaseService/firebaseDBService'
+import { isOpenAddNoteFormAtom, markPositionAtom, pictureUpdateSnapShotAtom, userIdAtom } from 'store/atom'
 import { IPosition } from 'types/markPositionType'
 import InfoWindow from 'routes/Main/InfoWindow'
 
@@ -20,7 +17,6 @@ interface IMarker {
 
 const Marker = ({ markImg, markPosition, isMapLoaded }: IMarker) => {
   const [openInfoWindow, setOpenInfoWindow] = useState(false)
-  const setMemo = useSetRecoilState(memoAtom)
   const setMarkPosition = useSetRecoilState(markPositionAtom)
   const [imageCalled, setImageCalled] = useState([''])
   const userId = useRecoilValue(userIdAtom)
@@ -28,7 +24,7 @@ const Marker = ({ markImg, markPosition, isMapLoaded }: IMarker) => {
   const pictureUpdateSnapShot = useRecoilValue(pictureUpdateSnapShotAtom)
 
   useEffect(() => {
-    if (!markImg || pictureUpdateSnapShot) {
+    if (!markImg) {
       getImagesUrlFromFirebase(userId, markPosition.createAt).then((url) => setImageCalled(url))
 
       pictureUpdateSnapShot?.on('state_changed', null, null, () => {

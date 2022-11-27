@@ -17,6 +17,10 @@ const SearchBar = ({ isMapLoaded }: ISearchBarProps) => {
   const [showXIcon, setShowXIcon] = useState(false)
   const setIsDeleteSearchMarker = useSetRecoilState(isDeleteSearchMarkerAtom)
 
+  const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+  }
+
   const handleSearchInputChange = (e: FormEvent<HTMLInputElement>) => {
     e.preventDefault()
     setSearchInput(e.currentTarget.value)
@@ -31,7 +35,7 @@ const SearchBar = ({ isMapLoaded }: ISearchBarProps) => {
   }
 
   return (
-    <form className={styles.searchBarForm}>
+    <form className={styles.searchBarForm} onSubmit={handleFormSubmit}>
       <SearchIcon className={styles.searchIcon} />
       <input type='search' value={searchInput} onChange={handleSearchInputChange} />
       {showXIcon && <XIcon className={styles.xIcon} onClick={handleXButtonClick} />}

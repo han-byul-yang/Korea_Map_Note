@@ -12,25 +12,29 @@ import styles from './routes.module.scss'
 
 const App = () => {
   const [isLoggin, setIsLoggin] = useState(false)
-  // const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const setUserId = useSetRecoilState(userIdAtom)
 
   useEffect(() => {
     onAuthStateChanged(firebaseAuthService, (user) => {
-      // setIsLoading(true)
+      setIsLoading(true)
       if (user) {
         setIsLoggin(true)
         setUserId(user.uid)
       } else {
         setIsLoggin(false)
       }
-      // setIsLoading(false)
+      setIsLoading(false)
     })
-  })
+  }, [setUserId])
 
   return (
     <div className={styles.page}>
-      <Routes>{isLoggin ? <Route path='/' element={<Main />} /> : <Route path='/' element={<Auth />} />}</Routes>
+      {isLoading ? (
+        <div>loading...</div>
+      ) : (
+        <Routes>{isLoggin ? <Route path='/' element={<Main />} /> : <Route path='/' element={<Auth />} />}</Routes>
+      )}
     </div>
   )
 }
