@@ -2,7 +2,7 @@
 
 .image {
   position: relative;
-  margin-top: 10px;
+  margin: 10px 0;
   color: colors.$FONT;
 
   .prevShowImage {
@@ -14,15 +14,45 @@
   .imageLabel {
     display: flex;
     align-items: center;
+    font-size: 15px;
     color: colors.$FONT;
     cursor: pointer;
 
-    .imageBtn {
+    .imageIcon {
+      width: 18px;
+      height: 18px;
       margin-right: 5px;
     }
   }
 
   input {
     display: none;
+  }
+
+  .imageList {
+    li {
+      display: flex;
+      flex-wrap: wrap;
+      margin: 10px 0;
+
+      image {
+        width: 20px;
+        height: 20px;
+      }
+
+      p {
+        align-self: flex-end;
+        padding: 0 3px;
+        margin-right: 30px;
+        font-size: 14px;
+      }
+
+      .trashCanIcon {
+        align-self: center;
+        width: 15px;
+        height: 15px;
+        cursor: pointer;
+      }
+    }
   }
 }

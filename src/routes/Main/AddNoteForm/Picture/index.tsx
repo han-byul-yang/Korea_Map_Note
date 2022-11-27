@@ -5,7 +5,7 @@ import { imageListAtom } from 'store/atom'
 import useOpenMessageModal from 'hooks/useOpenMessageModal'
 import modalMessage from 'utils/modalMessage'
 
-import { ImageIcon } from 'assets/svgs'
+import { ImageIcon, TrashCanIcon } from 'assets/svgs'
 import styles from './picture.module.scss'
 
 const Picture = () => {
@@ -37,23 +37,23 @@ const Picture = () => {
 
   return (
     <div className={styles.image}>
-      {imageFiles.map((fileImage, index) => {
-        const fileImageKey = `fileImage-${index}`
-        return (
-          <Fragment key={fileImageKey}>
-            <img className={styles.prevShowImage} alt={`${fileImage.name}`} src={URL.createObjectURL(fileImage)} />
-            <p>{fileImage.name}</p>
-            <button type='button' onClick={() => handleDeletePictureClick(fileImage)}>
-              지우기
-            </button>
-          </Fragment>
-        )
-      })}
       <label className={styles.imageLabel} htmlFor='chooseFile'>
-        <ImageIcon className={styles.imageBtn} />
+        <ImageIcon className={styles.imageIcon} />
         사진 추가 👈
       </label>
       <input type='file' multiple id='chooseFile' accept='image/*' onChange={handleImageChange} />
+      <ul className={styles.imageList}>
+        {imageFiles.map((fileImage, index) => {
+          const fileImageKey = `fileImage-${index}`
+          return (
+            <li key={fileImageKey}>
+              <img className={styles.prevShowImage} alt={`${fileImage.name}`} src={URL.createObjectURL(fileImage)} />
+              <p>{fileImage.name}</p>
+              <TrashCanIcon className={styles.trashCanIcon} onClick={() => handleDeletePictureClick(fileImage)} />
+            </li>
+          )
+        })}
+      </ul>
     </div>
   )
 }
