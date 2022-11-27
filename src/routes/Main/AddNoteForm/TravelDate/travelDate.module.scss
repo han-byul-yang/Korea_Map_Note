@@ -1,0 +1,12 @@
+@use '../../../../styles/constants/colors';
+
+.customDateButton {
+  padding: 10px 0;
+  border-bottom: 1px solid colors.$GRAY_800;
+
+  .calendarIcon {
+    width: 15px;
+    height: 15px;
+    margin-right: 5px;
+  }
+}
