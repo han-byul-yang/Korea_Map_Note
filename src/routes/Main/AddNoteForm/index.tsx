@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
-import { doc, updateDoc } from 'firebase/firestore'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import dayjs from 'dayjs'
 
@@ -9,10 +8,10 @@ import useResetMemo from 'hooks/useResetMemo'
 import {
   addImagesToFirebase,
   createDocsToFirebase,
+  updateDocsToFirebase,
   updateImagesToFirebase,
 } from 'utils/firebaseService/firebaseDBService'
 import useOpenMessageModal from 'hooks/useOpenMessageModal'
-import { firebaseDBService } from 'utils/firebaseService/firebaseSetting'
 import modalMessage from 'utils/modalMessage'
 import {
   isOpenAddNoteFormAtom,
@@ -121,18 +120,26 @@ const AddNoteForm = () => {
     },
   }
 
-  const addNoteMessageOkButtonHandle = async () => {
-    await createDocsToFirebase(userId, sendMemoData.memo.createAt, sendMemoData)
-    setPictureUpdateSnapShot(addImagesToFirebase(imageFiles, userId, sendMemoData.memo.createAt))
-    resetMemoData()
-    openMessageModal(modalMessage().notification.memo.NOTE_UPDATED)
+  const addNoteMessageOkButtonHandle = () => {
+    try {
+      createDocsToFirebase(userId, sendMemoData.memo.createAt, sendMemoData)
+      setPictureUpdateSnapShot(addImagesToFirebase(imageFiles, userId, sendMemoData.memo.createAt))
+      resetMemoData()
+      openMessageModal(modalMessage().notification.memo.NOTE_UPDATED)
+    } catch {
+      openMessageModal(modalMessage().error.memo.CREATE)
+    }
   }
 
-  const updateNoteMessageOkButtonHandle = async () => {
-    await updateDoc(doc(firebaseDBService, userId, `${memo.createAt}`), { data: sendMemoData })
-    setPictureUpdateSnapShot(updateImagesToFirebase(imageFiles, userId, sendMemoData.memo.createAt))
-    resetMemoData()
-    openMessageModal(modalMessage().notification.memo.NOTE_UPDATED)
+  const updateNoteMessageOkButtonHandle = () => {
+    try {
+      updateDocsToFirebase(userId, memo.createAt, sendMemoData)
+      setPictureUpdateSnapShot(updateImagesToFirebase(imageFiles, userId, sendMemoData.memo.createAt))
+      resetMemoData()
+      openMessageModal(modalMessage().notification.memo.NOTE_UPDATED)
+    } catch {
+      openMessageModal(modalMessage().error.memo.UPDATE)
+    }
   }
 
   const handleMemoSubmitClick = async () => {

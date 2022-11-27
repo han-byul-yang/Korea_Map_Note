@@ -17,11 +17,14 @@ const modalMessage = () => {
       },
       api: {
         NO_NETWORK: { kind: 'error', message: '네트워크 연결을 확인해주세요.' },
-        SOMETHING_WRONG: { kind: 'error', message: '데이터를 불러오는 중 오류 발생했습니다.' },
+        SOMETHING_WRONG: { kind: 'error', message: '데이터를 불러오는 중 오류가 발생했습니다.' },
       },
       memo: {
         LIMIT_IMAGE_NUMBER: { kind: 'error', message: '이미지 개수가 4개를 초과할 수 없습니다.' },
         No_SAME_IMAGE: { kind: 'error', message: '중복된 이미지를 사용할 수 없습니다.' },
+        CREATE: { kind: 'error', message: '메모를 추가하는 도중 오류가 발생하였습니다.' },
+        UPDATE: { kind: 'error', message: '메모를 업데이트하는 도중 오류가 발생하였습니다.' },
+        DELETE: { kind: 'error', message: '메모 삭제에 실패하였습니다.' },
       },
     },
     notification: {

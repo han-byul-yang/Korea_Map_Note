@@ -1,11 +1,13 @@
 import { Dispatch, useEffect, useRef } from 'react'
-import { doc, deleteDoc } from 'firebase/firestore'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 
 import useClickOutside from 'hooks/useClickOutside'
 import useOpenMessageModal from 'hooks/useOpenMessageModal'
-import { getDocsFromFirebase, getImagesBlobFromFirebase } from 'utils/firebaseService/firebaseDBService'
-import { firebaseDBService } from 'utils/firebaseService/firebaseSetting'
+import {
+  deleteFirebaseDocs,
+  getDocsFromFirebase,
+  getImagesBlobFromFirebase,
+} from 'utils/firebaseService/firebaseDBService'
 import modalMessage from 'utils/modalMessage'
 import {
   imageListAtom,
@@ -50,13 +52,13 @@ const MemoSettingBox = ({ setOpenMemoSettingBox, storedMemo }: IMemoSettingBoxPr
     getDocsFromFirebase(userId).then((memoDocs) => {
       setMemo(memoDocs.docs.filter((ele) => ele.id === storedMemo.docId)[0].data().data.memo)
     })
-    // setMemo({
-    //   ...storedMemo.memoInfo.memo,
-    //   travelDate: {
-    //     startDate: storedMemo.memoInfo.memo.travelDate.startDate?.toDate(),
-    //     endDate: storedMemo.memoInfo.memo.travelDate.endDate?.toDate(),
-    //   },
-    // })
+    /* setMemo({
+      ...storedMemo.memoInfo.memo,
+      travelDate: {
+        startDate: storedMemo.memoInfo.memo.travelDate.startDate,
+        endDate: storedMemo.memoInfo.memo.travelDate.endDate,
+      },
+    }) */
     setMemo({
       ...storedMemo.memoInfo.memo,
       travelDate: {
@@ -70,8 +72,8 @@ const MemoSettingBox = ({ setOpenMemoSettingBox, storedMemo }: IMemoSettingBoxPr
     })
   }
 
-  const deleteMessageOkButtonHandle = async () => {
-    await deleteDoc(doc(firebaseDBService, userId, `${storedMemo.docId}`))
+  const deleteMessageOkButtonHandle = () => {
+    deleteFirebaseDocs(userId, storedMemo.docId)
     setIsOkChangeMark(true)
     closeMessageModal()
   }

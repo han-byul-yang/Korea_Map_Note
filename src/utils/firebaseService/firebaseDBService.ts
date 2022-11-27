@@ -1,11 +1,37 @@
-import { query, collection, getDocs, doc, setDoc, onSnapshot, Query, DocumentData } from 'firebase/firestore'
+import { FirebaseError } from 'firebase/app'
+import {
+  query,
+  collection,
+  getDocs,
+  doc,
+  setDoc,
+  onSnapshot,
+  Query,
+  DocumentData,
+  updateDoc,
+  deleteDoc,
+} from 'firebase/firestore'
 import { deleteObject, getBlob, getDownloadURL, getStorage, listAll, ref, uploadBytesResumable } from 'firebase/storage'
 
 import { IStoredMemoInfo } from 'types/memoType'
 import { firebaseDBService, firebaseStorageService } from './firebaseSetting'
 
 export const createDocsToFirebase = async (collectionName: string, docId: number, data: IStoredMemoInfo) => {
-  await setDoc(doc(firebaseDBService, collectionName, `${docId}`), { data })
+  await setDoc(doc(firebaseDBService, collectionName, `${docId}`), { data }).catch((error) => {
+    if (error instanceof FirebaseError) throw new Error()
+  })
+}
+
+export const updateDocsToFirebase = async (userId: string, createAt: number, data: IStoredMemoInfo) => {
+  await updateDoc(doc(firebaseDBService, userId, `${createAt}`), { data }).catch((error) => {
+    if (error instanceof FirebaseError) throw new Error()
+  })
+}
+
+export const deleteFirebaseDocs = async (userId: string, docId: string) => {
+  await deleteDoc(doc(firebaseDBService, userId, docId)).catch((error) => {
+    if (error instanceof FirebaseError) throw new Error()
+  })
 }
 
 export const getDocsFromFirebase = async (id: string) => {
