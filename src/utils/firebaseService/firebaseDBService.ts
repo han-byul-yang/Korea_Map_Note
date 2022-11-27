@@ -46,6 +46,7 @@ const deleteImagesOfFirebase = async (userId: string, createAt: number) => {
 
   const desertRef = ref(storage, `${userId}/${createAt}`)
   const storageList = await listAll(desertRef)
+  // eslint-disable-next-line array-callback-return
   storageList.items.map((item) => {
     deleteObject(ref(storage, `${userId}/${createAt}/${item.name}`))
   })
