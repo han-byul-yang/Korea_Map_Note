@@ -57,7 +57,7 @@ const ReadNotes = () => {
   }
 
   return (
-    <div className={isOpenReadNotes ? styles.openContainer : styles.closeContainer}>
+    <div className={styles.readNotesContainer}>
       <div className={styles.readNotesBox}>
         {isMobile && (
           <HamburgerCloseIcon className={styles.hamburgerCloseIcon} onClick={handleHamburgerCloseButtonClick} />

@@ -8,10 +8,19 @@
   to { left: 0; }
 }
 
-@mixin showAddNoteAnimation {
+@keyframes showNoteForMobile {
+  from { bottom: -90vw; }
+  to { bottom: 0; }
+}
+
+@mixin showNoteAnimation {
   animation: showAddNote 1s ease 0.1s 1 normal both;
 }
 
-@mixin showAddNoteForDesktopAnimation {
+@mixin showNoteForDesktopAnimation {
   animation: showAddNoteForDesktop 1s ease 0.1s 1 normal both;
+}
+
+@mixin showNoteForMobileAnimation {
+  animation: showNoteForMobile 1s ease 0.1s 1 normal both;
 }

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useRecoilValue } from 'recoil'
 
-import { isOpenAddNoteFormAtom, isOpenMessageModalAtom } from 'store/atom'
+import { isOpenAddNoteFormAtom, isOpenMessageModalAtom, isOpenReadNotesAtom } from 'store/atom'
 import MessageModal from 'components/Modal/MessageModal'
 import AddNoteForm from 'routes/Main/AddNoteForm'
 import ModalPortal from 'components/Modal/ModalPortal'
@@ -13,13 +13,14 @@ const Main = () => {
   const [isMapLoaded, setIsMapLoaded] = useState(false)
   const isOpenMessageModal = useRecoilValue(isOpenMessageModalAtom)
   const isOpenAddNoteForm = useRecoilValue(isOpenAddNoteFormAtom)
+  const isOpenReadNotes = useRecoilValue(isOpenReadNotesAtom)
 
   return (
     <>
       <SearchBar isMapLoaded={isMapLoaded} />
       {isOpenAddNoteForm.isOpen && <AddNoteForm />}
       <KakaoMap setIsMapLoaded={setIsMapLoaded} isMapLoaded={isMapLoaded} />
-      <ReadNotes />
+      {isOpenReadNotes && <ReadNotes />}
       {isOpenMessageModal && (
         <ModalPortal>
           <MessageModal />

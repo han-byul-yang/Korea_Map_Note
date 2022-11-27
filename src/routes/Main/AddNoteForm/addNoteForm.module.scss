@@ -4,13 +4,14 @@
 .addNoteContainer {
   position: absolute;
   top: 0;
+  left: 0;
   z-index: 5;
   display: flex;
   height: 100vh;
-  @include animation.showAddNoteAnimation;
+  @include animation.showNoteAnimation;
 
   @media screen and (max-width: 1440px) {
-    @include animation.showAddNoteForDesktopAnimation;
+    @include animation.showNoteForDesktopAnimation;
   }
 
   @media screen and (max-width: 425px) {

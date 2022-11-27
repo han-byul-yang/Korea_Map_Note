@@ -1,36 +1,23 @@
 @use '../../../styles/constants/colors';
+@use '../../../styles/mixins/animation';
 
-@mixin container {
+.readNotesContainer {
   position: absolute;
   top: 0;
   left: 0;
   z-index: 5;
   display: flex;
-  transition: left 0.5s ease;
+  @include animation.showNoteAnimation;
+
+  @media screen and (max-width: 1440px) {
+    @include animation.showNoteForDesktopAnimation;
+  }
 
   @media screen and (max-width: 425px) {
     top: auto;
     bottom: 0;
     left: auto;
-    transition: bottom 0.5s ease;
-  }
-}
-
-.openContainer {
-  @include container;
-}
-
-.closeContainer {
-  @include container;
-  left: -20vw;
-
-  @media screen and (max-width: 1440px) {
-    left: -40vw;
-  }
-
-  @media screen and (max-width: 425px) {
-    bottom: -90vh;
-    left: auto;
+    animation: none;
   }
 }
 
@@ -59,6 +46,7 @@
     width: 100vw;
     height: 90vh;
     border-radius: 15px 15px 0 0;
+    @include animation.showNoteForMobileAnimation;
 
     &::-webkit-scrollbar {
       display: none;
