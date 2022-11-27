@@ -129,7 +129,7 @@ const AddNoteForm = () => {
   }
 
   const updateNoteMessageOkButtonHandle = async () => {
-    await updateDoc(doc(firebaseDBService, userId, `${memo.createAt}`), sendMemoData)
+    await updateDoc(doc(firebaseDBService, userId, `${memo.createAt}`), { data: sendMemoData })
     setPictureUpdateSnapShot(updateImagesToFirebase(imageFiles, userId, sendMemoData.memo.createAt))
     resetMemoData()
     openMessageModal(modalMessage().notification.memo.NOTE_UPDATED)
@@ -149,13 +149,13 @@ const AddNoteForm = () => {
     <div className={styles.addNoteContainer}>
       <div className={styles.addNoteBox}>
         {isMobile && <XIcon className={styles.xIcon} onClick={handleCloseButtonClick} />}
-        <Address addressResult={addressResult} />
         <PlaceName placeResult={placeResult} />
-        <TravelDate />
         <DescriptionText />
-        <Picture />
         <HashTag />
-        <button type='button' onClick={handleMemoSubmitClick}>
+        <Address addressResult={addressResult} />
+        <TravelDate />
+        <Picture />
+        <button className={styles.submitButton} type='button' onClick={handleMemoSubmitClick}>
           {isOpenAddNoteForm.type === 'add' ? '메모 저장' : '메모 수정'}
         </button>
       </div>
