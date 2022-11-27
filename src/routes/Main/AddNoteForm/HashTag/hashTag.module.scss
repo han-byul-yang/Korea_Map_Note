@@ -1,19 +1,54 @@
 @use '../../../../styles/constants/colors';
 
 .hashTag {
-  input[type='radio'] {
-    width: 25px;
-    height: 25px;
-    margin-right: 5px;
-    border-radius: 50%;
-    appearance: none;
+  p {
+    padding: 5px 0;
+  }
 
-    &:checked {
-      border: 3px solid colors.$FONT;
-    }
+  .palette {
+    display: flex;
+    margin: 5px 0;
 
-    &:hover {
-      cursor: pointer;
+    input[type='radio'] {
+      width: 25px;
+      height: 25px;
+      margin-right: 5px;
+      border-radius: 50%;
+      appearance: none;
+
+      &:checked {
+        border: 3px solid colors.$FONT;
+      }
+
+      &:hover {
+        cursor: pointer;
+      }
     }
+  }
+}
+
+.hashTagInput {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: solid 1px colors.$GRAY_800;
+
+  .hashTagList {
+    display: flex;
+    flex-wrap: wrap;
+
+    li {
+      margin: 3px;
+
+      button {
+        padding: 3px 5px;
+        color: colors.$NEAR_WHITE;
+        border-radius: 6px;
+      }
+    }
+  }
+
+  input[type='text'] {
+    width: 70px;
   }
 }
