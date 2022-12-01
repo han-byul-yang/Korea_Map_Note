@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import dayjs from 'dayjs'
 
 import { getImagesUrlFromFirebase } from 'utils/firebaseService/firebaseDBService'
 import updatedDate from 'utils/updatedDate'
+import organizedText from 'utils/organizedText'
 import { IMemoDoc } from 'types/memoType'
 import { pictureUpdateSnapShotAtom, userIdAtom } from 'store/atom'
 import MemoSettingBox from 'routes/Main/ReadNotes/ReadNote/MemoSettingBox'
@@ -40,6 +41,8 @@ const ReadNote = ({ storedMemo }: IReadNoteProps) => {
     setIsOpenCarouselModal(true)
   }
 
+  const memoText = useMemo(() => organizedText(text), [text])
+
   return (
     <>
       <li key={`${createAt}`} className={styles.readNoteCard}>
@@ -74,7 +77,7 @@ const ReadNote = ({ storedMemo }: IReadNoteProps) => {
             </li>
           ))}
         </ul>
-        <p>{text}</p>
+        <p>{memoText}</p>
 
         <p className={styles.updateDate}>{updatedDate(`${dayjs(createAt).format()}`)}</p>
       </li>
