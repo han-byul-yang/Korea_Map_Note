@@ -9,25 +9,35 @@ import { SearchIcon } from 'assets/svgs'
 import styles from './dropDown.module.scss'
 
 interface IDropDownProps {
-  searchInput: string
   setSearchInput: Dispatch<React.SetStateAction<string>>
+  debouncedSearchInput: string
+  setDebouncedSearchInput: Dispatch<React.SetStateAction<string>>
   showDropDown: boolean
   setShowDropDown: Dispatch<React.SetStateAction<boolean>>
   isMapLoaded: boolean
 }
 
-const DropDown = ({ searchInput, setSearchInput, showDropDown, setShowDropDown, isMapLoaded }: IDropDownProps) => {
+const DropDown = ({
+  setSearchInput,
+  debouncedSearchInput,
+  setDebouncedSearchInput,
+  showDropDown,
+  setShowDropDown,
+  isMapLoaded,
+}: IDropDownProps) => {
   const setMarkPosition = useSetRecoilState(markPositionAtom)
   const setMapPosition = useSetRecoilState(mapPositionAtom)
   const setMapLevel = useSetRecoilState(mapLevelAtom)
   const setIsDeleteSearchMarker = useSetRecoilState(isDeleteSearchMarkerAtom)
-  const { isLoading, data: placesResultData } = useGetPlacesByKeywordApiQuery(searchInput, isMapLoaded)
+
+  const { isLoading, data: placesResultData } = useGetPlacesByKeywordApiQuery(debouncedSearchInput, isMapLoaded)
 
   if (isLoading) {
     return <div>loading...</div>
   }
 
   const handleResultPlaceClick = (resultPlace: ISearchPlacesResultInfo) => {
+    setDebouncedSearchInput(resultPlace.place_name)
     setSearchInput(resultPlace.place_name)
     setMapPosition({ latitude: Number(resultPlace.y), longitude: Number(resultPlace.x) })
     setMarkPosition((prev) => {

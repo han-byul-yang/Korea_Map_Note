@@ -1,6 +1,7 @@
-import { FormEvent, useState } from 'react'
+import { FormEvent, useEffect, useMemo, useState } from 'react'
 import { useSetRecoilState } from 'recoil'
 
+import debounce from 'utils/debounce'
 import { isDeleteSearchMarkerAtom } from 'store/atom'
 import DropDown from './DropDown'
 
@@ -13,6 +14,7 @@ interface ISearchBarProps {
 
 const SearchBar = ({ isMapLoaded }: ISearchBarProps) => {
   const [searchInput, setSearchInput] = useState('')
+  const [debouncedSearchInput, setDebouncedSearchInput] = useState('')
   const [showDropDown, setShowDropDown] = useState(true)
   const [showXIcon, setShowXIcon] = useState(false)
   const setIsDeleteSearchMarker = useSetRecoilState(isDeleteSearchMarkerAtom)
@@ -21,12 +23,18 @@ const SearchBar = ({ isMapLoaded }: ISearchBarProps) => {
     e.preventDefault()
   }
 
+  const debouncing = useMemo(() => debounce(setDebouncedSearchInput), [])
+
   const handleSearchInputChange = (e: FormEvent<HTMLInputElement>) => {
     e.preventDefault()
     setSearchInput(e.currentTarget.value)
     setShowXIcon(true)
     setShowDropDown(true)
   }
+
+  useEffect(() => {
+    debouncing(searchInput)
+  }, [debouncing, searchInput])
 
   const handleXButtonClick = () => {
     setSearchInput('')
@@ -41,8 +49,9 @@ const SearchBar = ({ isMapLoaded }: ISearchBarProps) => {
       {showXIcon && <XIcon className={styles.xIcon} onClick={handleXButtonClick} />}
       {searchInput.length !== 0 && (
         <DropDown
-          searchInput={searchInput}
           setSearchInput={setSearchInput}
+          debouncedSearchInput={debouncedSearchInput}
+          setDebouncedSearchInput={setDebouncedSearchInput}
           showDropDown={showDropDown}
           setShowDropDown={setShowDropDown}
           isMapLoaded={isMapLoaded}
