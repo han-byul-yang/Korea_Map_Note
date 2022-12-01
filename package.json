@@ -1,5 +1,5 @@
 {
-  "name": "world_map_note",
+  "name": "korea-map-note",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -30,7 +30,6 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^4.7.1",
-    "@tanstack/react-query-devtools": "^4.10.1",
     "axios": "^0.27.2",
     "classnames": "^2.3.1",
     "dayjs": "^1.11.5",
@@ -44,7 +43,6 @@
     "react-slick": "^0.29.0",
     "react-use": "^17.3.2",
     "recoil": "^0.7.3-alpha.2",
-    "recoil-persist": "^4.2.0",
     "slick-carousel": "^1.8.1",
     "web-vitals": "^2.1.0"
   },

@@ -15,6 +15,7 @@ export const useGetAddressByPositionApiQuery = (markPosition: IMarkPosition, isM
     {
       staleTime: 1000 * 60 * 60,
       cacheTime: 1000 * 60 * 60,
+      enabled: !!markPosition.clickedPosition.latitude || !!markPosition.clickedPosition.longitude,
       onError: () => {
         openMessageModal(modalMessage.error.api.SOMETHING_WRONG)
       },
@@ -24,19 +25,24 @@ export const useGetAddressByPositionApiQuery = (markPosition: IMarkPosition, isM
   return query
 }
 
-export const useGetPlacesByKeywordApiQuery = (searchInput: string, isMapLoaded: boolean) => {
+export const useGetPlacesByKeywordApiQuery = (debouncedSearchInput: string, isMapLoaded: boolean) => {
   const { openMessageModal } = useOpenMessageModal()
 
-  const query = useQuery(['getPlacesByKeyword', searchInput], () => getPlacesByKeywordApi(searchInput, isMapLoaded), {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    onSuccess: (res: ISearchPlacesResultInfo[]) => {},
-    staleTime: 1000 * 60 * 60,
-    cacheTime: 1000,
-    keepPreviousData: true,
-    onError: () => {
-      openMessageModal(modalMessage.error.api.SOMETHING_WRONG)
-    },
-  })
+  const query = useQuery(
+    ['getPlacesByKeyword', debouncedSearchInput],
+    () => getPlacesByKeywordApi(debouncedSearchInput, isMapLoaded),
+    {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      onSuccess: (res: ISearchPlacesResultInfo[]) => {},
+      staleTime: 1000,
+      cacheTime: 1000,
+      enabled: !!debouncedSearchInput,
+      keepPreviousData: true,
+      onError: () => {
+        openMessageModal(modalMessage.error.api.SOMETHING_WRONG)
+      },
+    }
+  )
 
   return query
 }

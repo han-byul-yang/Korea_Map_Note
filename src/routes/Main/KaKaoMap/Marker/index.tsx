@@ -40,9 +40,6 @@ const Marker = ({ markImg, markPosition, isMapLoaded }: IMarker) => {
       ...prevPosition,
       clickedPosition: { latitude: markPosition.latitude, longitude: markPosition.longitude },
     }))
-    // if (markPosition.siteName) {
-    //   setMemo((prevMemo) => ({ ...prevMemo, siteName: markPosition.siteName }))
-    // }
   }
 
   return (

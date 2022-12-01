@@ -34,7 +34,13 @@ const HashTag = () => {
 
   const handleHashTagClick = (tag: string) => {
     setMemo((prevTags) => {
-      return { ...prevTags, hashTagList: prevTags.hashTagList.list.filter((tags: string) => tags !== tag) }
+      return {
+        ...prevTags,
+        hashTagList: {
+          ...prevTags.hashTagList,
+          list: prevTags.hashTagList.list.filter((tags: string) => tags !== tag),
+        },
+      }
     })
   }
 
@@ -74,7 +80,6 @@ const HashTag = () => {
           })}
         </ul>
         <input type='text' value={hashTag} onChange={handleHashTagChange} />
-        {/* <button type='submit'>+</button> */}
       </div>
     </form>
   )
