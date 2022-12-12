@@ -83,7 +83,7 @@ const AddNoteForm = () => {
         longitude: markPosition.clickedPosition.longitude,
       },
       memo: {
-        createAt: isOpenAddNoteForm.type === 'add' ? dayjs(new Date()).valueOf() : memo.createAt,
+        createAt: isOpenAddNoteForm.type === 'add' ? Date.now() : memo.createAt,
         siteName: isEditMemoPlaceName
           ? memo.siteName
           : (placeResultData && placeResultData.length !== 0 && placeResultData[0].place_name) || memo.siteName,
@@ -148,7 +148,7 @@ const AddNoteForm = () => {
           <DescriptionText />
           <HashTag />
           <Address addressResult={addressResultData} />
-          <TravelDate />
+          {/* <TravelDate /> */}
           <Picture />
         </div>
         <button className={styles.submitButton} type='button' onClick={handleMemoSubmitClick}>

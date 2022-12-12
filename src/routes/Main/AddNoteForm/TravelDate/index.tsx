@@ -1,4 +1,4 @@
-import { useSetRecoilState } from 'recoil'
+import { useRecoilState } from 'recoil'
 import ReactDatePicker from 'react-datepicker'
 
 import { memoAtom } from 'store/atom'
@@ -8,7 +8,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 import styles from './travelDate.module.scss'
 
 const TravelDate = () => {
-  const setMemo = useSetRecoilState(memoAtom)
+  const [memo, setMemo] = useRecoilState(memoAtom)
 
   const handleDateChange = (dates: [Date | null, Date | null]) => {
     const [start, end] = dates
@@ -21,10 +21,10 @@ const TravelDate = () => {
   return (
     <div className={styles.customDateButton}>
       <ReactDatePicker
-        selected={new Date()}
+        selected={memo.travelDate.startDate}
         onChange={handleDateChange}
-        startDate={new Date()}
-        endDate={null}
+        startDate={memo.travelDate.startDate}
+        endDate={memo.travelDate.endDate}
         selectsRange
         dateFormat='yyyy.MM.dd'
         customInput={<CustomDateButton />}

@@ -2,7 +2,12 @@
 
 .placeInfoBox {
   padding: 5px;
+  font-family: 'Do Hyeon', serif;
   font-size: 12px;
+
+  .placeName {
+    font-size: 14px;
+  }
 
   p {
     margin-bottom: 5px;

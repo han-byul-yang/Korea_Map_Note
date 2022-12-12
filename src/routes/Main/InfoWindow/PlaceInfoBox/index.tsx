@@ -32,7 +32,7 @@ const PlaceInfoBox = ({ isLoading }: IPlaceInfoBoxProps) => {
     <div className={styles.placeInfoBox}>
       {placeResultData && placeResultData.length !== 0 ? (
         <>
-          <p>{placeResultData[0].place_name}</p>
+          <p className={styles.placeName}>{placeResultData[0].place_name}</p>
           <p>카테고리: {placeResultData[0]?.category_name}</p>
           <p>기본 주소: {placeResultData[0]?.address_name}</p>
           <p>도로명 주소: {placeResultData[0]?.road_address_name}</p>

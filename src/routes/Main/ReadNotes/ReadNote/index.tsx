@@ -48,10 +48,11 @@ const ReadNote = ({ storedMemo }: IReadNoteProps) => {
       <li key={`${createAt}`} className={styles.readNoteCard}>
         <p className={styles.siteName}>{siteName} 에서..</p>
         {!travelDate.endDate ? (
-          <p className={styles.travelDate}>{dayjs(travelDate.startDate).format('YYYY.MM.DD')}</p>
+          <p className={styles.travelDate}>{dayjs(travelDate.startDate.toDate()).format('YYYY.MM.DD')}</p>
         ) : (
           <p className={styles.travelDate}>
-            {dayjs(travelDate.startDate).format('YYYY.MM.DD')} -{dayjs(travelDate.endDate).format('YYYY.MM.DD')}
+            {dayjs(travelDate.startDate.toDate()).format('YYYY.MM.DD')} -
+            {dayjs(travelDate.endDate.toDate()).format('YYYY.MM.DD')}
           </p>
         )}
         <button className={styles.moreButton} type='button' onClick={handleMoreButtonClick}>
