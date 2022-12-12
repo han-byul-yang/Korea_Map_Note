@@ -41,7 +41,7 @@ https://korea-map-note.netlify.app
 </div>
 </details>
 
-## 5. 화면 예시
+## 5. 화면 예시 및 구현 방법
 <details>
 <summary>화면 예시 펼치기</summary>
 <div markdown="2">
@@ -85,11 +85,12 @@ https://korea-map-note.netlify.app
 서치 폼에 장소 키워드 입력 -> 드롭다운에서 장소 클릭 -> 지도 줌 인 및 이동, 지도에 마커 표시
 /사진
 - 키워드 장소 입력 후 `300ms가 지나면` 드롭다운으로 검색된 장소 결과들이 나열되어 보여진다.
+  
+  > 디바운싱을 적용하여 300ms 이전에 연속으로 키워드를 입력하면 장소 서치 api가 호출되지 않도록 하였다. 이로써 렌더링이 될 때마다 발생하는 무조건적인 api 호출을 줄일 수 있었다. :round_pushpin: [코드 보기](https://github.com/han-byul-yang/world_map_note/blob/45db1fcfb892d112c8792ae37fa815f8010bccb3/src/routes/Main/SearchBar/index.tsx#L36) 
+  
 - 드롭다운 목록에서 원하는 장소를 클릭하면 지도가 줌인 되면서 해당 장소의 위치로 이동하고, 그곳에 마커가 표시된다. 
  
 *코드: useQuery로 previouse data 저장
-
-*코드: 디바운싱으로 api 호출 횟수 줄이기
 
 ### 5.4 마커의 기본 주소 및 도로명 주소 확인
 마커 클릭 -> 로딩 -> 기본 주소 및 도로명 주소 인포윈도우 표시
@@ -99,6 +100,8 @@ https://korea-map-note.netlify.app
 ### 5.5 메모 추가
 마커 클릭 -> 인포윈도우에서 메모 추가 클릭 -> 메모 추가 폼 오픈 -> 메모 입력 -> 메모 추가 버튼 클릭 -> 저장 및 `실시간으로` 지도에 사진 마커 표시
 - 메모 입력 후 메모 추가 버튼을 클릭하면 저장 여부 확인 모달이 띄워진다. 확인 버튼을 누르면 성공적으로 저장이 되었다는 안내 모달과 함께 메모가 `실시간으로` 생성된다. 
+  
+  > firebase/firestore의 onSnapshot을 사용하여 firestore의 데이터 변경을 실시간으로 감지하도록 하였다. 이로서 메모 추가 시 지도에 실시간으로 마커가 표시된다. :round_pushpin: [코드 보기](https://github.com/han-byul-yang/world_map_note/blob/45db1fcfb892d112c8792ae37fa815f8010bccb3/src/routes/Main/KaKaoMap/index.tsx#L59)
 
 #### 5.5.1 장소 이름
 /사진
@@ -106,7 +109,7 @@ https://korea-map-note.netlify.app
 - 검색을 통해 표시된 마커에 메모를 추가를 하는 경우 장소 이름이 검색된 장소 이름으로 자동 입력된다. 또한 이는 변경이 가능하다.
 
 #### 5.5.2 메모 내용 
-* organizedText util 함수 코드
+/사진
 
 #### 5.5.3 해시태그 & 색상 변경
 /사진
@@ -131,15 +134,20 @@ https://korea-map-note.netlify.app
 - 메모 입력 후 메모 수정 버튼을 클릭하면 수정 여부 확인 모달이 띄워진다. 수정 버튼을 누르면 성공적으로 수정이 되었다는 안내 모달과 함께 메모가 `실시간으로` 수정된다. 
 /사진 
 - 메모 수정 폼이 열리면서 메모의 여행 장소, 태그, 여행 날짜, 내용, 장소, 사진이 폼에 자동으로 표시된다. 
+  
+    > firebase/firestore의 onSnapshot을 사용하여 firestore의 데이터 변경을 실시간으로 감지하도록 하였다. 이로서 메모 수정 시 지도에 실시간으로 마커가 표시된다. :round_pushpin: [코드 보기](https://github.com/han-byul-yang/world_map_note/blob/45db1fcfb892d112c8792ae37fa815f8010bccb3/src/routes/Main/KaKaoMap/index.tsx#L59)
 
 ### 5.7 메모 보기
 마커 클릭 -> 인포윈도우에서 메모 보기 클릭 -> 메모 보기 폼 오픈
 /사진
 - 선택한 마커의 위치에 저장했던 메모들이 나열되어 보여진다.
 - 저장했던 메모의 여행 장소, 여행 날짜, 태그, 내용이 보여진다.  
+  
+  > text를 인자로 받아 줄바꿈이 적용된 트리요소로 리턴해주는 재사용 가능한 util 함수를 생성하였다. :round_pushpin: [코드 보기](https://github.com/han-byul-yang/world_map_note/blob/45db1fcfb892d112c8792ae37fa815f8010bccb3/src/utils/organizedText.tsx#L3)
+
 - 업로드 날짜(~분 전, ~시간 전)가 메모의 하단에 표시된다. 
 
-*updatedDate util함수 코드 
+  > date(타입은 string)를 인자로 받아 받은 date가 현재 시간 기준 얼마나 지났는지 리턴해주는 재사용 가능한 updateDate util 함수를 생성하였다. 24시간이 지났으면 일자를 기준으로, 지나지 않은 경우 초, 분, 시간을 기준으로 리턴해준다. :round_pushpin: [코드 보기](https://github.com/han-byul-yang/world_map_note/blob/45db1fcfb892d112c8792ae37fa815f8010bccb3/src/utils/updatedDate.ts#L3)
 
 ### 5.7.1 메모의 사진 크게 보기
 - 메모의 사진을 클릭하면 사진을 큰 크기로 확인할 수 있다. 
@@ -166,8 +174,10 @@ https://korea-map-note.netlify.app
 </div>
 </details>
 
-## 6. 구현 방법 및 트러블 슈팅
-auth코드
+## 6. 트러블 슈팅 & 고민한 부분
+auth코드 :round_pushpin:
 W3C 정규 표현식으로 이메일 형식에 맞는 유효성 검사
 정규 표현식을 사용해  최소 한 개 이상의 문자와 숫자로 8자 이상에 맞는 비밀번호 유효성 검사
 firebase 로 이메일 및 비밀번호 회원가입 및 로그인 auth 기능 구현
+
+## 7. 고려 사항 및 최적화
