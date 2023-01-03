@@ -40,12 +40,16 @@ https://korea-map-note.netlify.app
 
 ### 4.1 로그인/회원가입
 #### 4.1.1 회원가입
-/사진 
+
+![ezgif com-gif-maker (57)](https://user-images.githubusercontent.com/67466789/210095985-82d0b786-d9cd-44df-a15d-12ed09b2f1e0.gif)
+
 - 이메일과 `최소 한 개 이상의 문자와 숫자로 8자 이상의 비밀번호`를 입력하고 회원가입 버튼을 누르면 회원가입이 된다. 이후 자동으로 로그인이 된 후, 지도 노트 메인 화면으로 이동한다. 
 - 가입 이메일이 이미 있는 경우/ 가입 과정에서 오류가 있는 경우 에러 메세지 모달을 띄워준다. 
 
 #### 4.1.2 로그인
-/사진
+
+![ezgif com-gif-maker (58)](https://user-images.githubusercontent.com/67466789/210096143-aea82157-eb5a-44c3-b063-0f38d296cee0.gif)
+
 - 회원가입한 이메일 및 비밀번호를 입력하면 지도 노트 화면으로 이동한다.  
 - 가입 이메일이 없는 경우/ 가입 비밀번호가 틀린 경우/ 유저가 없는 경우/ 가입 과정에서 오류가 있는 경우 에러 메세지 모달을 띄워준다.
 
@@ -60,51 +64,57 @@ https://korea-map-note.netlify.app
 #### 4.2.2 지도에 직접 지도 마커 표시
 지도 위 특정 위치 클릭 -> 지도에 마커 표시 
 
+![ezgif com-gif-maker (48)](https://user-images.githubusercontent.com/67466789/210060559-de224c09-84c8-4858-881a-5a7afbc1724e.gif)
+
 - 지도 위를 직접 클릭을 하면 원하는 마커의 위치를 선택할 수 있다. 
 - 선택 시 지도의 줌인을 통해 구체적인 지명을 확인할 수 있다. 
 
 #### 4.2.3 검색으로 지도 마커 표시
 장소 검색 -> 지도에 위치 결과 마커 표시
-/사진
+
+![ezgif com-gif-maker (49)](https://user-images.githubusercontent.com/67466789/210060850-778272e8-0044-4c0f-b902-72de2d8a10be.gif)
+
 - 검색 후 결과로 지도 위 장소 위치에 마커가 표시된다. 
 
 ### 4.3 장소 검색
 서치 폼에 장소 키워드 입력 -> 드롭다운에서 장소 클릭 -> 지도 줌 인 및 이동, 지도에 마커 표시
-/사진
+
+![ezgif com-gif-maker (50)](https://user-images.githubusercontent.com/67466789/210061071-06b6b236-d7b5-439e-b8db-9325ed12055c.gif)
+
 - 키워드 장소를 입력하면 드롭다운으로 검색된 장소 결과들이 나열되어 보여진다.
 - 드롭다운 목록에서 원하는 장소를 클릭하면 지도가 줌인 되면서 해당 장소의 위치로 이동하고, 그곳에 마커가 표시된다. 
 
 ### 4.4 마커의 기본 주소 및 도로명 주소 확인
 마커 클릭 -> 기본 주소 및 도로명 주소 인포윈도우 표시
-/사진
+
+![ezgif com-gif-maker (51)](https://user-images.githubusercontent.com/67466789/210061206-14907cb1-18ad-49d3-8791-c46a27cdef2e.gif)
+
 - 기본 주소나 도로명 주소가 없는 경우 빈칸으로 표시가 된다.  
  
 ### 4.5 메모 추가
 마커 클릭 -> 인포윈도우에서 메모 추가 클릭 -> 메모 추가 폼에 메모 입력 -> 저장 및 `실시간으로` 지도에 사진 마커 표시
+
+![ezgif com-gif-maker (52)](https://user-images.githubusercontent.com/67466789/210063108-a103a25d-7a9f-4377-a65e-205027bca678.gif)
+
 - 메모 입력 후 메모 추가 버튼을 클릭하면 저장 여부 확인 모달이 띄워진다. 확인 버튼을 누르면 성공적으로 저장이 되었다는 안내 모달과 함께 메모가 `실시간으로` 생성된다. 
   
   > firebase/firestore의 onSnapshot을 사용하여 firestore의 데이터 변경을 실시간으로 감지하도록 하였다. 이로서 메모 추가 시 지도에 실시간으로 마커가 표시된다. :round_pushpin: [코드 보기](https://github.com/han-byul-yang/world_map_note/blob/45db1fcfb892d112c8792ae37fa815f8010bccb3/src/routes/Main/KaKaoMap/index.tsx#L59)
 
 #### 4.5.1 장소 이름
-/사진
 - 장소 이름의 경우 필수로 작성해야한다. 미 입력 후 메모 추가 버튼 클릭 시 안내 모달이 띄워진다. 
 - 검색을 통해 표시된 마커에 메모를 추가를 하는 경우 장소 이름이 검색된 장소 이름으로 자동 입력된다. 또한 이는 변경이 가능하다.
 
 #### 4.5.2 메모 내용 
-/사진
 
 #### 4.5.3 해시태그 & 색상 변경
-/사진
 - 해시태그의 색상을 선택할 수 있다. 
 - 중복되는 해시태그를 입력한 경우 자동으로 입력이 되지 않는다. 
 - 입력한 해시태그를 클릭하면 해당 해시태그는 삭제가 된다. 
 
 #### 4.5.4 주소 자동 입력
-/사진
 - 기본 주소와 도로명 주소는 자동으로 입력이 된다. 
 
 #### 4.5.5 날짜 선택
-/사진
 - 하루를 선택할 수도, 기한으로 선택할 수도 있다. 
 
 #### 4.5.6 사진 추가 
@@ -113,15 +123,19 @@ https://korea-map-note.netlify.app
 
 ### 4.6 메모 수정
 메모 보기 폼에서 수정을 원하는 메모의 설정 클릭 -> 메모 수정 선택 -> 메모 수정 폼에 메모 수정 -> 수정 및 `실시간으로` 지도에 사진 마커 수정
+
+![ezgif com-gif-maker (53)](https://user-images.githubusercontent.com/67466789/210064093-cf181b75-a6b1-44cf-b380-84ae1646df58.gif)
+
 - 메모 입력 후 메모 수정 버튼을 클릭하면 수정 여부 확인 모달이 띄워진다. 수정 버튼을 누르면 성공적으로 수정이 되었다는 안내 모달과 함께 메모가 `실시간으로` 수정된다. 
-/사진 
 - 메모 수정 폼이 열리면서 메모의 여행 장소, 태그, 여행 날짜, 내용, 장소, 사진이 폼에 자동으로 표시된다. 
   
     > firebase/firestore의 onSnapshot을 사용하여 firestore의 데이터 변경을 실시간으로 감지하도록 하였다. 이로서 메모 수정 시 지도에 실시간으로 마커가 표시된다. :round_pushpin: [코드 보기](https://github.com/han-byul-yang/world_map_note/blob/45db1fcfb892d112c8792ae37fa815f8010bccb3/src/routes/Main/KaKaoMap/index.tsx#L59)
 
 ### 4.7 메모 보기
 마커 클릭 -> 인포윈도우에서 메모 보기 클릭 -> 메모 보기 폼 오픈
-/사진
+
+![ezgif com-gif-maker (54)](https://user-images.githubusercontent.com/67466789/210064449-3fb69643-229d-49b8-a1b7-0806c6827943.gif)
+
 - 선택한 마커의 위치에 저장했던 메모들이 나열되어 보여진다.
 - 저장했던 메모의 여행 장소, 여행 날짜, 태그, 내용이 보여진다.  
   
@@ -132,23 +146,32 @@ https://korea-map-note.netlify.app
   > date(타입은 string)를 인자로 받아 받은 date가 현재 시간 기준 얼마나 지났는지 리턴해주는 재사용 가능한 updateDate util 함수를 생성하였다. 24시간이 지났으면 일자를 기준으로, 지나지 않은 경우 초, 분, 시간을 기준으로 리턴해준다. :round_pushpin: [코드 보기](https://github.com/han-byul-yang/world_map_note/blob/45db1fcfb892d112c8792ae37fa815f8010bccb3/src/utils/updatedDate.ts#L3)
 
 ### 4.7.1 메모의 사진 크게 보기
+
+![ezgif com-gif-maker (55)](https://user-images.githubusercontent.com/67466789/210064587-f959345c-c682-4cc2-ac0a-621185e5d6ca.gif)
+
 - 메모의 사진을 클릭하면 사진을 큰 크기로 확인할 수 있다. 
 - 두 개 이상의 사진의 경우 옆으로 넘기면서 확인할 수 있다. 
 
 ### 4.8 메모 삭제
 메모 보기 폼에서 삭제를 원하는 메모의 설정 클릭 -> 메모 삭제 선택 -> 삭제 및 `실시간으로` 지도에서 사진 마커 제거
+
+![ezgif com-gif-maker (56)](https://user-images.githubusercontent.com/67466789/210064678-a4106d08-9883-47b1-9040-0b92c1c27008.gif)
+
 - 설정에서 메모 삭제를 선택하면 삭제 여부 확인 모달이 띄워진다. 확인 버튼을 누르면 메모가 `실시간으로` 삭제된다. 
 
 ### 4.9 모바일 화면
-#### 4.9.1 로그인/회원가입
+#### 4.9.1 장소 검색
+![ezgif com-gif-maker (59)](https://user-images.githubusercontent.com/67466789/210096748-142fca3f-9468-430a-8b7d-720619b6e83f.gif)
 
-#### 4.9.2 장소 검색
+#### 4.9.2 메모 추가
+![ezgif com-gif-maker (61)](https://user-images.githubusercontent.com/67466789/210097037-afb61f00-ad80-4d94-8447-9bd4ac72d2e3.gif)
 
-#### 4.9.3 메모 추가
+#### 4.9.3 메모 수정
+![ezgif com-gif-maker (62)](https://user-images.githubusercontent.com/67466789/210098223-0a98ed8d-758d-4b9e-8c18-3259b2ae650e.gif)
 
-#### 4.9.4 메모 수정
+#### 4.9.4 메모 보기
+![ezgif com-gif-maker (63)](https://user-images.githubusercontent.com/67466789/210098333-7f480c48-684b-4b13-b836-299532195efd.gif)
 
-#### 4.9.5 메모 보기
 
 </div>
 </details>
