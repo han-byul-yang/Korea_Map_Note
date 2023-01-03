@@ -67,8 +67,3 @@ const DropDown = ({
 }
 
 export default React.memo(DropDown)
-
-// suspense 이용, tanstack-query의 isFetching 이용 차이
-// suspense 는 한 번에 데이터 fetching, 하지만 여기는 부모 자식 관계가 없어(data fetching 행위가 한 번만 이루어짐) 여기서는 필요하지 않을 듯
-// 또 컴포넌트를 data 받아오는 행위에 상관없이 render 시작(suspense)
-// setTemp 삭제

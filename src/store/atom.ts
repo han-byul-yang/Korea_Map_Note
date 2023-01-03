@@ -54,17 +54,17 @@ export const isOpenAddNoteFormAtom = atom({
     type: 'add',
     isOpen: false,
   },
-}) // context api 사용 or props로 넘겨주기
+})
 
 export const isOpenReadNotesAtom = atom({
   key: 'isOpenReadNotesAtom',
   default: false,
-}) // context api 사용 or props로 넘겨주기
+})
 
 export const isOpenMessageModalAtom = atom({
   key: 'isOpenMessageModal',
   default: false,
-}) // context api 사용 or props로 넘겨주기
+})
 
 export const mapLevelAtom = atom({
   key: 'mapLevel',
@@ -90,8 +90,3 @@ export const pictureUpdateSnapShotAtom = atom<UploadTask | undefined>({
   key: 'pictureUpdateSnapShot',
   default: undefined,
 })
-
-export const tempAtom = atom<ISearchPlacesResultInfo[]>({
-  key: 'temp',
-  default: [],
-}) // 삭제해주기

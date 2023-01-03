@@ -67,7 +67,3 @@ const Marker = ({ markImg, markPosition, isMapLoaded }: IMarker) => {
 }
 
 export default memo(Marker)
-
-// img any 타입
-// setOpenAddNoteForm 를 context api 로 변경
-// isMapLoaded context api 변경

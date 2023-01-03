@@ -58,5 +58,3 @@ const Picture = () => {
 }
 
 export default Picture
-
-// any type 설정

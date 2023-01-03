@@ -132,6 +132,3 @@ const Auth = () => {
 }
 
 export default Auth
-
-// 사진 img 태그 안에 넣기
-// b태그 적용안됨

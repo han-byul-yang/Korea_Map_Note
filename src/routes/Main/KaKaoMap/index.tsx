@@ -107,7 +107,3 @@ const KakaoMap = ({ setIsMapLoaded, isMapLoaded }: IKakaoMapProps) => {
 }
 
 export default KakaoMap
-
-// location 이름 직관적으로 바꾸기 -> clickedLocation, clickedPosition
-// setOpenAddNoteForm, openAddNoteForm context api 로 핸들
-// memoPosition.image[0] ||

@@ -88,5 +88,3 @@ const MemoSettingBox = ({ setOpenMemoSettingBox, storedMemo }: IMemoSettingBoxPr
 }
 
 export default MemoSettingBox
-
-// async await 필요할지
