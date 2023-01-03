@@ -98,7 +98,7 @@ https://korea-map-note.netlify.app
 
 - 메모 입력 후 메모 추가 버튼을 클릭하면 저장 여부 확인 모달이 띄워진다. 확인 버튼을 누르면 성공적으로 저장이 되었다는 안내 모달과 함께 메모가 `실시간으로` 생성된다. 
   
-  > firebase/firestore의 onSnapshot을 사용하여 firestore의 데이터 변경을 실시간으로 감지하도록 하였다. 이로서 메모 추가 시 지도에 실시간으로 마커가 표시된다. :round_pushpin: [코드 보기](https://github.com/han-byul-yang/world_map_note/blob/45db1fcfb892d112c8792ae37fa815f8010bccb3/src/routes/Main/KaKaoMap/index.tsx#L59)
+  > firebase/firestore의 onSnapshot을 사용하여 firestore의 데이터 변경을 실시간으로 감지하도록 하였다. 이로서 메모 추가 시 지도에 실시간으로 마커가 표시된다. :round_pushpin: [코드 보기](https://github.com/han-byul-yang/Korea_Map_Note/blob/45db1fcfb892d112c8792ae37fa815f8010bccb3/src/routes/Main/KaKaoMap/index.tsx#L59)
 
 #### 4.5.1 장소 이름
 - 장소 이름의 경우 필수로 작성해야한다. 미 입력 후 메모 추가 버튼 클릭 시 안내 모달이 띄워진다. 
@@ -129,7 +129,7 @@ https://korea-map-note.netlify.app
 - 메모 입력 후 메모 수정 버튼을 클릭하면 수정 여부 확인 모달이 띄워진다. 수정 버튼을 누르면 성공적으로 수정이 되었다는 안내 모달과 함께 메모가 `실시간으로` 수정된다. 
 - 메모 수정 폼이 열리면서 메모의 여행 장소, 태그, 여행 날짜, 내용, 장소, 사진이 폼에 자동으로 표시된다. 
   
-    > firebase/firestore의 onSnapshot을 사용하여 firestore의 데이터 변경을 실시간으로 감지하도록 하였다. 이로서 메모 수정 시 지도에 실시간으로 마커가 표시된다. :round_pushpin: [코드 보기](https://github.com/han-byul-yang/world_map_note/blob/45db1fcfb892d112c8792ae37fa815f8010bccb3/src/routes/Main/KaKaoMap/index.tsx#L59)
+    > firebase/firestore의 onSnapshot을 사용하여 firestore의 데이터 변경을 실시간으로 감지하도록 하였다. 이로서 메모 수정 시 지도에 실시간으로 마커가 표시된다. :round_pushpin: [코드 보기](https://github.com/han-byul-yang/Korea_Map_Note/blob/45db1fcfb892d112c8792ae37fa815f8010bccb3/src/routes/Main/KaKaoMap/index.tsx#L59)
 
 ### 4.7 메모 보기
 마커 클릭 -> 인포윈도우에서 메모 보기 클릭 -> 메모 보기 폼 오픈
