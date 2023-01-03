@@ -31,9 +31,3 @@ const Main = () => {
 }
 
 export default Main
-
-// declare 정확히 알기
-// env 파일에 key 집어넣기
-// 지도 렌더링 시간 너무 오래걸림
-// mapmarker 리팩토링, handleMapMarkerClick 함수도
-// map, setMap context api로 넘겨주기

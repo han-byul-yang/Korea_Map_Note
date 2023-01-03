@@ -52,13 +52,6 @@ const MemoSettingBox = ({ setOpenMemoSettingBox, storedMemo }: IMemoSettingBoxPr
     getDocsFromFirebase(userId).then((memoDocs) => {
       setMemo(memoDocs.docs.filter((ele) => ele.id === storedMemo.docId)[0].data().data.memo)
     })
-    /* setMemo({
-      ...storedMemo.memoInfo.memo,
-      travelDate: {
-        startDate: storedMemo.memoInfo.memo.travelDate.startDate,
-        endDate: storedMemo.memoInfo.memo.travelDate.endDate,
-      },
-    }) */
     setMemo({
       ...storedMemo.memoInfo.memo,
       travelDate: {

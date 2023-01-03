@@ -80,7 +80,7 @@ const ReadNote = ({ storedMemo }: IReadNoteProps) => {
         </ul>
         <p>{memoText}</p>
 
-        <p className={styles.updateDate}>{updatedDate(`${dayjs(createAt).format()}`)}</p>
+        <p className={styles.updateDate}>{updatedDate(dayjs(createAt).format())}</p>
       </li>
       {isOpenCarouselModal && (
         <CarouselModal setIsOpenCarouselModal={setIsOpenCarouselModal} pictureList={pictureList} />

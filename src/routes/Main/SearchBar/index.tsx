@@ -62,6 +62,3 @@ const SearchBar = ({ isMapLoaded }: ISearchBarProps) => {
 }
 
 export default SearchBar
-
-// map - context api 로 넘겨주기
-// dropDown props - context api로 넘겨주기
