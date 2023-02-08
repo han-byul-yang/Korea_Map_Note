@@ -34,9 +34,6 @@ https://korea-map-note.netlify.app
    - react-datepicker
 
 ## 4. 화면 예시 및 구현 방법
-<details>
-<summary>화면 예시 펼치기</summary>
-<div markdown="2">
 
 ### 4.1 로그인/회원가입
 #### 4.1.1 회원가입
@@ -172,9 +169,6 @@ https://korea-map-note.netlify.app
 #### 4.9.4 메모 보기
 ![ezgif com-gif-maker (63)](https://user-images.githubusercontent.com/67466789/210098333-7f480c48-684b-4b13-b836-299532195efd.gif)
 
-
-</div>
-</details>
 
 ## 5. 트러블 슈팅 & 고민한 부분
 ### 5.1. tanstack query 디바운싱 적용 :bookmark_tabs:[블로그 글](https://velog.io/@han-byul-yang/world-map-note-%EA%B0%9C%EC%9D%B8-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B84)
